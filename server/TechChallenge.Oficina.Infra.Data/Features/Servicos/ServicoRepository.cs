@@ -1,0 +1,50 @@
+using Microsoft.EntityFrameworkCore;
+using TechChallenge.Oficina.Domain.Features.Servicos;
+using TechChallenge.Oficina.Infra.Data.Context;
+
+namespace TechChallenge.Oficina.Infra.Data.Features.Servicos;
+
+public sealed class ServicoRepository : IServicoRepository
+{
+    private readonly OficinaDbContext _context;
+
+    public ServicoRepository(OficinaDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task AdicionarAsync(Servico servico, CancellationToken cancellationToken = default)
+    {
+        await _context.Servicos.AddAsync(servico, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task AtualizarAsync(Servico servico, CancellationToken cancellationToken = default)
+    {
+        _context.Servicos.Update(servico);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<Servico?> ObterPorIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await _context.Servicos
+            .Include(servico => servico.ItensServico)
+            .ThenInclude(itemServico => itemServico.Insumo)
+            .FirstOrDefaultAsync(servico => servico.Id == id, cancellationToken);
+    }
+
+    public async Task<IReadOnlyCollection<Servico>> ListarAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.Servicos
+            .Include(servico => servico.ItensServico)
+            .ThenInclude(itemServico => itemServico.Insumo)
+            .OrderBy(servico => servico.Nome)
+            .ToArrayAsync(cancellationToken);
+    }
+
+    public async Task RemoverAsync(Servico servico, CancellationToken cancellationToken = default)
+    {
+        _context.Servicos.Remove(servico);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+}

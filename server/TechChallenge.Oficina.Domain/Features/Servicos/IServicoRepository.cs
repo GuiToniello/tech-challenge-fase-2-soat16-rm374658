@@ -1,0 +1,10 @@
+namespace TechChallenge.Oficina.Domain.Features.Servicos;
+
+public interface IServicoRepository
+{
+    Task AdicionarAsync(Servico servico, CancellationToken cancellationToken = default);
+    Task AtualizarAsync(Servico servico, CancellationToken cancellationToken = default);
+    Task<Servico?> ObterPorIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<IReadOnlyCollection<Servico>> ListarAsync(CancellationToken cancellationToken = default);
+    Task RemoverAsync(Servico servico, CancellationToken cancellationToken = default);
+}

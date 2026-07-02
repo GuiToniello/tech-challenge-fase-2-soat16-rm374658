@@ -1,0 +1,474 @@
+name: Build, Test, Security Scan and Analyze
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build_test_coverage:
+    name: Build, Test and Coverage
+    runs-on: windows-latest
+    
+    steps:
+      # ========== SETUP & CHECKOUT ==========
+      - name: Checkout code
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0 # Shallow clones disabled for better SonarQube analysis relevancy
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4.8.0
+        with:
+          java-version: 17
+          distribution: 'zulu'
+
+      # ========== RESTORE & BUILD ==========
+      - name: Restore NuGet dependencies
+        run: dotnet restore server/TechChallenge.Oficina.API.slnx
+
+      - name: Build solution
+        run: dotnet build server/TechChallenge.Oficina.API.slnx --no-restore --configuration Release
+
+      # ========== TESTS & COVERAGE ==========
+      - name: Run tests with code coverage
+        run: |
+          dotnet test server/TechChallenge.Oficina.API.slnx `
+            --no-build `
+            --configuration Release `
+            --collect:"XPlat Code Coverage" `
+            --results-directory TestResults `
+            -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+
+      # ========== COVERAGE REPORT GENERATION ==========
+      - name: Install ReportGenerator tool
+        run: dotnet tool install -g dotnet-reportgenerator-globaltool
+
+      - name: Generate HTML coverage report
+        run: |
+          reportgenerator `
+            -reports:"TestResults/**/coverage.opencover.xml" `
+            -targetdir:"coveragereport" `
+            -reporttypes:"Html;Cobertura"
+
+          Copy-Item -Path "coveragereport/Cobertura.xml" -Destination "coverage.cobertura.xml" -Force
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coveragereport/
+          retention-days: 30
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults/
+          retention-days: 30
+
+  trivy_scan:
+    name: Trivy Scan
+    runs-on: windows-latest
+    needs: build_test_coverage
+
+    steps:
+      # ========== SETUP & CHECKOUT ==========
+      - name: Checkout code
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0 # Shallow clones disabled for better SonarQube analysis relevancy
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore NuGet dependencies for Trivy dependency analysis
+        run: dotnet restore server/TechChallenge.Oficina.API.slnx
+
+      - name: Build solution for Trivy dependency analysis
+        run: dotnet build server/TechChallenge.Oficina.API.slnx --no-restore --configuration Release
+
+      # ========== TRIVY SECURITY SCAN ==========
+      - name: Set up Trivy
+        uses: aquasecurity/setup-trivy@v0.3.1
+        with:
+          version: v0.71.0
+          cache: true
+
+      - name: Resolve Trivy binary and template paths
+        shell: powershell
+        run: |
+          $trivyCandidates = @(
+            (Join-Path $env:USERPROFILE ".local\bin\trivy-bin\trivy.exe"),
+            (Join-Path $env:USERPROFILE ".local\bin\trivy.exe"),
+            (Join-Path $env:RUNNER_TEMP "trivy\trivy-bin\trivy.exe"),
+            (Join-Path $env:GITHUB_WORKSPACE "trivy\trivy-bin\trivy.exe")
+          )
+
+          $trivyExe = $trivyCandidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+
+          if (-not $trivyExe) {
+            $trivyExe = (Get-ChildItem -Path $env:USERPROFILE -Recurse -Filter trivy.exe -ErrorAction SilentlyContinue |
+              Select-Object -First 1 -ExpandProperty FullName)
+          }
+
+          if (-not $trivyExe) {
+            throw "Trivy executable was not found after setup-trivy."
+          }
+
+          $trivyDir = Split-Path -Path $trivyExe -Parent
+          $htmlTemplate = Join-Path -Path $trivyDir -ChildPath "contrib\html.tpl"
+
+          if (-not (Test-Path $htmlTemplate)) {
+            $htmlTemplate = (Get-ChildItem -Path (Split-Path -Path $trivyDir -Parent) -Recurse -Filter html.tpl -ErrorAction SilentlyContinue |
+              Select-Object -First 1 -ExpandProperty FullName)
+          }
+
+          if (-not $htmlTemplate) {
+            throw "Trivy HTML template was not found after setup-trivy."
+          }
+
+          "TRIVY_EXE=$trivyExe" >> $env:GITHUB_ENV
+          "TRIVY_HTML_TEMPLATE=$htmlTemplate" >> $env:GITHUB_ENV
+
+          Write-Host "Resolved Trivy executable: $trivyExe"
+          Write-Host "Resolved Trivy HTML template: $htmlTemplate"
+
+      - name: Run Trivy vulnerability scanner
+        shell: powershell
+        continue-on-error: true
+        run: |
+          if (-not $env:TRIVY_EXE) {
+            throw "Trivy executable was not found after setup-trivy."
+          }
+
+          & $env:TRIVY_EXE fs `
+            --scanners vuln,secret,misconfig,license `
+            --pkg-types os,library `
+            --ignore-unfixed `
+            --skip-dirs "**/*Tests/**" `
+            --skip-dirs "**/TestResults/**" `
+            --skip-dirs "**/coveragereport/**" `
+            --skip-files "**/*Tests.deps.json" `
+            --format sarif `
+            --output trivy.sarif `
+            server/
+
+      - name: Generate Trivy JSON report
+        shell: powershell
+        continue-on-error: true
+        run: |
+          if (-not $env:TRIVY_EXE) {
+            throw "Trivy executable was not found after setup-trivy."
+          }
+
+          & $env:TRIVY_EXE fs `
+            --scanners vuln,secret,misconfig,license `
+            --pkg-types os,library `
+            --ignore-unfixed `
+            --skip-dirs "**/*Tests/**" `
+            --skip-dirs "**/TestResults/**" `
+            --skip-dirs "**/coveragereport/**" `
+            --skip-files "**/*Tests.deps.json" `
+            --format json `
+            --output trivy.json `
+            server/
+
+      - name: Generate Trivy HTML report
+        shell: powershell
+        continue-on-error: true
+        run: |
+          if (-not $env:TRIVY_EXE) {
+            throw "Trivy executable was not found after setup-trivy."
+          }
+
+          if (-not $env:TRIVY_HTML_TEMPLATE) {
+            throw "Trivy HTML template was not found after setup-trivy."
+          }
+
+          & $env:TRIVY_EXE fs `
+            --scanners vuln,secret,misconfig,license `
+            --pkg-types os,library `
+            --ignore-unfixed `
+            --skip-dirs "**/*Tests/**" `
+            --skip-dirs "**/TestResults/**" `
+            --skip-dirs "**/coveragereport/**" `
+            --skip-files "**/*Tests.deps.json" `
+            --format template `
+            --template "@$env:TRIVY_HTML_TEMPLATE" `
+            --output trivy.html `
+            server/
+
+          if (Test-Path "trivy.html") {
+            # Normalize report title/header to a project-level name.
+            (Get-Content "trivy.html" -Raw) `
+              -replace '<title>.*?</title>', '<title>TechChallenge.Oficina - Trivy Report</title>' `
+              -replace '<h1>.*?</h1>', '<h1>TechChallenge.Oficina - Trivy Report</h1>' `
+              | Set-Content "trivy.html"
+          }
+
+      - name: Convert Trivy HTML to PDF
+        run: |
+          # Install wkhtmltopdf via Chocolatey
+          choco install wkhtmltopdf -y --no-progress
+          
+          # Convert HTML to PDF using wkhtmltopdf
+          $env:PATH += ";C:\Program Files\wkhtmltopdf\bin"
+          
+          # wkhtmltopdf needs an explicit local file path on Windows, otherwise it can treat the input as a URL
+          $htmlInput = Join-Path $PWD "trivy.html"
+          $pdfOutput = Join-Path $PWD "trivy.pdf"
+
+          if (Test-Path $htmlInput) {
+            wkhtmltopdf --enable-local-file-access $htmlInput $pdfOutput
+          }
+          else {
+            Write-Warning "trivy.html was not generated, so PDF conversion was skipped."
+          }
+        shell: powershell
+        continue-on-error: true # PDF conversion is non-critical
+
+      - name: Upload Trivy reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-report
+          path: |
+            trivy.sarif
+            trivy.json
+            trivy.html
+            trivy.pdf
+          retention-days: 30
+
+  dependency_check_scan:
+    name: OWASP Dependency-Check Scan
+    runs-on: windows-latest
+    needs: build_test_coverage
+
+    steps:
+      # ========== SETUP & CHECKOUT ==========
+      - name: Checkout code
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0 # Shallow clones disabled for better SonarQube analysis relevancy
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4.8.0
+        with:
+          java-version: 17
+          distribution: 'zulu'
+
+      - name: Restore NuGet dependencies for Dependency-Check analysis
+        run: dotnet restore server/TechChallenge.Oficina.API.slnx
+
+      - name: Build solution for Dependency-Check analysis
+        run: dotnet build server/TechChallenge.Oficina.API.slnx --no-restore --configuration Release
+
+      # ========== DEPENDENCY-CHECK SETUP ==========
+      - name: Cache Dependency-Check data
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ${{ runner.temp }}\dependency-check-data
+          key: ${{ runner.os }}-dependency-check-data
+          restore-keys: ${{ runner.os }}-dependency-check-data
+
+      - name: Install OWASP Dependency-Check CLI
+        shell: powershell
+        run: |
+          $dcVersion = "12.2.2"
+          $dcZipPath = Join-Path $env:RUNNER_TEMP "dependency-check.zip"
+          $dcExtractDir = Join-Path $env:RUNNER_TEMP "dependency-check"
+          $dcDownloadUrl = "https://github.com/dependency-check/DependencyCheck/releases/download/v$dcVersion/dependency-check-$dcVersion-release.zip"
+
+          Invoke-WebRequest -Uri $dcDownloadUrl -OutFile $dcZipPath
+
+          if (Test-Path $dcExtractDir) {
+            Remove-Item -Path $dcExtractDir -Recurse -Force
+          }
+
+          Expand-Archive -Path $dcZipPath -DestinationPath $dcExtractDir -Force
+
+          $dcCli = Join-Path $dcExtractDir "dependency-check\bin\dependency-check.bat"
+
+          if (-not (Test-Path $dcCli)) {
+            throw "OWASP Dependency-Check CLI executable was not found after installation."
+          }
+
+          "DC_CLI=$dcCli" >> $env:GITHUB_ENV
+          Write-Host "Resolved Dependency-Check CLI: $dcCli"
+
+      - name: Run OWASP Dependency-Check vulnerability scanner
+        shell: powershell
+        continue-on-error: true
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: |
+          if (-not $env:DC_CLI) {
+            throw "OWASP Dependency-Check CLI executable was not found after installation."
+          }
+
+          if (-not $env:NVD_API_KEY) {
+            throw "NVD_API_KEY secret was not provided."
+          }
+
+          New-Item -Path "dependency-check-reports" -ItemType Directory -Force | Out-Null
+
+          & $env:DC_CLI `
+            --project "TechChallenge.Oficina" `
+            --scan "server/" `
+            --out "dependency-check-reports" `
+            --format "SARIF" `
+            --format "JSON" `
+            --format "HTML" `
+            --prettyPrint `
+            --nvdApiKey "$env:NVD_API_KEY" `
+            --data "${{ runner.temp }}\dependency-check-data" `
+            --disableOssIndex `
+            --exclude "**/*Tests/**" `
+            --exclude "**/TestResults/**" `
+            --exclude "**/coveragereport/**"
+
+      - name: Upload Dependency-Check reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-report
+          path: dependency-check-reports/
+          retention-days: 30
+
+  sonar_analysis:
+    name: SonarQube Analysis
+    runs-on: windows-latest
+    needs:
+      - build_test_coverage
+      - trivy_scan
+      - dependency_check_scan
+
+    steps:
+      # ========== SETUP & CHECKOUT ==========
+      - name: Checkout code
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          fetch-depth: 0 # Shallow clones disabled for better SonarQube analysis relevancy
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4.8.0
+        with:
+          java-version: 17
+          distribution: 'zulu'
+
+      # ========== CACHING ==========
+      - name: Cache SonarQube Cloud packages
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~\sonar\cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache SonarQube Cloud scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ${{ runner.temp }}\scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+          path: TestResults
+
+      - name: Download Trivy artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: trivy-report
+          path: trivy-artifacts
+
+      - name: Download Dependency-Check artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dependency-check-report
+          path: dependency-check-artifacts
+
+      - name: Validate coverage, Trivy and Dependency-Check SARIF files
+        shell: powershell
+        run: |
+          $coverageFiles = Get-ChildItem -Path . -Recurse -Filter "coverage.opencover.xml" -ErrorAction SilentlyContinue
+          $trivySarifFiles = Get-ChildItem -Path . -Recurse -Filter "trivy.sarif" -ErrorAction SilentlyContinue
+          $dependencyCheckSarifFiles = Get-ChildItem -Path . -Recurse -Filter "dependency-check-report.sarif" -ErrorAction SilentlyContinue
+
+          Write-Host "Coverage files found: $($coverageFiles.Count)"
+          $coverageFiles | ForEach-Object { Write-Host " - $($_.FullName)" }
+
+          Write-Host "Trivy SARIF files found: $($trivySarifFiles.Count)"
+          $trivySarifFiles | ForEach-Object { Write-Host " - $($_.FullName)" }
+
+          Write-Host "Dependency-Check SARIF files found: $($dependencyCheckSarifFiles.Count)"
+          $dependencyCheckSarifFiles | ForEach-Object { Write-Host " - $($_.FullName)" }
+
+          if (-not $coverageFiles) {
+            throw "No coverage.opencover.xml file was found for SonarQube import."
+          }
+
+          if (-not $trivySarifFiles) {
+            throw "No trivy.sarif file was found for SonarQube import."
+          }
+
+          if (-not $dependencyCheckSarifFiles) {
+            throw "No dependency-check-report.sarif file was found for SonarQube import."
+          }
+
+      - name: Restore NuGet dependencies for Sonar build
+        run: dotnet restore server/TechChallenge.Oficina.API.slnx
+
+      # ========== SONARQUBE ANALYSIS (AFTER TRIVY) ==========
+      - name: Install SonarQube Cloud scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        shell: powershell
+        run: |
+          New-Item -Path ${{ runner.temp }}\scanner -ItemType Directory
+          dotnet tool update dotnet-sonarscanner --tool-path ${{ runner.temp }}\scanner
+
+      - name: SonarQube analysis with coverage and vulnerabilities
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        shell: powershell
+        run: |
+          # Begin SonarQube analysis
+          # Note: Trivy and Dependency-Check SARIF reports are imported here along with code coverage
+          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin `
+            /k:"GuiToniello_tech-challenge-fase-1-soat16-rm374658" `
+            /o:"guitoniello" `
+            /d:sonar.token="$env:SONAR_TOKEN" `
+            /d:sonar.dotnet.excludeTestProjects=true `
+            /d:sonar.coverage.exclusions="**/Migrations/**" `
+            /d:sonar.cpd.exclusions="**/Migrations/**" `
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" `
+            /d:sonar.sarifReportPaths="trivy-artifacts/trivy.sarif,dependency-check-artifacts/dependency-check-report.sarif" `
+            /d:sonar.cs.roslyn.skipRegistry=true `
+            /d:sonar.exclusions="**/*Tests/**,**/coveragereport/**,**/.github/workflows/**,**/TestResults/**,**/trivy-artifacts/**,**/dependency-check-artifacts/**,**/Migrations/**"
+          dotnet build server/TechChallenge.Oficina.API.slnx --no-restore --configuration Release
+          
+          # End SonarQube analysis
+          ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"

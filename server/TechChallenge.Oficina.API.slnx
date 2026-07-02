@@ -1,0 +1,32 @@
+<Solution>
+  <Folder Name="/Artifacts/" />
+  <Folder Name="/Artifacts/ADRs/">
+    <File Path="../adr/ADR-001-Arquitetura-em-Camadas.md" />
+    <File Path="../adr/ADR-002-DDD-e-Entidades-Ricas.md" />
+    <File Path="../adr/ADR-003-Value-Objects-Identificacao.md" />
+    <File Path="../adr/ADR-004-Repository-Pattern-e-Persistencia.md" />
+    <File Path="../adr/ADR-005-Separacao-Commands-Queries-ViewModels.md" />
+    <File Path="../adr/ADR-006-AutoMapper-na-Application.md" />
+    <File Path="../adr/ADR-007-EFCore-com-PostgreSQL.md" />
+    <File Path="../adr/ADR-008-Swagger-para-API.md" />
+    <File Path="../adr/ADR-009-Migracoes-Automaticas-no-Startup.md" />
+    <File Path="../adr/ADR-010-Inferencia-Generics-IClienteService.md" />
+    <File Path="../adr/ESTRUTURA.md" />
+    <File Path="../adr/INDICE.md" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <File Path="../e2e/TechChallenge.Oficina.API.postman_collection.json" />
+    <Project Path="TechChallenge.Oficina.API.Tests/TechChallenge.Oficina.API.Tests.csproj" />
+    <Project Path="TechChallenge.Oficina.Application.Tests/TechChallenge.Oficina.Application.Tests.csproj" />
+    <Project Path="TechChallenge.Oficina.Domain.Tests/TechChallenge.Oficina.Domain.Tests.csproj" />
+    <Project Path="TechChallenge.Oficina.Infra.Data.Tests/TechChallenge.Oficina.Infra.Data.Tests.csproj" />
+    <Project Path="TechChallenge.Oficina.Infra.Email.Tests/TechChallenge.Oficina.Infra.Email.Tests.csproj" />
+    <Project Path="TechChallenge.Oficina.Integration.Tests/TechChallenge.Oficina.Integration.Tests.csproj" />
+  </Folder>
+  <Project Path="TechChallenge.Oficina.API/TechChallenge.Oficina.API.csproj" />
+  <Project Path="TechChallenge.Oficina.Application/TechChallenge.Oficina.Application.csproj" Id="2b019e97-650e-4000-8045-53c2f28db89f" />
+  <Project Path="TechChallenge.Oficina.Domain/TechChallenge.Oficina.Domain.csproj" Id="6b121b56-1305-4206-b1a0-3512618ea6c0" />
+  <Project Path="TechChallenge.Oficina.Infra.Data/TechChallenge.Oficina.Infra.Data.csproj" Id="71fe5663-eba3-4094-a2e6-eafa02c7eae3" />
+  <Project Path="TechChallenge.Oficina.Infra.Email/TechChallenge.Oficina.Infra.Email.csproj" />
+  <Project Path="TechChallenge.Oficina.Infra/TechChallenge.Oficina.Infra.csproj" Id="18859944-def8-4ae5-970e-ae7f54cb6bad" />
+</Solution>
