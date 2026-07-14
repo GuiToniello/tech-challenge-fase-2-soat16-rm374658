@@ -59,16 +59,16 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
 
     private async Task<Guid> CriarServicoAsync(Guid insumoId)
     {
-        var controller = _fixture.CriarServicosController();
-        var result = (CreatedAtActionResult)await controller.Post(
+        var endpoints = _fixture.CriarServicosEndpoints();
+        var result = (CreatedAtRoute<ServicoViewModel>)(await endpoints.Post(
             new CriarServicoCommand
             {
                 Nome = "Troca de Vela",
                 Descricao = "Substituição das velas de ignição",
                 ItensServico = [new ItemServicoCommand { InsumoId = insumoId, Quantidade = 4 }]
             },
-            CancellationToken.None);
-        return ((ServicoViewModel)result.Value!).Id;
+            CancellationToken.None)).Result!;
+        return result.Value.Id;
     }
 
     private async Task<(Guid clienteId, Guid veiculoId, Guid servicoId)> CriarContextoCompletoAsync()
@@ -163,11 +163,11 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
             CancellationToken.None);
         var insumoId = ((InsumoViewModel)insumoResult.Value!).Id;
 
-        var servicoController = _fixture.CriarServicosController();
-        var servicoResult = (CreatedAtActionResult)await servicoController.Post(
+        var servicoEndpoints = _fixture.CriarServicosEndpoints();
+        var servicoResult = (CreatedAtRoute<ServicoViewModel>)(await servicoEndpoints.Post(
             new CriarServicoCommand { Nome = "Troca Freio", Descricao = "Troca pastilha de freio", ItensServico = [new ItemServicoCommand { InsumoId = insumoId, Quantidade = 2 }] },
-            CancellationToken.None);
-        var servicoId = ((ServicoViewModel)servicoResult.Value!).Id;
+            CancellationToken.None)).Result!;
+        var servicoId = servicoResult.Value.Id;
 
         // ordem criada com clienteOrdem mas veículo do clienteDono
         var controller = _fixture.CriarOrdensServicoController();

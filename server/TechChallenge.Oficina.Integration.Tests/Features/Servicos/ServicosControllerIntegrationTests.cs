@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
 using TechChallenge.Oficina.Application.Features.Insumos.Commands;
@@ -35,22 +36,15 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
         ItensServico = []
     };
 
-    // ------------------------------------------------------------------ //
-    // POST - Criar
-    // ------------------------------------------------------------------ //
-
     [Fact]
     public async Task Post_ServicoValido_DeveRetornar201ComViewModel()
     {
-        // Arrange
-        var controller = _fixture.CriarServicosController();
+        var endpoints = _fixture.CriarServicosEndpoints();
         var command = ServicoSemItens();
 
-        // Act
-        var resultado = await controller.Post(command, CancellationToken.None);
+        var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        // Assert
-        var created = Assert.IsType<CreatedAtActionResult>(resultado);
+        var created = Assert.IsType<CreatedAtRoute<ServicoViewModel>>(resultado.Result);
         var viewModel = Assert.IsType<ServicoViewModel>(created.Value);
         Assert.NotEqual(Guid.Empty, viewModel.Id);
         Assert.Equal("Revisão Geral", viewModel.Nome);
@@ -59,9 +53,8 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
     [Fact]
     public async Task Post_ServicoComItens_DeveRetornar201ComItensAssociados()
     {
-        // Arrange
         var insumoId = await CriarInsumoAsync();
-        var controller = _fixture.CriarServicosController();
+        var endpoints = _fixture.CriarServicosEndpoints();
         var command = new CriarServicoCommand
         {
             Nome = "Troca de Filtro",
@@ -69,11 +62,9 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
             ItensServico = [new ItemServicoCommand { InsumoId = insumoId, Quantidade = 1 }]
         };
 
-        // Act
-        var resultado = await controller.Post(command, CancellationToken.None);
+        var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        // Assert
-        var created = Assert.IsType<CreatedAtActionResult>(resultado);
+        var created = Assert.IsType<CreatedAtRoute<ServicoViewModel>>(resultado.Result);
         var viewModel = Assert.IsType<ServicoViewModel>(created.Value);
         Assert.Single(viewModel.ItensServico);
     }
@@ -81,22 +72,18 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
     [Fact]
     public async Task Post_NomeVazio_DeveRetornar400()
     {
-        // Arrange
-        var controller = _fixture.CriarServicosController();
+        var endpoints = _fixture.CriarServicosEndpoints();
         var command = new CriarServicoCommand { Nome = " ", Descricao = "Descrição válida", ItensServico = [] };
 
-        // Act
-        var resultado = await controller.Post(command, CancellationToken.None);
+        var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        // Assert
-        Assert.IsType<BadRequestObjectResult>(resultado);
+        Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado.Result);
     }
 
     [Fact]
     public async Task Post_InsumoInexistente_DeveRetornar404()
     {
-        // Arrange
-        var controller = _fixture.CriarServicosController();
+        var endpoints = _fixture.CriarServicosEndpoints();
         var command = new CriarServicoCommand
         {
             Nome = "Serviço X",
@@ -104,30 +91,21 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
             ItensServico = [new ItemServicoCommand { InsumoId = Guid.NewGuid(), Quantidade = 1 }]
         };
 
-        // Act
-        var resultado = await controller.Post(command, CancellationToken.None);
+        var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        // Assert
-        Assert.IsType<NotFoundObjectResult>(resultado);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
     }
-
-    // ------------------------------------------------------------------ //
-    // GET por id
-    // ------------------------------------------------------------------ //
 
     [Fact]
     public async Task GetById_ServicoExistente_DeveRetornar200ComViewModel()
     {
-        // Arrange
-        var controller = _fixture.CriarServicosController();
-        var created = (CreatedAtActionResult)await controller.Post(ServicoSemItens(), CancellationToken.None);
-        var id = ((ServicoViewModel)created.Value!).Id;
+        var endpoints = _fixture.CriarServicosEndpoints();
+        var created = Assert.IsType<CreatedAtRoute<ServicoViewModel>>((await endpoints.Post(ServicoSemItens(), CancellationToken.None)).Result);
+        var id = created.Value.Id;
 
-        // Act
-        var resultado = await controller.GetById(id, CancellationToken.None);
+        var resultado = await endpoints.GetById(id, CancellationToken.None);
 
-        // Assert
-        var ok = Assert.IsType<OkObjectResult>(resultado);
+        var ok = Assert.IsType<Ok<ServicoViewModel>>(resultado.Result);
         var viewModel = Assert.IsType<ServicoViewModel>(ok.Value);
         Assert.Equal(id, viewModel.Id);
     }
@@ -135,47 +113,32 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
     [Fact]
     public async Task GetById_ServicoInexistente_DeveRetornar404()
     {
-        // Arrange
-        var controller = _fixture.CriarServicosController();
+        var endpoints = _fixture.CriarServicosEndpoints();
 
-        // Act
-        var resultado = await controller.GetById(Guid.NewGuid(), CancellationToken.None);
+        var resultado = await endpoints.GetById(Guid.NewGuid(), CancellationToken.None);
 
-        // Assert
-        Assert.IsType<NotFoundObjectResult>(resultado);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
     }
-
-    // ------------------------------------------------------------------ //
-    // GET lista
-    // ------------------------------------------------------------------ //
 
     [Fact]
     public async Task Get_ComServicos_DeveRetornar200ComLista()
     {
-        // Arrange
-        var controller = _fixture.CriarServicosController();
-        await controller.Post(ServicoSemItens("Alinhamento"), CancellationToken.None);
+        var endpoints = _fixture.CriarServicosEndpoints();
+        await endpoints.Post(ServicoSemItens("Alinhamento"), CancellationToken.None);
 
-        // Act
-        var resultado = await controller.Get(CancellationToken.None);
+        var resultado = await endpoints.Get(CancellationToken.None);
 
-        // Assert
-        var ok = Assert.IsType<OkObjectResult>(resultado);
+        var ok = Assert.IsType<Ok<IReadOnlyCollection<ServicoViewModel>>>(resultado);
         var lista = Assert.IsAssignableFrom<IEnumerable<ServicoViewModel>>(ok.Value);
         Assert.NotEmpty(lista);
     }
 
-    // ------------------------------------------------------------------ //
-    // PUT - Atualizar
-    // ------------------------------------------------------------------ //
-
     [Fact]
     public async Task Put_ServicoExistente_DeveRetornar200ComDadosAtualizados()
     {
-        // Arrange
-        var controller = _fixture.CriarServicosController();
-        var created = (CreatedAtActionResult)await controller.Post(ServicoSemItens(), CancellationToken.None);
-        var id = ((ServicoViewModel)created.Value!).Id;
+        var endpoints = _fixture.CriarServicosEndpoints();
+        var created = Assert.IsType<CreatedAtRoute<ServicoViewModel>>((await endpoints.Post(ServicoSemItens(), CancellationToken.None)).Result);
+        var id = created.Value.Id;
         var command = new AtualizarServicoCommand
         {
             Id = id,
@@ -184,11 +147,9 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
             ItensServico = []
         };
 
-        // Act
-        var resultado = await controller.Put(command, CancellationToken.None);
+        var resultado = await endpoints.Put(command, CancellationToken.None);
 
-        // Assert
-        var ok = Assert.IsType<OkObjectResult>(resultado);
+        var ok = Assert.IsType<Ok<ServicoViewModel>>(resultado.Result);
         var viewModel = Assert.IsType<ServicoViewModel>(ok.Value);
         Assert.Equal("Revisão Geral Atualizada", viewModel.Nome);
     }
@@ -196,8 +157,7 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
     [Fact]
     public async Task Put_ServicoInexistente_DeveRetornar404()
     {
-        // Arrange
-        var controller = _fixture.CriarServicosController();
+        var endpoints = _fixture.CriarServicosEndpoints();
         var command = new AtualizarServicoCommand
         {
             Id = Guid.NewGuid(),
@@ -206,42 +166,30 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
             ItensServico = []
         };
 
-        // Act
-        var resultado = await controller.Put(command, CancellationToken.None);
+        var resultado = await endpoints.Put(command, CancellationToken.None);
 
-        // Assert
-        Assert.IsType<NotFoundObjectResult>(resultado);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
     }
-
-    // ------------------------------------------------------------------ //
-    // DELETE
-    // ------------------------------------------------------------------ //
 
     [Fact]
     public async Task Delete_ServicoExistente_DeveRetornar204()
     {
-        // Arrange
-        var controller = _fixture.CriarServicosController();
-        var created = (CreatedAtActionResult)await controller.Post(ServicoSemItens(), CancellationToken.None);
-        var id = ((ServicoViewModel)created.Value!).Id;
+        var endpoints = _fixture.CriarServicosEndpoints();
+        var created = Assert.IsType<CreatedAtRoute<ServicoViewModel>>((await endpoints.Post(ServicoSemItens(), CancellationToken.None)).Result);
+        var id = created.Value.Id;
 
-        // Act
-        var resultado = await controller.Delete(id, CancellationToken.None);
+        var resultado = await endpoints.Delete(id, CancellationToken.None);
 
-        // Assert
-        Assert.IsType<NoContentResult>(resultado);
+        Assert.IsType<NoContent>(resultado.Result);
     }
 
     [Fact]
     public async Task Delete_ServicoInexistente_DeveRetornar404()
     {
-        // Arrange
-        var controller = _fixture.CriarServicosController();
+        var endpoints = _fixture.CriarServicosEndpoints();
 
-        // Act
-        var resultado = await controller.Delete(Guid.NewGuid(), CancellationToken.None);
+        var resultado = await endpoints.Delete(Guid.NewGuid(), CancellationToken.None);
 
-        // Assert
-        Assert.IsType<NotFoundObjectResult>(resultado);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
     }
 }

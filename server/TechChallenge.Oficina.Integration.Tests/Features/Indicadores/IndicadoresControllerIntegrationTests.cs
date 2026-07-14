@@ -112,15 +112,15 @@ public sealed class IndicadoresControllerIntegrationTests : IDisposable
 
     private async Task<Guid> CriarServicoAsync(Guid insumoId)
     {
-        var controller = _fixture.CriarServicosController();
-        var result = (CreatedAtActionResult)await controller.Post(
+        var endpoints = _fixture.CriarServicosEndpoints();
+        var result = (CreatedAtRoute<ServicoViewModel>)(await endpoints.Post(
             new CriarServicoCommand
             {
                 Nome = "Troca de Correia",
                 Descricao = "Substituição da correia dentada",
                 ItensServico = [new ItemServicoCommand { InsumoId = insumoId, Quantidade = 1 }]
             },
-            CancellationToken.None);
-        return ((ServicoViewModel)result.Value!).Id;
+            CancellationToken.None)).Result!;
+        return result.Value.Id;
     }
 }
