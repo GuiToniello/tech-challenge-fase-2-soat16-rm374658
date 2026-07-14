@@ -103,11 +103,11 @@ public sealed class IndicadoresControllerIntegrationTests : IDisposable
 
     private async Task<Guid> CriarInsumoAsync()
     {
-        var controller = _fixture.CriarInsumosController();
-        var result = (CreatedAtActionResult)await controller.Post(
+        var endpoints = _fixture.CriarInsumosEndpoints();
+        var result = (CreatedAtRoute<InsumoViewModel>)(await endpoints.Post(
             new CriarInsumoCommand { Nome = "Correia Dentada", Fabricante = "Gates", QuantidadeDisponivel = 30, ValorUnitario = 85m },
-            CancellationToken.None);
-        return ((InsumoViewModel)result.Value!).Id;
+            CancellationToken.None)).Result!;
+        return result.Value.Id;
     }
 
     private async Task<Guid> CriarServicoAsync(Guid insumoId)

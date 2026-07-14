@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using Xunit;
 using TechChallenge.Oficina.Application.Features.Insumos.Commands;
 using TechChallenge.Oficina.Application.Features.Insumos.ViewModels;
@@ -22,11 +21,11 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
 
     private async Task<Guid> CriarInsumoAsync(string nome = "Filtro de Ar")
     {
-        var controller = _fixture.CriarInsumosController();
-        var result = (CreatedAtActionResult)await controller.Post(
+        var endpoints = _fixture.CriarInsumosEndpoints();
+        var result = (CreatedAtRoute<InsumoViewModel>)(await endpoints.Post(
             new CriarInsumoCommand { Nome = nome, Fabricante = "Mann", QuantidadeDisponivel = 50, ValorUnitario = 25m },
-            CancellationToken.None);
-        return ((InsumoViewModel)result.Value!).Id;
+            CancellationToken.None)).Result!;
+        return result.Value.Id;
     }
 
     private static CriarServicoCommand ServicoSemItens(string nome = "Revisão Geral") => new()

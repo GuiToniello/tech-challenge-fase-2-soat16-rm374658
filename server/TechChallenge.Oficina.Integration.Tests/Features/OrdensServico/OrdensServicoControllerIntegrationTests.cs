@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using TechChallenge.Oficina.Application.Features.Clientes.Commands;
 using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
 using TechChallenge.Oficina.Application.Features.Insumos.Commands;
@@ -49,11 +48,11 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
 
     private async Task<Guid> CriarInsumoAsync()
     {
-        var controller = _fixture.CriarInsumosController();
-        var result = (CreatedAtActionResult)await controller.Post(
+        var endpoints = _fixture.CriarInsumosEndpoints();
+        var result = (CreatedAtRoute<InsumoViewModel>)(await endpoints.Post(
             new CriarInsumoCommand { Nome = "Vela de Ignicao", Fabricante = "NGK", QuantidadeDisponivel = 20, ValorUnitario = 15m },
-            CancellationToken.None);
-        return ((InsumoViewModel)result.Value!).Id;
+            CancellationToken.None)).Result!;
+        return result.Value.Id;
     }
 
     private async Task<Guid> CriarServicoAsync(Guid insumoId)
@@ -139,11 +138,11 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
             CancellationToken.None)).Result!;
         var veiculoDoCliente1 = veiculoResult.Value.Id;
 
-        var insumoController = _fixture.CriarInsumosController();
-        var insumoResult = (CreatedAtActionResult)await insumoController.Post(
+        var insumoEndpoints = _fixture.CriarInsumosEndpoints();
+        var insumoResult = (CreatedAtRoute<InsumoViewModel>)(await insumoEndpoints.Post(
             new CriarInsumoCommand { Nome = "Pastilha de Freio", Fabricante = "Bosch", QuantidadeDisponivel = 10, ValorUnitario = 40m },
-            CancellationToken.None);
-        var insumoId = ((InsumoViewModel)insumoResult.Value!).Id;
+            CancellationToken.None)).Result!;
+        var insumoId = insumoResult.Value.Id;
 
         var servicoEndpoints = _fixture.CriarServicosEndpoints();
         var servicoResult = (CreatedAtRoute<ServicoViewModel>)(await servicoEndpoints.Post(

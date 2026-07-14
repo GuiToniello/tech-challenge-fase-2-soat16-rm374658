@@ -68,6 +68,7 @@ public sealed class IntegrationTestFixture : IDisposable
 
         services.AddApplication();
         services.AddScoped<ClientEndpoints>();
+        services.AddScoped<InsumoEndpoints>();
         services.AddScoped<VeiculoEndpoints>();
         services.AddScoped<ServicoEndpoints>();
         services.AddScoped<OrdensServicoEndpoints>();
@@ -82,8 +83,8 @@ public sealed class IntegrationTestFixture : IDisposable
     public ClientEndpoints CriarClientesEndpoints()
         => Obter<ClientEndpoints>();
 
-    public InsumosController CriarInsumosController()
-        => new(Obter<IInsumoService>());
+    public InsumoEndpoints CriarInsumosEndpoints()
+        => Obter<InsumoEndpoints>();
 
     public VeiculoEndpoints CriarVeiculosEndpoints()
         => Obter<VeiculoEndpoints>();
