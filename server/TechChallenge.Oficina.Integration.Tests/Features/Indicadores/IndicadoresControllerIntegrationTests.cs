@@ -56,18 +56,18 @@ public sealed class IndicadoresControllerIntegrationTests : IDisposable
         var insumoId = await CriarInsumoAsync();
         var servicoId = await CriarServicoAsync(insumoId);
 
-        var osController = _fixture.CriarOrdensServicoController();
-        var created = (CreatedAtActionResult)await osController.Post(
+        var ordensServicoEndpoints = _fixture.CriarOrdensServicoEndpoints();
+        var created = (CreatedAtRoute<OrdemServicoViewModel>)(await ordensServicoEndpoints.Post(
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
-            CancellationToken.None);
-        var ordemId = ((OrdemServicoViewModel)created.Value!).Id;
+            CancellationToken.None)).Result!;
+        var ordemId = created.Value.Id;
 
-        await osController.AlterarParaEmDiagnostico(ordemId, CancellationToken.None);
-        await osController.GerarOrcamento(ordemId, CancellationToken.None);
-        await osController.AprovarOrcamento(ordemId, CancellationToken.None);
-        await osController.AlterarParaEmExecucao(ordemId, CancellationToken.None);
-        await osController.AlterarParaFinalizada(ordemId, CancellationToken.None);
-        await osController.AlterarParaEntregue(ordemId, CancellationToken.None);
+        await ordensServicoEndpoints.AlterarParaEmDiagnostico(ordemId, CancellationToken.None);
+        await ordensServicoEndpoints.GerarOrcamento(ordemId, CancellationToken.None);
+        await ordensServicoEndpoints.AprovarOrcamento(ordemId, CancellationToken.None);
+        await ordensServicoEndpoints.AlterarParaEmExecucao(ordemId, CancellationToken.None);
+        await ordensServicoEndpoints.AlterarParaFinalizada(ordemId, CancellationToken.None);
+        await ordensServicoEndpoints.AlterarParaEntregue(ordemId, CancellationToken.None);
 
         var controller = _fixture.CriarIndicadoresController();
 

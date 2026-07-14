@@ -70,6 +70,7 @@ public sealed class IntegrationTestFixture : IDisposable
         services.AddScoped<ClientEndpoints>();
         services.AddScoped<VeiculoEndpoints>();
         services.AddScoped<ServicoEndpoints>();
+        services.AddScoped<OrdensServicoEndpoints>();
 
         _serviceProvider = services.BuildServiceProvider();
         _scope = _serviceProvider.CreateScope();
@@ -90,8 +91,8 @@ public sealed class IntegrationTestFixture : IDisposable
     public ServicoEndpoints CriarServicosEndpoints()
         => Obter<ServicoEndpoints>();
 
-    public OrdensServicoController CriarOrdensServicoController()
-        => new(Obter<IOrdemServicoService>());
+    public OrdensServicoEndpoints CriarOrdensServicoEndpoints()
+        => Obter<OrdensServicoEndpoints>();
 
     public IndicadoresController CriarIndicadoresController()
         => new(Obter<TechChallenge.Oficina.Application.Features.Indicadores.IIndicadorService>());

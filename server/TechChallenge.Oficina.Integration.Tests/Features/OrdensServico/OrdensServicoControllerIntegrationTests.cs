@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Xunit;
 using TechChallenge.Oficina.Application.Features.Clientes.Commands;
 using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
 using TechChallenge.Oficina.Application.Features.Insumos.Commands;
@@ -12,6 +11,7 @@ using TechChallenge.Oficina.Application.Features.Servicos.ViewModels;
 using TechChallenge.Oficina.Application.Features.Veiculos.Commands;
 using TechChallenge.Oficina.Application.Features.Veiculos.ViewModels;
 using TechChallenge.Oficina.Integration.Tests.Infrastructure;
+using Xunit;
 
 namespace TechChallenge.Oficina.Integration.Tests.Features.OrdensServico;
 
@@ -29,7 +29,6 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     private async Task<Guid> CriarClienteComEmailAsync()
     {
         var endpoints = _fixture.CriarClientesEndpoints();
-        // Usa CPF único baseado em tempo para evitar duplicidade no banco compartilhado
         var cpf = _clienteCpfIndex++ == 0 ? "529.982.247-25" : "123.456.789-09";
         var result = (CreatedAtRoute<ClienteViewModel>)(await endpoints.Post(
             new CriarClienteCommand { NomeCompleto = "Cliente OS", Identificacao = cpf, Email = $"os{cpf[..3]}@email.com" },
@@ -42,17 +41,17 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     private async Task<Guid> CriarVeiculoAsync(Guid clienteId)
     {
         var endpoints = _fixture.CriarVeiculosEndpoints();
-        var result = (Microsoft.AspNetCore.Http.HttpResults.CreatedAtRoute<VeiculoViewModel>)(await endpoints.Post(
+        var result = (CreatedAtRoute<VeiculoViewModel>)(await endpoints.Post(
             new CriarVeiculoCommand { Placa = "ABC1D23", Marca = "Ford", Modelo = "Ka", Ano = 2022, Renavam = "12345678901", ClienteId = clienteId },
             CancellationToken.None)).Result!;
-        return result.Value!.Id;
+        return result.Value.Id;
     }
 
     private async Task<Guid> CriarInsumoAsync()
     {
         var controller = _fixture.CriarInsumosController();
         var result = (CreatedAtActionResult)await controller.Post(
-            new CriarInsumoCommand { Nome = "Vela de Ignição", Fabricante = "NGK", QuantidadeDisponivel = 20, ValorUnitario = 15m },
+            new CriarInsumoCommand { Nome = "Vela de Ignicao", Fabricante = "NGK", QuantidadeDisponivel = 20, ValorUnitario = 15m },
             CancellationToken.None);
         return ((InsumoViewModel)result.Value!).Id;
     }
@@ -64,7 +63,7 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
             new CriarServicoCommand
             {
                 Nome = "Troca de Vela",
-                Descricao = "Substituição das velas de ignição",
+                Descricao = "Substituicao das velas de ignicao",
                 ItensServico = [new ItemServicoCommand { InsumoId = insumoId, Quantidade = 4 }]
             },
             CancellationToken.None)).Result!;
@@ -80,23 +79,16 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
         return (clienteId, veiculoId, servicoId);
     }
 
-    // ------------------------------------------------------------------ //
-    // POST - Criar
-    // ------------------------------------------------------------------ //
-
     [Fact]
     public async Task Post_OrdemServicoValida_DeveRetornar201ComViewModel()
     {
-        // Arrange
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
-        var controller = _fixture.CriarOrdensServicoController();
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
         var command = new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] };
 
-        // Act
-        var resultado = await controller.Post(command, CancellationToken.None);
+        var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        // Assert
-        var created = Assert.IsType<CreatedAtActionResult>(resultado);
+        var created = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(resultado.Result);
         var viewModel = Assert.IsType<OrdemServicoViewModel>(created.Value);
         Assert.NotEqual(Guid.Empty, viewModel.Id);
         Assert.Equal(clienteId, viewModel.ClienteId);
@@ -106,57 +98,47 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     [Fact]
     public async Task Post_ClienteInexistente_DeveRetornar404()
     {
-        // Arrange
         var (_, veiculoId, servicoId) = await CriarContextoCompletoAsync();
-        var controller = _fixture.CriarOrdensServicoController();
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
         var command = new CriarOrdemServicoCommand { ClienteId = Guid.NewGuid(), VeiculoId = veiculoId, ServicoIds = [servicoId] };
 
-        // Act
-        var resultado = await controller.Post(command, CancellationToken.None);
+        var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        // Assert
-        Assert.IsType<NotFoundObjectResult>(resultado);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
     }
 
     [Fact]
     public async Task Post_SemServicos_DeveRetornar400()
     {
-        // Arrange
         var (clienteId, veiculoId, _) = await CriarContextoCompletoAsync();
-        var controller = _fixture.CriarOrdensServicoController();
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
         var command = new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [] };
 
-        // Act
-        var resultado = await controller.Post(command, CancellationToken.None);
+        var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        // Assert
-        Assert.IsType<BadRequestObjectResult>(resultado);
+        Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado.Result);
     }
 
     [Fact]
     public async Task Post_VeiculoNaoPertenceAoCliente_DeveRetornar400()
     {
-        // Arrange - cliente 1 (proprietário real do veículo)
         var clientEndpoints = _fixture.CriarClientesEndpoints();
         var cliente1Result = (CreatedAtRoute<ClienteViewModel>)(await clientEndpoints.Post(
             new CriarClienteCommand { NomeCompleto = "Cliente Dono", Identificacao = "529.982.247-25", Email = "dono@email.com" },
             CancellationToken.None)).Result!;
         var clienteDono = cliente1Result.Value.Id;
 
-        // cliente 2 (criará a ordem mas não é dono do veículo)
         var cliente2Result = (CreatedAtRoute<ClienteViewModel>)(await clientEndpoints.Post(
             new CriarClienteCommand { NomeCompleto = "Cliente Ordem", Identificacao = "123.456.789-09", Email = "ordem@email.com" },
             CancellationToken.None)).Result!;
         var clienteOrdem = cliente2Result.Value.Id;
 
-        // veículo pertence ao clienteDono
         var veiculoEndpoints = _fixture.CriarVeiculosEndpoints();
-        var veiculoResult = (Microsoft.AspNetCore.Http.HttpResults.CreatedAtRoute<VeiculoViewModel>)(await veiculoEndpoints.Post(
+        var veiculoResult = (CreatedAtRoute<VeiculoViewModel>)(await veiculoEndpoints.Post(
             new CriarVeiculoCommand { Placa = "QQQ1Q11", Marca = "Fiat", Modelo = "Uno", Ano = 2020, Renavam = "00011122233", ClienteId = clienteDono },
             CancellationToken.None)).Result!;
-        var veiculoDoCliente1 = veiculoResult.Value!.Id;
+        var veiculoDoCliente1 = veiculoResult.Value.Id;
 
-        // insumo e serviço para completar o comando
         var insumoController = _fixture.CriarInsumosController();
         var insumoResult = (CreatedAtActionResult)await insumoController.Post(
             new CriarInsumoCommand { Nome = "Pastilha de Freio", Fabricante = "Bosch", QuantidadeDisponivel = 10, ValorUnitario = 40m },
@@ -169,261 +151,189 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
             CancellationToken.None)).Result!;
         var servicoId = servicoResult.Value.Id;
 
-        // ordem criada com clienteOrdem mas veículo do clienteDono
-        var controller = _fixture.CriarOrdensServicoController();
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
         var command = new CriarOrdemServicoCommand { ClienteId = clienteOrdem, VeiculoId = veiculoDoCliente1, ServicoIds = [servicoId] };
 
-        // Act
-        var resultado = await controller.Post(command, CancellationToken.None);
+        var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        // Assert
-        Assert.IsType<BadRequestObjectResult>(resultado);
+        Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado.Result);
     }
-
-    // ------------------------------------------------------------------ //
-    // GET por id
-    // ------------------------------------------------------------------ //
 
     [Fact]
     public async Task GetById_OrdemExistente_DeveRetornar200ComViewModel()
     {
-        // Arrange
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
-        var controller = _fixture.CriarOrdensServicoController();
-        var created = (CreatedAtActionResult)await controller.Post(
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
+        var created = (CreatedAtRoute<OrdemServicoViewModel>)(await endpoints.Post(
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
-            CancellationToken.None);
-        var id = ((OrdemServicoViewModel)created.Value!).Id;
+            CancellationToken.None)).Result!;
+        var id = created.Value.Id;
 
-        // Act
-        var resultado = await controller.GetById(id, CancellationToken.None);
+        var resultado = await endpoints.GetById(id, CancellationToken.None);
 
-        // Assert
-        var ok = Assert.IsType<OkObjectResult>(resultado);
-        Assert.IsType<OrdemServicoViewModel>(ok.Value);
+        var ok = Assert.IsType<Ok<OrdemServicoViewModel>>(resultado.Result);
+        Assert.Equal(id, ok.Value.Id);
     }
 
     [Fact]
     public async Task GetById_OrdemInexistente_DeveRetornar404()
     {
-        // Arrange
-        var controller = _fixture.CriarOrdensServicoController();
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
 
-        // Act
-        var resultado = await controller.GetById(Guid.NewGuid(), CancellationToken.None);
+        var resultado = await endpoints.GetById(Guid.NewGuid(), CancellationToken.None);
 
-        // Assert
-        Assert.IsType<NotFoundObjectResult>(resultado);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
     }
-
-    // ------------------------------------------------------------------ //
-    // GET lista
-    // ------------------------------------------------------------------ //
 
     [Fact]
     public async Task Get_ComOrdensServico_DeveRetornar200ComLista()
     {
-        // Arrange
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
-        var controller = _fixture.CriarOrdensServicoController();
-        await controller.Post(
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
+        await endpoints.Post(
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
             CancellationToken.None);
 
-        // Act
-        var resultado = await controller.Get(CancellationToken.None);
+        var resultado = await endpoints.Get(CancellationToken.None);
 
-        // Assert
-        var ok = Assert.IsType<OkObjectResult>(resultado);
-        var lista = Assert.IsAssignableFrom<IEnumerable<OrdemServicoViewModel>>(ok.Value);
+        var lista = Assert.IsAssignableFrom<IEnumerable<OrdemServicoViewModel>>(resultado.Value);
         Assert.NotEmpty(lista);
     }
-
-    // ------------------------------------------------------------------ //
-    // GET acompanhamento
-    // ------------------------------------------------------------------ //
 
     [Fact]
     public async Task GetAcompanhamento_OrdemExistente_DeveRetornar200()
     {
-        // Arrange
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
-        var controller = _fixture.CriarOrdensServicoController();
-        var created = (CreatedAtActionResult)await controller.Post(
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
+        var created = (CreatedAtRoute<OrdemServicoViewModel>)(await endpoints.Post(
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
-            CancellationToken.None);
-        var id = ((OrdemServicoViewModel)created.Value!).Id;
+            CancellationToken.None)).Result!;
+        var id = created.Value.Id;
 
-        // Act
-        var resultado = await controller.GetAcompanhamento(id, CancellationToken.None);
+        var resultado = await endpoints.GetAcompanhamento(id, CancellationToken.None);
 
-        // Assert
-        Assert.IsType<OkObjectResult>(resultado);
+        Assert.IsType<Ok<AcompanhamentoOrdemServicoViewModel>>(resultado.Result);
     }
-
-    // ------------------------------------------------------------------ //
-    // GET por cliente
-    // ------------------------------------------------------------------ //
 
     [Fact]
     public async Task GetByCliente_ClienteExistente_DeveRetornar200ComLista()
     {
-        // Arrange
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
-        var controller = _fixture.CriarOrdensServicoController();
-        await controller.Post(
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
+        await endpoints.Post(
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
             CancellationToken.None);
 
-        // Act
-        var resultado = await controller.GetByCliente(clienteId, CancellationToken.None);
+        var resultado = await endpoints.GetByCliente(clienteId, CancellationToken.None);
 
-        // Assert
-        var ok = Assert.IsType<OkObjectResult>(resultado);
-        var lista = Assert.IsAssignableFrom<IEnumerable<AcompanhamentoOrdemServicoViewModel>>(ok.Value);
-        Assert.NotEmpty(lista);
+        var ok = Assert.IsType<Ok<IReadOnlyCollection<AcompanhamentoOrdemServicoViewModel>>>(resultado.Result);
+        Assert.NotEmpty(ok.Value);
     }
-
-    // ------------------------------------------------------------------ //
-    // Fluxo de status
-    // ------------------------------------------------------------------ //
 
     [Fact]
     public async Task AlterarParaEmDiagnostico_OrdemRecebida_DeveRetornar200ComStatusAtualizado()
     {
-        // Arrange
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
-        var controller = _fixture.CriarOrdensServicoController();
-        var created = (CreatedAtActionResult)await controller.Post(
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
+        var created = (CreatedAtRoute<OrdemServicoViewModel>)(await endpoints.Post(
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
-            CancellationToken.None);
-        var id = ((OrdemServicoViewModel)created.Value!).Id;
+            CancellationToken.None)).Result!;
+        var id = created.Value.Id;
 
-        // Act
-        var resultado = await controller.AlterarParaEmDiagnostico(id, CancellationToken.None);
+        var resultado = await endpoints.AlterarParaEmDiagnostico(id, CancellationToken.None);
 
-        // Assert
-        var ok = Assert.IsType<OkObjectResult>(resultado);
-        var viewModel = Assert.IsType<OrdemServicoViewModel>(ok.Value);
-        Assert.Equal(2, viewModel.Status); // EmDiagnostico
+        var ok = Assert.IsType<Ok<OrdemServicoViewModel>>(resultado.Result);
+        Assert.Equal(2, ok.Value.Status);
     }
 
     [Fact]
     public async Task GerarOrcamento_OrdemEmDiagnostico_DeveRetornar200()
     {
-        // Arrange
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
-        var controller = _fixture.CriarOrdensServicoController();
-        var created = (CreatedAtActionResult)await controller.Post(
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
+        var created = (CreatedAtRoute<OrdemServicoViewModel>)(await endpoints.Post(
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
-            CancellationToken.None);
-        var id = ((OrdemServicoViewModel)created.Value!).Id;
-        await controller.AlterarParaEmDiagnostico(id, CancellationToken.None);
+            CancellationToken.None)).Result!;
+        var id = created.Value.Id;
 
-        // Act
-        var resultado = await controller.GerarOrcamento(id, CancellationToken.None);
+        await endpoints.AlterarParaEmDiagnostico(id, CancellationToken.None);
+        var resultado = await endpoints.GerarOrcamento(id, CancellationToken.None);
 
-        // Assert
-        var ok = Assert.IsType<OkObjectResult>(resultado);
-        var viewModel = Assert.IsType<OrdemServicoViewModel>(ok.Value);
-        Assert.NotNull(viewModel.Orcamento);
+        var ok = Assert.IsType<Ok<OrdemServicoViewModel>>(resultado.Result);
+        Assert.NotNull(ok.Value.Orcamento);
     }
 
     [Fact]
     public async Task FluxoCompleto_DevePassarPorTodosOsStatus()
     {
-        // Arrange
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
-        var controller = _fixture.CriarOrdensServicoController();
-        var created = (CreatedAtActionResult)await controller.Post(
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
+        var created = (CreatedAtRoute<OrdemServicoViewModel>)(await endpoints.Post(
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
-            CancellationToken.None);
-        var id = ((OrdemServicoViewModel)created.Value!).Id;
+            CancellationToken.None)).Result!;
+        var id = created.Value.Id;
 
-        // Act & Assert - fluxo completo
-        await controller.AlterarParaEmDiagnostico(id, CancellationToken.None);
-        await controller.GerarOrcamento(id, CancellationToken.None);
-        await controller.AprovarOrcamento(id, CancellationToken.None);
-        await controller.AlterarParaEmExecucao(id, CancellationToken.None);
-        await controller.AlterarParaFinalizada(id, CancellationToken.None);
-        var entregue = await controller.AlterarParaEntregue(id, CancellationToken.None);
+        await endpoints.AlterarParaEmDiagnostico(id, CancellationToken.None);
+        await endpoints.GerarOrcamento(id, CancellationToken.None);
+        await endpoints.AprovarOrcamento(id, CancellationToken.None);
+        await endpoints.AlterarParaEmExecucao(id, CancellationToken.None);
+        await endpoints.AlterarParaFinalizada(id, CancellationToken.None);
+        var entregue = await endpoints.AlterarParaEntregue(id, CancellationToken.None);
 
-        var ok = Assert.IsType<OkObjectResult>(entregue);
-        var viewModel = Assert.IsType<OrdemServicoViewModel>(ok.Value);
-        Assert.Equal(6, viewModel.Status); // Entregue
+        var ok = Assert.IsType<Ok<OrdemServicoViewModel>>(entregue.Result);
+        Assert.Equal(6, ok.Value.Status);
     }
-
-    // ------------------------------------------------------------------ //
-    // DELETE
-    // ------------------------------------------------------------------ //
 
     [Fact]
     public async Task Delete_OrdemExistente_DeveRetornar204()
     {
-        // Arrange
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
-        var controller = _fixture.CriarOrdensServicoController();
-        var created = (CreatedAtActionResult)await controller.Post(
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
+        var created = (CreatedAtRoute<OrdemServicoViewModel>)(await endpoints.Post(
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
-            CancellationToken.None);
-        var id = ((OrdemServicoViewModel)created.Value!).Id;
+            CancellationToken.None)).Result!;
+        var id = created.Value.Id;
 
-        // Act
-        var resultado = await controller.Delete(id, CancellationToken.None);
+        var resultado = await endpoints.Delete(id, CancellationToken.None);
 
-        // Assert
-        Assert.IsType<NoContentResult>(resultado);
+        Assert.IsType<NoContent>(resultado.Result);
     }
 
     [Fact]
     public async Task Delete_OrdemInexistente_DeveRetornar404()
     {
-        // Arrange
-        var controller = _fixture.CriarOrdensServicoController();
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
 
-        // Act
-        var resultado = await controller.Delete(Guid.NewGuid(), CancellationToken.None);
+        var resultado = await endpoints.Delete(Guid.NewGuid(), CancellationToken.None);
 
-        // Assert
-        Assert.IsType<NotFoundObjectResult>(resultado);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
     }
-
-    // ------------------------------------------------------------------ //
-    // PUT - Atualizar
-    // ------------------------------------------------------------------ //
 
     [Fact]
     public async Task Put_OrdemExistente_DeveRetornar200()
     {
-        // Arrange
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
-        var controller = _fixture.CriarOrdensServicoController();
-        var created = (CreatedAtActionResult)await controller.Post(
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
+        var created = (CreatedAtRoute<OrdemServicoViewModel>)(await endpoints.Post(
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
-            CancellationToken.None);
-        var id = ((OrdemServicoViewModel)created.Value!).Id;
+            CancellationToken.None)).Result!;
+        var id = created.Value.Id;
         var command = new AtualizarOrdemServicoCommand { Id = id, ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] };
 
-        // Act
-        var resultado = await controller.Put(command, CancellationToken.None);
+        var resultado = await endpoints.Put(command, CancellationToken.None);
 
-        // Assert
-        var ok = Assert.IsType<OkObjectResult>(resultado);
-        Assert.IsType<OrdemServicoViewModel>(ok.Value);
+        Assert.IsType<Ok<OrdemServicoViewModel>>(resultado.Result);
     }
 
     [Fact]
     public async Task Put_OrdemInexistente_DeveRetornar404()
     {
-        // Arrange
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
-        var controller = _fixture.CriarOrdensServicoController();
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
         var command = new AtualizarOrdemServicoCommand { Id = Guid.NewGuid(), ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] };
 
-        // Act
-        var resultado = await controller.Put(command, CancellationToken.None);
+        var resultado = await endpoints.Put(command, CancellationToken.None);
 
-        // Assert
-        Assert.IsType<NotFoundObjectResult>(resultado);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
     }
 }

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TechChallenge.Oficina.API.Extensions;
 using TechChallenge.Oficina.API.Features.Clientes;
+using TechChallenge.Oficina.API.Features.OrdensServico;
 using TechChallenge.Oficina.API.Features.Servicos;
 using TechChallenge.Oficina.API.Features.Veiculos;
 using TechChallenge.Oficina.API.Middleware;
@@ -39,6 +40,7 @@ builder.Services.AddInfraEmail(resendSettings);
 builder.Services.RegisterClienteEndpoints();
 builder.Services.RegisterVeiculoEndpoints();
 builder.Services.RegisterServicoEndpoints();
+builder.Services.RegisterOrdensServicoEndpoints();
 
 var app = builder.Build();
 
@@ -56,5 +58,6 @@ app.MapGet("/health", () => Results.Ok(new { status = "ok" })).AllowAnonymous();
 app.MapClienteEndpoints();
 app.MapVeiculoEndpoints();
 app.MapServicoEndpoints();
+app.MapOrdensServicoEndpoints();
 
 await app.RunAsync();
