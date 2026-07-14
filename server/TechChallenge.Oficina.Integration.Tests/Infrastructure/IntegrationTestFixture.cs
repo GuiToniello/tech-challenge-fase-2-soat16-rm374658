@@ -68,6 +68,7 @@ public sealed class IntegrationTestFixture : IDisposable
 
         services.AddApplication();
         services.AddScoped<ClientEndpoints>();
+        services.AddScoped<VeiculoEndpoints>();
 
         _serviceProvider = services.BuildServiceProvider();
         _scope = _serviceProvider.CreateScope();
@@ -82,8 +83,8 @@ public sealed class IntegrationTestFixture : IDisposable
     public InsumosController CriarInsumosController()
         => new(Obter<IInsumoService>());
 
-    public VeiculosController CriarVeiculosController()
-        => new(Obter<IVeiculoService>());
+    public VeiculoEndpoints CriarVeiculosEndpoints()
+        => Obter<VeiculoEndpoints>();
 
     public ServicosController CriarServicosController()
         => new(Obter<IServicoService>());

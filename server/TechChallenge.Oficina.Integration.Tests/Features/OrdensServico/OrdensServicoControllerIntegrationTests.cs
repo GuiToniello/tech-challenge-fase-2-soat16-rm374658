@@ -41,11 +41,11 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
 
     private async Task<Guid> CriarVeiculoAsync(Guid clienteId)
     {
-        var controller = _fixture.CriarVeiculosController();
-        var result = (CreatedAtActionResult)await controller.Post(
+        var endpoints = _fixture.CriarVeiculosEndpoints();
+        var result = (Microsoft.AspNetCore.Http.HttpResults.CreatedAtRoute<VeiculoViewModel>)(await endpoints.Post(
             new CriarVeiculoCommand { Placa = "ABC1D23", Marca = "Ford", Modelo = "Ka", Ano = 2022, Renavam = "12345678901", ClienteId = clienteId },
-            CancellationToken.None);
-        return ((VeiculoViewModel)result.Value!).Id;
+            CancellationToken.None)).Result!;
+        return result.Value!.Id;
     }
 
     private async Task<Guid> CriarInsumoAsync()
@@ -150,11 +150,11 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
         var clienteOrdem = cliente2Result.Value.Id;
 
         // veículo pertence ao clienteDono
-        var veiculoController = _fixture.CriarVeiculosController();
-        var veiculoResult = (CreatedAtActionResult)await veiculoController.Post(
+        var veiculoEndpoints = _fixture.CriarVeiculosEndpoints();
+        var veiculoResult = (Microsoft.AspNetCore.Http.HttpResults.CreatedAtRoute<VeiculoViewModel>)(await veiculoEndpoints.Post(
             new CriarVeiculoCommand { Placa = "QQQ1Q11", Marca = "Fiat", Modelo = "Uno", Ano = 2020, Renavam = "00011122233", ClienteId = clienteDono },
-            CancellationToken.None);
-        var veiculoDoCliente1 = ((VeiculoViewModel)veiculoResult.Value!).Id;
+            CancellationToken.None)).Result!;
+        var veiculoDoCliente1 = veiculoResult.Value!.Id;
 
         // insumo e serviço para completar o comando
         var insumoController = _fixture.CriarInsumosController();
