@@ -68,6 +68,7 @@ public sealed class IntegrationTestFixture : IDisposable
 
         services.AddApplication();
         services.AddScoped<ClientEndpoints>();
+        services.AddScoped<IndicadoresEndpoints>();
         services.AddScoped<InsumoEndpoints>();
         services.AddScoped<VeiculoEndpoints>();
         services.AddScoped<ServicoEndpoints>();
@@ -95,8 +96,8 @@ public sealed class IntegrationTestFixture : IDisposable
     public OrdensServicoEndpoints CriarOrdensServicoEndpoints()
         => Obter<OrdensServicoEndpoints>();
 
-    public IndicadoresController CriarIndicadoresController()
-        => new(Obter<TechChallenge.Oficina.Application.Features.Indicadores.IIndicadorService>());
+    public IndicadoresEndpoints CriarIndicadoresEndpoints()
+        => Obter<IndicadoresEndpoints>();
 
     public void Dispose()
     {

@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using Xunit;
 using TechChallenge.Oficina.Application.Features.Clientes.Commands;
 using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
@@ -16,11 +15,11 @@ using TechChallenge.Oficina.Integration.Tests.Infrastructure;
 
 namespace TechChallenge.Oficina.Integration.Tests.Features.Indicadores;
 
-public sealed class IndicadoresControllerIntegrationTests : IDisposable
+public sealed class IndicadoresEndpointsIntegrationTests : IDisposable
 {
     private readonly IntegrationTestFixture _fixture;
 
-    public IndicadoresControllerIntegrationTests()
+    public IndicadoresEndpointsIntegrationTests()
     {
         _fixture = new IntegrationTestFixture();
     }
@@ -35,14 +34,13 @@ public sealed class IndicadoresControllerIntegrationTests : IDisposable
     public async Task Get_SemOrdensSevico_DeveRetornar200ComIndicadoresZerados()
     {
         // Arrange
-        var controller = _fixture.CriarIndicadoresController();
+        var endpoints = _fixture.CriarIndicadoresEndpoints();
 
         // Act
-        var resultado = await controller.Get(CancellationToken.None);
+        var resultado = await endpoints.Get(CancellationToken.None);
 
         // Assert
-        var ok = Assert.IsType<OkObjectResult>(resultado);
-        var viewModel = Assert.IsType<IndicadorViewModel>(ok.Value);
+        var viewModel = Assert.IsType<IndicadorViewModel>(resultado.Value);
         Assert.Equal(TimeSpan.Zero, viewModel.TempoMedioExecucao);
         Assert.Equal(TimeSpan.Zero, viewModel.TempoMedioEntrega);
     }
@@ -69,14 +67,13 @@ public sealed class IndicadoresControllerIntegrationTests : IDisposable
         await ordensServicoEndpoints.AlterarParaFinalizada(ordemId, CancellationToken.None);
         await ordensServicoEndpoints.AlterarParaEntregue(ordemId, CancellationToken.None);
 
-        var controller = _fixture.CriarIndicadoresController();
+        var endpoints = _fixture.CriarIndicadoresEndpoints();
 
         // Act
-        var resultado = await controller.Get(CancellationToken.None);
+        var resultado = await endpoints.Get(CancellationToken.None);
 
         // Assert
-        var ok = Assert.IsType<OkObjectResult>(resultado);
-        Assert.IsType<IndicadorViewModel>(ok.Value);
+        Assert.IsType<IndicadorViewModel>(resultado.Value);
     }
 
     // ------------------------------------------------------------------ //
