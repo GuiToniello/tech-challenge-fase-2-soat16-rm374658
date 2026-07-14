@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
 using TechChallenge.Oficina.Application.Features.Clientes.Commands;
@@ -84,11 +85,11 @@ public sealed class IndicadoresControllerIntegrationTests : IDisposable
 
     private async Task<Guid> CriarClienteAsync()
     {
-        var controller = _fixture.CriarClientesController();
-        var result = (CreatedAtActionResult)await controller.Post(
+        var clientEndpoints = _fixture.CriarClientesEndpoints();
+        var result = (CreatedAtRoute<ClienteViewModel>)(await clientEndpoints.Post(
             new CriarClienteCommand { NomeCompleto = "Cliente Indicador", Identificacao = "529.982.247-25" },
-            CancellationToken.None);
-        return ((ClienteViewModel)result.Value!).Id;
+            CancellationToken.None)).Result!;
+        return result.Value.Id;
     }
 
     private async Task<Guid> CriarVeiculoAsync(Guid clienteId)

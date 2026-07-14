@@ -1,6 +1,19 @@
 <Solution>
-  <Folder Name="/Artifacts/" />
-  <Folder Name="/Artifacts/ADRs/">
+  <Folder Name="/1 - Frameworks &amp; Drivers/">
+    <Project Path="TechChallenge.Oficina.API/TechChallenge.Oficina.API.csproj" />
+    <Project Path="TechChallenge.Oficina.Infra.Data/TechChallenge.Oficina.DB.csproj" Id="71fe5663-eba3-4094-a2e6-eafa02c7eae3" />
+    <Project Path="TechChallenge.Oficina.Infra.Email/TechChallenge.Oficina.Email.csproj" />
+  </Folder>
+  <Folder Name="/2 - Interface Adapters/">
+    <Project Path="TechChallenge.Oficina.InterfaceAdapters/TechChallenge.Oficina.Controllers.csproj" Id="bb799465-98f2-48ae-9a0a-74f7a928946a" />
+  </Folder>
+  <Folder Name="/3 - Application Business Rules/">
+    <Project Path="TechChallenge.Oficina.Application/TechChallenge.Oficina.UseCases.csproj" Id="2b019e97-650e-4000-8045-53c2f28db89f" />
+  </Folder>
+  <Folder Name="/4 - Enterprise Business Rules/">
+    <Project Path="TechChallenge.Oficina.Domain/TechChallenge.Oficina.Entities.csproj" Id="6b121b56-1305-4206-b1a0-3512618ea6c0" />
+  </Folder>
+  <Folder Name="/ADR/">
     <File Path="../adr/ADR-001-Arquitetura-em-Camadas.md" />
     <File Path="../adr/ADR-002-DDD-e-Entidades-Ricas.md" />
     <File Path="../adr/ADR-003-Value-Objects-Identificacao.md" />
@@ -23,10 +36,4 @@
     <Project Path="TechChallenge.Oficina.Infra.Email.Tests/TechChallenge.Oficina.Infra.Email.Tests.csproj" />
     <Project Path="TechChallenge.Oficina.Integration.Tests/TechChallenge.Oficina.Integration.Tests.csproj" />
   </Folder>
-  <Project Path="TechChallenge.Oficina.API/TechChallenge.Oficina.API.csproj" />
-  <Project Path="TechChallenge.Oficina.Application/TechChallenge.Oficina.Application.csproj" Id="2b019e97-650e-4000-8045-53c2f28db89f" />
-  <Project Path="TechChallenge.Oficina.Domain/TechChallenge.Oficina.Domain.csproj" Id="6b121b56-1305-4206-b1a0-3512618ea6c0" />
-  <Project Path="TechChallenge.Oficina.Infra.Data/TechChallenge.Oficina.Infra.Data.csproj" Id="71fe5663-eba3-4094-a2e6-eafa02c7eae3" />
-  <Project Path="TechChallenge.Oficina.Infra.Email/TechChallenge.Oficina.Infra.Email.csproj" />
-  <Project Path="TechChallenge.Oficina.Infra/TechChallenge.Oficina.Infra.csproj" Id="18859944-def8-4ae5-970e-ae7f54cb6bad" />
 </Solution>

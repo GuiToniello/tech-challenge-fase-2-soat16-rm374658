@@ -3,26 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TechChallenge.Oficina.Application;
-using TechChallenge.Oficina.Application.Features.Clientes.Commands;
-using TechChallenge.Oficina.Application.Features.Clientes.Queries;
 using TechChallenge.Oficina.Application.Features.Clientes.Services;
-using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
-using TechChallenge.Oficina.Application.Features.Insumos.Commands;
-using TechChallenge.Oficina.Application.Features.Insumos.Queries;
 using TechChallenge.Oficina.Application.Features.Insumos.Services;
-using TechChallenge.Oficina.Application.Features.Insumos.ViewModels;
-using TechChallenge.Oficina.Application.Features.OrdensServico.Commands;
-using TechChallenge.Oficina.Application.Features.OrdensServico.Queries;
 using TechChallenge.Oficina.Application.Features.OrdensServico.Services;
-using TechChallenge.Oficina.Application.Features.OrdensServico.ViewModels;
-using TechChallenge.Oficina.Application.Features.Servicos.Commands;
-using TechChallenge.Oficina.Application.Features.Servicos.Queries;
 using TechChallenge.Oficina.Application.Features.Servicos.Services;
-using TechChallenge.Oficina.Application.Features.Servicos.ViewModels;
-using TechChallenge.Oficina.Application.Features.Veiculos.Commands;
-using TechChallenge.Oficina.Application.Features.Veiculos.Queries;
 using TechChallenge.Oficina.Application.Features.Veiculos.Services;
-using TechChallenge.Oficina.Application.Features.Veiculos.ViewModels;
 using TechChallenge.Oficina.API.Features.Clientes;
 using TechChallenge.Oficina.API.Features.Indicadores;
 using TechChallenge.Oficina.API.Features.Insumos;
@@ -82,6 +67,7 @@ public sealed class IntegrationTestFixture : IDisposable
         services.AddSingleton(emailSenderMock.Object);
 
         services.AddApplication();
+        services.AddScoped<ClientEndpoints>();
 
         _serviceProvider = services.BuildServiceProvider();
         _scope = _serviceProvider.CreateScope();
@@ -90,8 +76,8 @@ public sealed class IntegrationTestFixture : IDisposable
     private T Obter<T>() where T : notnull
         => _scope.ServiceProvider.GetRequiredService<T>();
 
-    public ClientesController CriarClientesController()
-        => new(Obter<IClienteService>());
+    public ClientEndpoints CriarClientesEndpoints()
+        => Obter<ClientEndpoints>();
 
     public InsumosController CriarInsumosController()
         => new(Obter<IInsumoService>());

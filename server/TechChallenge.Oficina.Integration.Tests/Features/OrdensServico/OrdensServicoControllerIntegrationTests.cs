@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
 using TechChallenge.Oficina.Application.Features.Clientes.Commands;
@@ -27,13 +28,13 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
 
     private async Task<Guid> CriarClienteComEmailAsync()
     {
-        var controller = _fixture.CriarClientesController();
+        var endpoints = _fixture.CriarClientesEndpoints();
         // Usa CPF único baseado em tempo para evitar duplicidade no banco compartilhado
         var cpf = _clienteCpfIndex++ == 0 ? "529.982.247-25" : "123.456.789-09";
-        var result = (CreatedAtActionResult)await controller.Post(
+        var result = (CreatedAtRoute<ClienteViewModel>)(await endpoints.Post(
             new CriarClienteCommand { NomeCompleto = "Cliente OS", Identificacao = cpf, Email = $"os{cpf[..3]}@email.com" },
-            CancellationToken.None);
-        return ((ClienteViewModel)result.Value!).Id;
+            CancellationToken.None)).Result!;
+        return result.Value.Id;
     }
 
     private int _clienteCpfIndex;
@@ -136,17 +137,17 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     public async Task Post_VeiculoNaoPertenceAoCliente_DeveRetornar400()
     {
         // Arrange - cliente 1 (proprietário real do veículo)
-        var clienteController = _fixture.CriarClientesController();
-        var cliente1Result = (CreatedAtActionResult)await clienteController.Post(
+        var clientEndpoints = _fixture.CriarClientesEndpoints();
+        var cliente1Result = (CreatedAtRoute<ClienteViewModel>)(await clientEndpoints.Post(
             new CriarClienteCommand { NomeCompleto = "Cliente Dono", Identificacao = "529.982.247-25", Email = "dono@email.com" },
-            CancellationToken.None);
-        var clienteDono = ((ClienteViewModel)cliente1Result.Value!).Id;
+            CancellationToken.None)).Result!;
+        var clienteDono = cliente1Result.Value.Id;
 
         // cliente 2 (criará a ordem mas não é dono do veículo)
-        var cliente2Result = (CreatedAtActionResult)await clienteController.Post(
+        var cliente2Result = (CreatedAtRoute<ClienteViewModel>)(await clientEndpoints.Post(
             new CriarClienteCommand { NomeCompleto = "Cliente Ordem", Identificacao = "123.456.789-09", Email = "ordem@email.com" },
-            CancellationToken.None);
-        var clienteOrdem = ((ClienteViewModel)cliente2Result.Value!).Id;
+            CancellationToken.None)).Result!;
+        var clienteOrdem = cliente2Result.Value.Id;
 
         // veículo pertence ao clienteDono
         var veiculoController = _fixture.CriarVeiculosController();

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
 using TechChallenge.Oficina.Application.Features.Clientes.Commands;
@@ -21,11 +22,11 @@ public sealed class VeiculosControllerIntegrationTests : IDisposable
 
     private async Task<Guid> CriarClienteAsync()
     {
-        var clienteController = _fixture.CriarClientesController();
-        var result = (CreatedAtActionResult)await clienteController.Post(
+        var clientEndpoints = _fixture.CriarClientesEndpoints();
+        var result = (CreatedAtRoute<ClienteViewModel>)(await clientEndpoints.Post(
             new CriarClienteCommand { NomeCompleto = "Cliente Teste", Identificacao = "529.982.247-25" },
-            CancellationToken.None);
-        return ((ClienteViewModel)result.Value!).Id;
+            CancellationToken.None)).Result!;
+        return result.Value.Id;
     }
 
     private static CriarVeiculoCommand VeiculoValido(Guid clienteId) => new()
