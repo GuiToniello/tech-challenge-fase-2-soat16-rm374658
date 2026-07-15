@@ -10,6 +10,7 @@ using TechChallenge.Oficina.API.Middleware;
 using TechChallenge.Oficina.API.Settings;
 using TechChallenge.Oficina.Application;
 using TechChallenge.Oficina.Controllers.Features.Clientes;
+using TechChallenge.Oficina.Controllers.Features.Servicos;
 using TechChallenge.Oficina.Controllers.Features.Veiculos;
 using TechChallenge.Oficina.Infra.Data;
 using TechChallenge.Oficina.Infra.Email;
@@ -43,6 +44,8 @@ builder.Services.AddInfraEmail(resendSettings);
 
 builder.Services.AddScoped<ClienteController>();
 builder.Services.AddScoped<IClientAdapter, ClienteAdapter>();
+builder.Services.AddScoped<ServicoController>();
+builder.Services.AddScoped<IServicoAdapter, ServicoAdapter>();
 builder.Services.AddScoped<VeiculoController>();
 builder.Services.AddScoped<IVeiculoAdapter, VeiculoAdapter>();
 builder.Services.RegisterIndicadoresEndpoints();

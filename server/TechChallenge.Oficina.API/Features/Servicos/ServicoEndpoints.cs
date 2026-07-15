@@ -1,95 +1,70 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using TechChallenge.Oficina.Application.Features.Servicos.Commands;
-using TechChallenge.Oficina.Application.Features.Servicos.Queries;
-using TechChallenge.Oficina.Application.Features.Servicos.Services;
 using TechChallenge.Oficina.Application.Features.Servicos.ViewModels;
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.Controllers.Features.Servicos;
 
 namespace TechChallenge.Oficina.API.Features.Servicos
 {
-    public class ServicoEndpoints
+    public static class ServicoEndpoints
     {
-        private readonly IServicoService _servicoService;
-
-        public ServicoEndpoints(IServicoService servicoService)
+        public static RouteGroupBuilder MapServicoEndpoints(
+            this IEndpointRouteBuilder routes)
         {
-            _servicoService = servicoService;
-        }
+            var group = routes
+                .MapGroup("/api/servicos")
+                .WithTags("Servicos");
 
-        public async Task<Results<CreatedAtRoute<ServicoViewModel>, BadRequest<Dictionary<string, string?>>, NotFound<Dictionary<string, string?>>>> Post(CriarServicoCommand command, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var servico = await _servicoService.CriarAsync(command, cancellationToken);
-                return TypedResults.CreatedAtRoute(servico, "GetServicoById", new { id = servico.Id });
-            }
-            catch (DomainException exception)
-            {
-                return TypedResults.BadRequest(CriarErro(exception.Message));
-            }
-            catch (KeyNotFoundException exception)
-            {
-                return TypedResults.NotFound(CriarErro(exception.Message));
-            }
-        }
+            group.MapPost(
+                string.Empty,
+                (
+                    ServicoController servicoController,
+                    CriarServicoCommand command,
+                    CancellationToken cancellationToken
+                ) => servicoController.Post(command, cancellationToken))
+                .Produces<ServicoViewModel>(StatusCodes.Status201Created)
+                .Produces(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status404NotFound);
 
-        public async Task<Results<Ok<ServicoViewModel>, NotFound<Dictionary<string, string?>>>> GetById(Guid id, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var query = new ObterServicoPorIdQuery { Id = id };
-                var servico = await _servicoService.ObterPorIdAsync(query, cancellationToken);
-                return TypedResults.Ok(servico);
-            }
-            catch (KeyNotFoundException exception)
-            {
-                return TypedResults.NotFound(CriarErro(exception.Message));
-            }
-        }
+            group.MapGet(
+                "/{id:guid}",
+                (
+                    ServicoController servicoController,
+                    Guid id,
+                    CancellationToken cancellationToken
+                ) => servicoController.GetById(id, cancellationToken))
+                .WithName("GetServicoById")
+                .Produces<ServicoViewModel>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound);
 
-        public async Task<Ok<IReadOnlyCollection<ServicoViewModel>>> Get(CancellationToken cancellationToken)
-        {
-            var servicos = await _servicoService.ListarAsync(new ListarServicosQuery(), cancellationToken);
-            return TypedResults.Ok(servicos);
-        }
+            group.MapGet(
+                string.Empty,
+                (
+                    ServicoController servicoController,
+                    CancellationToken cancellationToken
+                ) => servicoController.Get(cancellationToken))
+                .Produces<IReadOnlyCollection<ServicoViewModel>>(StatusCodes.Status200OK);
 
-        public async Task<Results<Ok<ServicoViewModel>, BadRequest<Dictionary<string, string?>>, NotFound<Dictionary<string, string?>>>> Put(AtualizarServicoCommand command, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var servico = await _servicoService.AtualizarAsync(command, cancellationToken);
-                return TypedResults.Ok(servico);
-            }
-            catch (DomainException exception)
-            {
-                return TypedResults.BadRequest(CriarErro(exception.Message));
-            }
-            catch (KeyNotFoundException exception)
-            {
-                return TypedResults.NotFound(CriarErro(exception.Message));
-            }
-        }
+            group.MapPut(
+                string.Empty,
+                (
+                    ServicoController servicoController,
+                    AtualizarServicoCommand command,
+                    CancellationToken cancellationToken
+                ) => servicoController.Put(command, cancellationToken))
+                .Produces<ServicoViewModel>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status404NotFound);
 
-        public async Task<Results<NoContent, NotFound<Dictionary<string, string?>>>> Delete(Guid id, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var command = new ExcluirServicoCommand { Id = id };
-                await _servicoService.ExcluirAsync(command, cancellationToken);
-                return TypedResults.NoContent();
-            }
-            catch (KeyNotFoundException exception)
-            {
-                return TypedResults.NotFound(CriarErro(exception.Message));
-            }
-        }
+            group.MapDelete(
+                "/{id:guid}",
+                (
+                    ServicoController servicoController,
+                    Guid id,
+                    CancellationToken cancellationToken
+                ) => servicoController.Delete(id, cancellationToken))
+                .Produces(StatusCodes.Status204NoContent)
+                .Produces(StatusCodes.Status404NotFound);
 
-        private static Dictionary<string, string?> CriarErro(string? message)
-        {
-            return new Dictionary<string, string?>
-            {
-                ["message"] = message
-            };
+            return group;
         }
     }
 }

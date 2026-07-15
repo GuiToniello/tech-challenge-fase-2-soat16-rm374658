@@ -43,7 +43,7 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
 
         var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        var created = Assert.IsType<CreatedAtRoute<ServicoViewModel>>(resultado.Result);
+        var created = Assert.IsType<CreatedAtRoute<ServicoViewModel>>(resultado);
         var viewModel = Assert.IsType<ServicoViewModel>(created.Value);
         Assert.NotEqual(Guid.Empty, viewModel.Id);
         Assert.Equal("Revisão Geral", viewModel.Nome);
@@ -63,7 +63,7 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
 
         var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        var created = Assert.IsType<CreatedAtRoute<ServicoViewModel>>(resultado.Result);
+        var created = Assert.IsType<CreatedAtRoute<ServicoViewModel>>(resultado);
         var viewModel = Assert.IsType<ServicoViewModel>(created.Value);
         Assert.Single(viewModel.ItensServico);
     }
@@ -76,7 +76,7 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
 
         var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado);
     }
 
     [Fact]
@@ -92,19 +92,19 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
 
         var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado);
     }
 
     [Fact]
     public async Task GetById_ServicoExistente_DeveRetornar200ComViewModel()
     {
         var endpoints = _fixture.CriarServicosEndpoints();
-        var created = Assert.IsType<CreatedAtRoute<ServicoViewModel>>((await endpoints.Post(ServicoSemItens(), CancellationToken.None)).Result);
+        var created = Assert.IsType<CreatedAtRoute<ServicoViewModel>>(await endpoints.Post(ServicoSemItens(), CancellationToken.None));
         var id = created.Value.Id;
 
         var resultado = await endpoints.GetById(id, CancellationToken.None);
 
-        var ok = Assert.IsType<Ok<ServicoViewModel>>(resultado.Result);
+        var ok = Assert.IsType<Ok<ServicoViewModel>>(resultado);
         var viewModel = Assert.IsType<ServicoViewModel>(ok.Value);
         Assert.Equal(id, viewModel.Id);
     }
@@ -116,7 +116,7 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
 
         var resultado = await endpoints.GetById(Guid.NewGuid(), CancellationToken.None);
 
-        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado);
     }
 
     [Fact]
@@ -136,7 +136,7 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
     public async Task Put_ServicoExistente_DeveRetornar200ComDadosAtualizados()
     {
         var endpoints = _fixture.CriarServicosEndpoints();
-        var created = Assert.IsType<CreatedAtRoute<ServicoViewModel>>((await endpoints.Post(ServicoSemItens(), CancellationToken.None)).Result);
+        var created = Assert.IsType<CreatedAtRoute<ServicoViewModel>>(await endpoints.Post(ServicoSemItens(), CancellationToken.None));
         var id = created.Value.Id;
         var command = new AtualizarServicoCommand
         {
@@ -148,7 +148,7 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
 
         var resultado = await endpoints.Put(command, CancellationToken.None);
 
-        var ok = Assert.IsType<Ok<ServicoViewModel>>(resultado.Result);
+        var ok = Assert.IsType<Ok<ServicoViewModel>>(resultado);
         var viewModel = Assert.IsType<ServicoViewModel>(ok.Value);
         Assert.Equal("Revisão Geral Atualizada", viewModel.Nome);
     }
@@ -167,19 +167,19 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
 
         var resultado = await endpoints.Put(command, CancellationToken.None);
 
-        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado);
     }
 
     [Fact]
     public async Task Delete_ServicoExistente_DeveRetornar204()
     {
         var endpoints = _fixture.CriarServicosEndpoints();
-        var created = Assert.IsType<CreatedAtRoute<ServicoViewModel>>((await endpoints.Post(ServicoSemItens(), CancellationToken.None)).Result);
+        var created = Assert.IsType<CreatedAtRoute<ServicoViewModel>>(await endpoints.Post(ServicoSemItens(), CancellationToken.None));
         var id = created.Value.Id;
 
         var resultado = await endpoints.Delete(id, CancellationToken.None);
 
-        Assert.IsType<NoContent>(resultado.Result);
+        Assert.IsType<NoContent>(resultado);
     }
 
     [Fact]
@@ -189,6 +189,6 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
 
         var resultado = await endpoints.Delete(Guid.NewGuid(), CancellationToken.None);
 
-        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado);
     }
 }

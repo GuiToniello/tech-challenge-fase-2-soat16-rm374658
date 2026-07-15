@@ -58,14 +58,14 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     private async Task<Guid> CriarServicoAsync(Guid insumoId)
     {
         var endpoints = _fixture.CriarServicosEndpoints();
-        var result = (CreatedAtRoute<ServicoViewModel>)(await endpoints.Post(
+        var result = Assert.IsType<CreatedAtRoute<ServicoViewModel>>(await endpoints.Post(
             new CriarServicoCommand
             {
                 Nome = "Troca de Vela",
                 Descricao = "Substituicao das velas de ignicao",
                 ItensServico = [new ItemServicoCommand { InsumoId = insumoId, Quantidade = 4 }]
             },
-            CancellationToken.None)).Result!;
+            CancellationToken.None));
         return result.Value.Id;
     }
 
@@ -145,9 +145,9 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
         var insumoId = insumoResult.Value.Id;
 
         var servicoEndpoints = _fixture.CriarServicosEndpoints();
-        var servicoResult = (CreatedAtRoute<ServicoViewModel>)(await servicoEndpoints.Post(
+        var servicoResult = Assert.IsType<CreatedAtRoute<ServicoViewModel>>(await servicoEndpoints.Post(
             new CriarServicoCommand { Nome = "Troca Freio", Descricao = "Troca pastilha de freio", ItensServico = [new ItemServicoCommand { InsumoId = insumoId, Quantidade = 2 }] },
-            CancellationToken.None)).Result!;
+            CancellationToken.None));
         var servicoId = servicoResult.Value.Id;
 
         var endpoints = _fixture.CriarOrdensServicoEndpoints();
