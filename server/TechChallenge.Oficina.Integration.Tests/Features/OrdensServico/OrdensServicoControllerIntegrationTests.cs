@@ -51,8 +51,8 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
         var endpoints = _fixture.CriarInsumosEndpoints();
         var result = (CreatedAtRoute<InsumoViewModel>)(await endpoints.Post(
             new CriarInsumoCommand { Nome = "Vela de Ignicao", Fabricante = "NGK", QuantidadeDisponivel = 20, ValorUnitario = 15m },
-            CancellationToken.None)).Result!;
-        return result.Value.Id;
+            CancellationToken.None));
+        return result.Value!.Id;
     }
 
     private async Task<Guid> CriarServicoAsync(Guid insumoId)
@@ -141,8 +141,8 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
         var insumoEndpoints = _fixture.CriarInsumosEndpoints();
         var insumoResult = (CreatedAtRoute<InsumoViewModel>)(await insumoEndpoints.Post(
             new CriarInsumoCommand { Nome = "Pastilha de Freio", Fabricante = "Bosch", QuantidadeDisponivel = 10, ValorUnitario = 40m },
-            CancellationToken.None)).Result!;
-        var insumoId = insumoResult.Value.Id;
+            CancellationToken.None));
+        var insumoId = insumoResult.Value!.Id;
 
         var servicoEndpoints = _fixture.CriarServicosEndpoints();
         var servicoResult = Assert.IsType<CreatedAtRoute<ServicoViewModel>>(await servicoEndpoints.Post(

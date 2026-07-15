@@ -1,91 +1,69 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using TechChallenge.Oficina.Application.Features.Insumos.Commands;
-using TechChallenge.Oficina.Application.Features.Insumos.Queries;
-using TechChallenge.Oficina.Application.Features.Insumos.Services;
 using TechChallenge.Oficina.Application.Features.Insumos.ViewModels;
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.Controllers.Features.Insumos;
 
 namespace TechChallenge.Oficina.API.Features.Insumos
 {
-    public class InsumoEndpoints
+    public static class InsumoEndpoints
     {
-        private readonly IInsumoService _insumoService;
-
-        public InsumoEndpoints(IInsumoService insumoService)
+        public static RouteGroupBuilder MapInsumoEndpoints(
+            this IEndpointRouteBuilder routes)
         {
-            _insumoService = insumoService;
-        }
+            var group = routes
+                .MapGroup("/api/insumos")
+                .WithTags("Insumos");
 
-        public async Task<Results<CreatedAtRoute<InsumoViewModel>, BadRequest<Dictionary<string, string?>>>> Post(CriarInsumoCommand command, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var insumo = await _insumoService.CriarAsync(command, cancellationToken);
-                return TypedResults.CreatedAtRoute(insumo, "GetInsumoById", new { id = insumo.Id });
-            }
-            catch (DomainException exception)
-            {
-                return TypedResults.BadRequest(CriarErro(exception.Message));
-            }
-        }
+            group.MapPost(
+                string.Empty,
+                (
+                    InsumoController insumoController,
+                    CriarInsumoCommand command,
+                    CancellationToken cancellationToken
+                ) => insumoController.Post(command, cancellationToken))
+                .Produces<InsumoViewModel>(StatusCodes.Status201Created)
+                .Produces(StatusCodes.Status400BadRequest);
 
-        public async Task<Results<Ok<InsumoViewModel>, NotFound<Dictionary<string, string?>>>> GetById(Guid id, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var query = new ObterInsumoPorIdQuery { Id = id };
-                var insumo = await _insumoService.ObterPorIdAsync(query, cancellationToken);
-                return TypedResults.Ok(insumo);
-            }
-            catch (KeyNotFoundException exception)
-            {
-                return TypedResults.NotFound(CriarErro(exception.Message));
-            }
-        }
+            group.MapGet(
+                "/{id:guid}",
+                (
+                    InsumoController insumoController,
+                    Guid id,
+                    CancellationToken cancellationToken
+                ) => insumoController.GetById(id, cancellationToken))
+                .WithName("GetInsumoById")
+                .Produces<InsumoViewModel>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound);
 
-        public async Task<Ok<IReadOnlyCollection<InsumoViewModel>>> Get(CancellationToken cancellationToken)
-        {
-            var insumos = await _insumoService.ListarAsync(new ListarInsumosQuery(), cancellationToken);
-            return TypedResults.Ok(insumos);
-        }
+            group.MapGet(
+                string.Empty,
+                (
+                    InsumoController insumoController,
+                    CancellationToken cancellationToken
+                ) => insumoController.Get(cancellationToken))
+                .Produces<IReadOnlyCollection<InsumoViewModel>>(StatusCodes.Status200OK);
 
-        public async Task<Results<Ok<InsumoViewModel>, BadRequest<Dictionary<string, string?>>, NotFound<Dictionary<string, string?>>>> Put(AtualizarInsumoCommand command, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var insumo = await _insumoService.AtualizarAsync(command, cancellationToken);
-                return TypedResults.Ok(insumo);
-            }
-            catch (DomainException exception)
-            {
-                return TypedResults.BadRequest(CriarErro(exception.Message));
-            }
-            catch (KeyNotFoundException exception)
-            {
-                return TypedResults.NotFound(CriarErro(exception.Message));
-            }
-        }
+            group.MapPut(
+                string.Empty,
+                (
+                    InsumoController insumoController,
+                    AtualizarInsumoCommand command,
+                    CancellationToken cancellationToken
+                ) => insumoController.Put(command, cancellationToken))
+                .Produces<InsumoViewModel>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status404NotFound);
 
-        public async Task<Results<NoContent, NotFound<Dictionary<string, string?>>>> Delete(Guid id, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var command = new ExcluirInsumoCommand { Id = id };
-                await _insumoService.ExcluirAsync(command, cancellationToken);
-                return TypedResults.NoContent();
-            }
-            catch (KeyNotFoundException exception)
-            {
-                return TypedResults.NotFound(CriarErro(exception.Message));
-            }
-        }
+            group.MapDelete(
+                "/{id:guid}",
+                (
+                    InsumoController insumoController,
+                    Guid id,
+                    CancellationToken cancellationToken
+                ) => insumoController.Delete(id, cancellationToken))
+                .Produces(StatusCodes.Status204NoContent)
+                .Produces(StatusCodes.Status404NotFound);
 
-        private static Dictionary<string, string?> CriarErro(string? message)
-        {
-            return new Dictionary<string, string?>
-            {
-                ["message"] = message
-            };
+            return group;
         }
     }
 }

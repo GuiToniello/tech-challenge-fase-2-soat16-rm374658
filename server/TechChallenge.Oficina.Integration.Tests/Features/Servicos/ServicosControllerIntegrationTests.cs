@@ -24,8 +24,8 @@ public sealed class ServicosControllerIntegrationTests : IDisposable
         var endpoints = _fixture.CriarInsumosEndpoints();
         var result = (CreatedAtRoute<InsumoViewModel>)(await endpoints.Post(
             new CriarInsumoCommand { Nome = nome, Fabricante = "Mann", QuantidadeDisponivel = 50, ValorUnitario = 25m },
-            CancellationToken.None)).Result!;
-        return result.Value.Id;
+            CancellationToken.None));
+        return result.Value!.Id;
     }
 
     private static CriarServicoCommand ServicoSemItens(string nome = "Revisão Geral") => new()

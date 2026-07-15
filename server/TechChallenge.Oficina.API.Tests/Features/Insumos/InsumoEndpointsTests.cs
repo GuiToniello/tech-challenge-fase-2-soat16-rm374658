@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using TechChallenge.Oficina.API.Features.Insumos;
 using TechChallenge.Oficina.Application.Features.Insumos.Commands;
@@ -12,95 +11,170 @@ namespace TechChallenge.Oficina.API.Tests.Features.Insumos;
 
 public sealed class InsumoEndpointsTests
 {
-    private readonly Mock<IInsumoService> _serviceMock = new();
+    private readonly Mock<IInsumoService> _insumoServiceMock = new();
 
     [Fact]
-    public async Task Post_DeveRetornarCreatedAtRoute_QuandoSucesso()
+    public async Task MapInsumoEndpoints_Post_DeveInvocarServico_ComCommandCorreto()
     {
-        var endpoints = CriarEndpoints();
-        var command = new CriarInsumoCommand { Nome = "Óleo", Fabricante = "Bosch", QuantidadeDisponivel = 10, ValorUnitario = 19.9m };
-        var model = new InsumoViewModel { Id = Guid.NewGuid(), Nome = "Óleo" };
+        var adapter = new InsumoAdapter();
+        var insumoController = new Controllers.Features.Insumos.InsumoController(_insumoServiceMock.Object, adapter);
+        var command = new CriarInsumoCommand { Nome = "Óleo Motor", Fabricante = "Bosch", QuantidadeDisponivel = 10, ValorUnitario = 19.9m };
+        var insumoViewModel = new InsumoViewModel { Id = Guid.NewGuid(), Nome = "Óleo Motor" };
 
-        _serviceMock.Setup(s => s.CriarAsync(command, It.IsAny<CancellationToken>())).ReturnsAsync(model);
+        _insumoServiceMock
+            .Setup(s => s.CriarAsync(It.Is<CriarInsumoCommand>(cmd => cmd.Nome == "Óleo Motor"), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(insumoViewModel);
 
-        var resultado = await endpoints.Post(command, CancellationToken.None);
+        await insumoController.Post(command, CancellationToken.None);
 
-        var created = Assert.IsType<CreatedAtRoute<InsumoViewModel>>(resultado.Result);
-        Assert.Equal("GetInsumoById", created.RouteName);
-        Assert.Equal(model, created.Value);
+        _insumoServiceMock.Verify(
+            s => s.CriarAsync(It.Is<CriarInsumoCommand>(cmd => cmd.Nome == "Óleo Motor"), It.IsAny<CancellationToken>()),
+            Times.Once);
     }
 
     [Fact]
-    public async Task Post_DeveRetornarBadRequest_QuandoDomainException()
+    public async Task MapInsumoEndpoints_GetById_DeveInvocarServicoComIdCorreto()
     {
-        var endpoints = CriarEndpoints();
-        var command = new CriarInsumoCommand { Nome = "", Fabricante = "Bosch", QuantidadeDisponivel = 10, ValorUnitario = 19.9m };
+        var adapter = new InsumoAdapter();
+        var insumoController = new Controllers.Features.Insumos.InsumoController(_insumoServiceMock.Object, adapter);
+        var insumoId = Guid.NewGuid();
+        var insumoViewModel = new InsumoViewModel { Id = insumoId, Nome = "Filtro" };
 
-        _serviceMock.Setup(s => s.CriarAsync(command, It.IsAny<CancellationToken>())).ThrowsAsync(new DomainException("erro"));
+        _insumoServiceMock
+            .Setup(s => s.ObterPorIdAsync(It.Is<ObterInsumoPorIdQuery>(q => q.Id == insumoId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(insumoViewModel);
 
-        var resultado = await endpoints.Post(command, CancellationToken.None);
+        await insumoController.GetById(insumoId, CancellationToken.None);
 
-        var badRequest = Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado.Result);
-        Assert.Equal("erro", ObterMensagem(badRequest.Value));
+        _insumoServiceMock.Verify(
+            s => s.ObterPorIdAsync(It.Is<ObterInsumoPorIdQuery>(q => q.Id == insumoId), It.IsAny<CancellationToken>()),
+            Times.Once);
     }
 
     [Fact]
-    public async Task GetById_DeveRetornarNotFound_QuandoNaoExiste()
+    public async Task MapInsumoEndpoints_Get_DeveInvocarServico()
     {
-        var endpoints = CriarEndpoints();
-        var id = Guid.NewGuid();
-
-        _serviceMock.Setup(s => s.ObterPorIdAsync(It.Is<ObterInsumoPorIdQuery>(q => q.Id == id), It.IsAny<CancellationToken>())).ThrowsAsync(new KeyNotFoundException("não encontrado"));
-
-        var resultado = await endpoints.GetById(id, CancellationToken.None);
-
-        var notFound = Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
-        Assert.Equal("não encontrado", ObterMensagem(notFound.Value));
-    }
-
-    [Fact]
-    public async Task Get_DeveRetornarOkComColecao()
-    {
-        var endpoints = CriarEndpoints();
+        var adapter = new InsumoAdapter();
+        var insumoController = new Controllers.Features.Insumos.InsumoController(_insumoServiceMock.Object, adapter);
         IReadOnlyCollection<InsumoViewModel> insumos = [new InsumoViewModel { Nome = "Óleo" }];
 
-        _serviceMock.Setup(s => s.ListarAsync(It.IsAny<ListarInsumosQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(insumos);
+        _insumoServiceMock
+            .Setup(s => s.ListarAsync(It.IsAny<ListarInsumosQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(insumos);
 
-        var resultado = await endpoints.Get(CancellationToken.None);
+        await insumoController.Get(CancellationToken.None);
 
-        Assert.Equal(insumos, resultado.Value);
+        _insumoServiceMock.Verify(
+            s => s.ListarAsync(It.IsAny<ListarInsumosQuery>(), It.IsAny<CancellationToken>()),
+            Times.Once);
     }
 
     [Fact]
-    public async Task Put_DeveRetornarNotFound_QuandoNaoEncontrado()
+    public async Task MapInsumoEndpoints_Put_DeveRepassarComandoInteiro()
     {
-        var endpoints = CriarEndpoints();
-        var command = new AtualizarInsumoCommand { Id = Guid.NewGuid(), Nome = "Óleo", Fabricante = "Bosch", QuantidadeDisponivel = 10, ValorUnitario = 19.9m };
+        var adapter = new InsumoAdapter();
+        var insumoController = new Controllers.Features.Insumos.InsumoController(_insumoServiceMock.Object, adapter);
+        var command = new AtualizarInsumoCommand
+        {
+            Id = Guid.NewGuid(),
+            Nome = "Filtro de Óleo",
+            Fabricante = "Mann",
+            QuantidadeDisponivel = 5,
+            ValorUnitario = 30m
+        };
 
-        _serviceMock.Setup(s => s.AtualizarAsync(command, It.IsAny<CancellationToken>())).ThrowsAsync(new KeyNotFoundException("não encontrado"));
+        _insumoServiceMock
+            .Setup(s => s.AtualizarAsync(It.IsAny<AtualizarInsumoCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new InsumoViewModel());
 
-        var resultado = await endpoints.Put(command, CancellationToken.None);
+        await insumoController.Put(command, CancellationToken.None);
 
-        var notFound = Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
-        Assert.Equal("não encontrado", ObterMensagem(notFound.Value));
+        _insumoServiceMock.Verify(
+            s => s.AtualizarAsync(
+                It.Is<AtualizarInsumoCommand>(cmd =>
+                    cmd.Nome == "Filtro de Óleo" &&
+                    cmd.Fabricante == "Mann" &&
+                    cmd.QuantidadeDisponivel == 5 &&
+                    cmd.ValorUnitario == 30m),
+                It.IsAny<CancellationToken>()),
+            Times.Once);
     }
 
     [Fact]
-    public async Task Delete_DeveRetornarNoContent_QuandoSucesso()
+    public async Task MapInsumoEndpoints_Delete_DeveRepassarIdCorretamente()
     {
-        var endpoints = CriarEndpoints();
-        var id = Guid.NewGuid();
+        var adapter = new InsumoAdapter();
+        var insumoController = new Controllers.Features.Insumos.InsumoController(_insumoServiceMock.Object, adapter);
+        var insumoId = Guid.NewGuid();
+        var cts = new CancellationTokenSource();
 
-        var resultado = await endpoints.Delete(id, CancellationToken.None);
+        _insumoServiceMock
+            .Setup(s => s.ExcluirAsync(It.IsAny<ExcluirInsumoCommand>(), cts.Token))
+            .Returns(Task.CompletedTask);
 
-        Assert.IsType<NoContent>(resultado.Result);
-        _serviceMock.Verify(s => s.ExcluirAsync(It.Is<ExcluirInsumoCommand>(c => c.Id == id), It.IsAny<CancellationToken>()), Times.Once);
+        await insumoController.Delete(insumoId, cts.Token);
+
+        _insumoServiceMock.Verify(
+            s => s.ExcluirAsync(
+                It.Is<ExcluirInsumoCommand>(cmd => cmd.Id == insumoId),
+                cts.Token),
+            Times.Once);
     }
 
-    private InsumoEndpoints CriarEndpoints() => new(_serviceMock.Object);
-
-    private static string? ObterMensagem(IReadOnlyDictionary<string, string?>? value)
+    [Fact]
+    public async Task MapInsumoEndpoints_Post_DevePassarCancellationToken()
     {
-        return value is not null && value.TryGetValue("message", out var message) ? message : null;
+        var adapter = new InsumoAdapter();
+        var insumoController = new Controllers.Features.Insumos.InsumoController(_insumoServiceMock.Object, adapter);
+        var command = new CriarInsumoCommand { Nome = "Óleo", Fabricante = "Bosch", QuantidadeDisponivel = 1, ValorUnitario = 10m };
+        var cts = new CancellationTokenSource();
+
+        _insumoServiceMock
+            .Setup(s => s.CriarAsync(It.IsAny<CriarInsumoCommand>(), cts.Token))
+            .ReturnsAsync(new InsumoViewModel());
+
+        await insumoController.Post(command, cts.Token);
+
+        _insumoServiceMock.Verify(
+            s => s.CriarAsync(It.IsAny<CriarInsumoCommand>(), cts.Token),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task MapInsumoEndpoints_GetById_DeveRepassarIdExatamente()
+    {
+        var adapter = new InsumoAdapter();
+        var insumoController = new Controllers.Features.Insumos.InsumoController(_insumoServiceMock.Object, adapter);
+        var insumoId = Guid.NewGuid();
+
+        _insumoServiceMock
+            .Setup(s => s.ObterPorIdAsync(It.IsAny<ObterInsumoPorIdQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new InsumoViewModel());
+
+        await insumoController.GetById(insumoId, CancellationToken.None);
+
+        _insumoServiceMock.Verify(
+            s => s.ObterPorIdAsync(
+                It.Is<ObterInsumoPorIdQuery>(q => q.Id == insumoId),
+                It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task MapInsumoEndpoints_Delete_DevePassarCancellationToken()
+    {
+        var adapter = new InsumoAdapter();
+        var insumoController = new Controllers.Features.Insumos.InsumoController(_insumoServiceMock.Object, adapter);
+        var insumoId = Guid.NewGuid();
+
+        _insumoServiceMock
+            .Setup(s => s.ExcluirAsync(It.Is<ExcluirInsumoCommand>(cmd => cmd.Id == insumoId), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        await insumoController.Delete(insumoId, CancellationToken.None);
+
+        _insumoServiceMock.Verify(
+            s => s.ExcluirAsync(It.Is<ExcluirInsumoCommand>(cmd => cmd.Id == insumoId), It.IsAny<CancellationToken>()),
+            Times.Once);
     }
 }

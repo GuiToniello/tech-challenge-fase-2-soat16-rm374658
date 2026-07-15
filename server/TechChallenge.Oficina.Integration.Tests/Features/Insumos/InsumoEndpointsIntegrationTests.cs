@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using TechChallenge.Oficina.Application.Features.Insumos.Commands;
 using TechChallenge.Oficina.Application.Features.Insumos.ViewModels;
@@ -33,7 +34,7 @@ public sealed class InsumoEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        var created = Assert.IsType<CreatedAtRoute<InsumoViewModel>>(resultado.Result);
+        var created = Assert.IsType<CreatedAtRoute<InsumoViewModel>>(resultado);
         var viewModel = Assert.IsType<InsumoViewModel>(created.Value);
         Assert.NotEqual(Guid.Empty, viewModel.Id);
         Assert.Equal("Óleo Lubrificante", viewModel.Nome);
@@ -48,7 +49,8 @@ public sealed class InsumoEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsAssignableFrom<IStatusCodeHttpResult>(resultado);
+        Assert.Equal(StatusCodes.Status400BadRequest, ((IStatusCodeHttpResult)resultado).StatusCode);
     }
 
     [Fact]
@@ -59,19 +61,20 @@ public sealed class InsumoEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsAssignableFrom<IStatusCodeHttpResult>(resultado);
+        Assert.Equal(StatusCodes.Status400BadRequest, ((IStatusCodeHttpResult)resultado).StatusCode);
     }
 
     [Fact]
     public async Task GetById_InsumoExistente_DeveRetornar200ComViewModel()
     {
         var endpoints = _fixture.CriarInsumosEndpoints();
-        var created = (CreatedAtRoute<InsumoViewModel>)(await endpoints.Post(InsumoValido(), CancellationToken.None)).Result!;
-        var id = created.Value.Id;
+        var created = (CreatedAtRoute<InsumoViewModel>)(await endpoints.Post(InsumoValido(), CancellationToken.None));
+        var id = created.Value!.Id;
 
         var resultado = await endpoints.GetById(id, CancellationToken.None);
 
-        var ok = Assert.IsType<Ok<InsumoViewModel>>(resultado.Result);
+        var ok = Assert.IsType<Ok<InsumoViewModel>>(resultado);
         var viewModel = Assert.IsType<InsumoViewModel>(ok.Value);
         Assert.Equal(id, viewModel.Id);
     }
@@ -83,7 +86,8 @@ public sealed class InsumoEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.GetById(Guid.NewGuid(), CancellationToken.None);
 
-        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsAssignableFrom<IStatusCodeHttpResult>(resultado);
+        Assert.Equal(StatusCodes.Status404NotFound, ((IStatusCodeHttpResult)resultado).StatusCode);
     }
 
     [Fact]
@@ -94,7 +98,8 @@ public sealed class InsumoEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Get(CancellationToken.None);
 
-        var lista = Assert.IsAssignableFrom<IEnumerable<InsumoViewModel>>(resultado.Value);
+        var ok = Assert.IsType<Ok<IReadOnlyCollection<InsumoViewModel>>>(resultado);
+        var lista = Assert.IsAssignableFrom<IEnumerable<InsumoViewModel>>(ok.Value);
         Assert.NotEmpty(lista);
     }
 
@@ -102,8 +107,8 @@ public sealed class InsumoEndpointsIntegrationTests : IDisposable
     public async Task Put_InsumoExistente_DeveRetornar200ComDadosAtualizados()
     {
         var endpoints = _fixture.CriarInsumosEndpoints();
-        var created = (CreatedAtRoute<InsumoViewModel>)(await endpoints.Post(InsumoValido(), CancellationToken.None)).Result!;
-        var id = created.Value.Id;
+        var created = (CreatedAtRoute<InsumoViewModel>)(await endpoints.Post(InsumoValido(), CancellationToken.None));
+        var id = created.Value!.Id;
         var command = new AtualizarInsumoCommand
         {
             Id = id,
@@ -115,7 +120,7 @@ public sealed class InsumoEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Put(command, CancellationToken.None);
 
-        var ok = Assert.IsType<Ok<InsumoViewModel>>(resultado.Result);
+        var ok = Assert.IsType<Ok<InsumoViewModel>>(resultado);
         var viewModel = Assert.IsType<InsumoViewModel>(ok.Value);
         Assert.Equal("Óleo Lubrificante Premium", viewModel.Nome);
         Assert.Equal(79.90m, viewModel.ValorUnitario);
@@ -136,19 +141,20 @@ public sealed class InsumoEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Put(command, CancellationToken.None);
 
-        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsAssignableFrom<IStatusCodeHttpResult>(resultado);
+        Assert.Equal(StatusCodes.Status404NotFound, ((IStatusCodeHttpResult)resultado).StatusCode);
     }
 
     [Fact]
     public async Task Delete_InsumoExistente_DeveRetornar204()
     {
         var endpoints = _fixture.CriarInsumosEndpoints();
-        var created = (CreatedAtRoute<InsumoViewModel>)(await endpoints.Post(InsumoValido(), CancellationToken.None)).Result!;
-        var id = created.Value.Id;
+        var created = (CreatedAtRoute<InsumoViewModel>)(await endpoints.Post(InsumoValido(), CancellationToken.None));
+        var id = created.Value!.Id;
 
         var resultado = await endpoints.Delete(id, CancellationToken.None);
 
-        Assert.IsType<NoContent>(resultado.Result);
+        Assert.IsType<NoContent>(resultado);
     }
 
     [Fact]
@@ -158,6 +164,7 @@ public sealed class InsumoEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Delete(Guid.NewGuid(), CancellationToken.None);
 
-        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsAssignableFrom<IStatusCodeHttpResult>(resultado);
+        Assert.Equal(StatusCodes.Status404NotFound, ((IStatusCodeHttpResult)resultado).StatusCode);
     }
 }
