@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Http.HttpResults;
+using TechChallenge.Oficina.API.Features.Clientes;
 using Xunit;
 using TechChallenge.Oficina.Application.Features.Clientes.Commands;
 using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
+using TechChallenge.Oficina.Controllers.Features.Clientes;
 using TechChallenge.Oficina.Integration.Tests.Infrastructure;
 
 namespace TechChallenge.Oficina.Integration.Tests.Features.Clientes;
@@ -30,11 +32,10 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        var created = Assert.IsType<CreatedAtRoute<ClienteViewModel>>(resultado.Result);
-        var viewModel = Assert.IsType<ClienteViewModel>(created.Value);
-        Assert.NotEqual(Guid.Empty, viewModel.Id);
-        Assert.Equal("João da Silva", viewModel.NomeCompleto);
-        Assert.Equal("joao@email.com", viewModel.Email);
+        var created = Assert.IsType<CreatedAtRoute<ClienteViewModel>>(resultado);
+        Assert.NotEqual(Guid.Empty, created.Value!.Id);
+        Assert.Equal("João da Silva", created.Value.NomeCompleto);
+        Assert.Equal("joao@email.com", created.Value.Email);
     }
 
     [Fact]
@@ -49,7 +50,7 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<BadRequest<string>>(resultado);
     }
 
     [Fact]
@@ -64,7 +65,7 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<BadRequest<string>>(resultado);
     }
 
     [Fact]
@@ -76,23 +77,23 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Post(new CriarClienteCommand { NomeCompleto = "Outro Cliente", Identificacao = cpf }, CancellationToken.None);
 
-        Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<BadRequest<string>>(resultado);
     }
 
     [Fact]
     public async Task GetById_ClienteExistente_DeveRetornar200ComViewModel()
     {
         var endpoints = _fixture.CriarClientesEndpoints();
-        var created = (CreatedAtRoute<ClienteViewModel>)(await endpoints.Post(
+        var created = Assert.IsType<CreatedAtRoute<ClienteViewModel>>(await endpoints.Post(
             new CriarClienteCommand { NomeCompleto = "Ana Lima", Identificacao = "529.982.247-25" },
-            CancellationToken.None)).Result!;
+            CancellationToken.None));
         var id = created.Value.Id;
 
         var resultado = await endpoints.GetById(id, CancellationToken.None);
 
-        var ok = Assert.IsType<Ok<ClienteViewModel>>(resultado.Result);
-        var viewModel = Assert.IsType<ClienteViewModel>(ok.Value);
-        Assert.Equal(id, viewModel.Id);
+        Assert.NotNull(resultado.Value);
+        Assert.Null(resultado.Error);
+        Assert.Equal(id, resultado.Value.Id);
     }
 
     [Fact]
@@ -102,7 +103,8 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.GetById(Guid.NewGuid(), CancellationToken.None);
 
-        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
+        Assert.NotNull(resultado.Error);
+        Assert.Null(resultado.Value);
     }
 
     [Fact]
@@ -112,8 +114,9 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Get(CancellationToken.None);
 
-        var lista = Assert.IsAssignableFrom<IEnumerable<ClienteViewModel>>(resultado.Value);
-        Assert.Empty(lista);
+        Assert.NotNull(resultado.Value);
+        Assert.Null(resultado.Error);
+        Assert.Empty(resultado.Value);
     }
 
     [Fact]
@@ -124,17 +127,18 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Get(CancellationToken.None);
 
-        var lista = Assert.IsAssignableFrom<IEnumerable<ClienteViewModel>>(resultado.Value);
-        Assert.NotEmpty(lista);
+        Assert.NotNull(resultado.Value);
+        Assert.Null(resultado.Error);
+        Assert.NotEmpty(resultado.Value);
     }
 
     [Fact]
     public async Task Put_ClienteExistente_DeveRetornar200ComDadosAtualizados()
     {
         var endpoints = _fixture.CriarClientesEndpoints();
-        var created = (CreatedAtRoute<ClienteViewModel>)(await endpoints.Post(
+        var created = Assert.IsType<CreatedAtRoute<ClienteViewModel>>(await endpoints.Post(
             new CriarClienteCommand { NomeCompleto = "Fernanda Rocha", Identificacao = "529.982.247-25" },
-            CancellationToken.None)).Result!;
+            CancellationToken.None));
         var id = created.Value.Id;
         var command = new AtualizarClienteCommand
         {
@@ -145,9 +149,9 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Put(command, CancellationToken.None);
 
-        var ok = Assert.IsType<Ok<ClienteViewModel>>(resultado.Result);
-        var viewModel = Assert.IsType<ClienteViewModel>(ok.Value);
-        Assert.Equal("Fernanda Rocha Atualizada", viewModel.NomeCompleto);
+        Assert.NotNull(resultado.Value);
+        Assert.Null(resultado.Error);
+        Assert.Equal("Fernanda Rocha Atualizada", resultado.Value.NomeCompleto);
     }
 
     [Fact]
@@ -163,21 +167,25 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Put(command, CancellationToken.None);
 
-        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
+        Assert.Null(resultado.Value);
+        Assert.NotNull(resultado.Error);
+        Assert.IsType<KeyNotFoundException>(resultado.Error);
     }
 
     [Fact]
     public async Task Delete_ClienteExistente_DeveRetornar204()
     {
         var endpoints = _fixture.CriarClientesEndpoints();
-        var created = (CreatedAtRoute<ClienteViewModel>)(await endpoints.Post(
+        var created = Assert.IsType<CreatedAtRoute<ClienteViewModel>>(await endpoints.Post(
             new CriarClienteCommand { NomeCompleto = "Lucas Martins", Identificacao = "529.982.247-25" },
-            CancellationToken.None)).Result!;
+            CancellationToken.None));
         var id = created.Value.Id;
 
         var resultado = await endpoints.Delete(id, CancellationToken.None);
 
-        Assert.IsType<NoContent>(resultado.Result);
+        Assert.NotNull(resultado.Value);
+        Assert.Null(resultado.Error);
+        Assert.True(resultado.Value);
     }
 
     [Fact]
@@ -187,6 +195,8 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Delete(Guid.NewGuid(), CancellationToken.None);
 
-        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
+        Assert.False(resultado.Value);
+        Assert.NotNull(resultado.Error);
+        Assert.IsType<KeyNotFoundException>(resultado.Error);
     }
 }

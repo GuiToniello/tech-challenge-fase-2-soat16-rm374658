@@ -1,9 +1,10 @@
 ﻿using TechChallenge.Oficina.Application.Features.Clientes.Commands;
 using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
+using TechChallenge.Oficina.Controllers.Features.Clientes;
 
 namespace TechChallenge.Oficina.API.Features.Clientes
 {
-    public static class ClienteExtensions
+    public static class ClienteEndpoints
     {
         public static RouteGroupBuilder MapClienteEndpoints(
              this IEndpointRouteBuilder routes)
@@ -15,20 +16,20 @@ namespace TechChallenge.Oficina.API.Features.Clientes
             group.MapPost(
                 string.Empty,
                 (
-                    ClientEndpoints clientEndpoints,
+                    ClienteController clienteController,
                     CriarClienteCommand command,
                     CancellationToken cancellationToken
-                ) => clientEndpoints.Post(command, cancellationToken))
+                ) => clienteController.Post(command, cancellationToken))
                 .Produces<ClienteViewModel>(StatusCodes.Status201Created)
                 .Produces(StatusCodes.Status400BadRequest);
 
             group.MapGet(
                 "/{id:guid}",
                 (
-                    ClientEndpoints clientEndpoints,
+                    ClienteController clienteController,
                     Guid id,
                     CancellationToken cancellationToken
-                ) => clientEndpoints.GetById(id, cancellationToken))
+                ) => clienteController.GetById(id, cancellationToken))
                 .WithName("GetClienteById")
                 .Produces<ClienteViewModel>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status404NotFound);
@@ -36,18 +37,18 @@ namespace TechChallenge.Oficina.API.Features.Clientes
             group.MapGet(
                 string.Empty,
                 (
-                    ClientEndpoints clientEndpoints,
+                    ClienteController clienteController,
                     CancellationToken cancellationToken
-                ) => clientEndpoints.Get(cancellationToken))
+                ) => clienteController.Get(cancellationToken))
                 .Produces<IReadOnlyCollection<ClienteViewModel>>(StatusCodes.Status200OK);
 
             group.MapPut(
                 string.Empty,
                 (
-                    ClientEndpoints clientEndpoints,
+                    ClienteController clienteController,
                     AtualizarClienteCommand command,
                     CancellationToken cancellationToken
-                ) => clientEndpoints.Put(command, cancellationToken))
+                ) => clienteController.Put(command, cancellationToken))
                 .Produces<ClienteViewModel>(StatusCodes.Status200OK)
                 .Produces(StatusCodes.Status400BadRequest)
                 .Produces(StatusCodes.Status404NotFound);
@@ -55,19 +56,14 @@ namespace TechChallenge.Oficina.API.Features.Clientes
             group.MapDelete(
                 "/{id:guid}",
                 (
-                    ClientEndpoints clientEndpoints,
+                    ClienteController clienteController,
                     Guid id,
                     CancellationToken cancellationToken
-                ) => clientEndpoints.Delete(id, cancellationToken))
+                ) => clienteController.Delete(id, cancellationToken))
                 .Produces(StatusCodes.Status204NoContent)
                 .Produces(StatusCodes.Status404NotFound);
 
             return group;
-        }
-
-        public static void RegisterClienteEndpoints(this IServiceCollection services)
-        {
-            services.AddScoped<ClientEndpoints>();
         }
     }
 }

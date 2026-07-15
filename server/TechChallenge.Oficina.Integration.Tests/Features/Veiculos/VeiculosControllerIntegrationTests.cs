@@ -22,10 +22,10 @@ public sealed class VeiculosControllerIntegrationTests : IDisposable
     private async Task<Guid> CriarClienteAsync()
     {
         var clientEndpoints = _fixture.CriarClientesEndpoints();
-        var result = (CreatedAtRoute<ClienteViewModel>)(await clientEndpoints.Post(
+        var result = Assert.IsType<CreatedAtRoute<ClienteViewModel>>(await clientEndpoints.Post(
             new CriarClienteCommand { NomeCompleto = "Cliente Teste", Identificacao = "529.982.247-25" },
-            CancellationToken.None)).Result!;
-        return result.Value.Id;
+            CancellationToken.None));
+        return result.Value!.Id;
     }
 
     private static CriarVeiculoCommand VeiculoValido(Guid clienteId) => new()

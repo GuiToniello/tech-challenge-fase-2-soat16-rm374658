@@ -29,10 +29,10 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     {
         var endpoints = _fixture.CriarClientesEndpoints();
         var cpf = _clienteCpfIndex++ == 0 ? "529.982.247-25" : "123.456.789-09";
-        var result = (CreatedAtRoute<ClienteViewModel>)(await endpoints.Post(
+        var result = Assert.IsType<CreatedAtRoute<ClienteViewModel>>(await endpoints.Post(
             new CriarClienteCommand { NomeCompleto = "Cliente OS", Identificacao = cpf, Email = $"os{cpf[..3]}@email.com" },
-            CancellationToken.None)).Result!;
-        return result.Value.Id;
+            CancellationToken.None));
+        return result.Value!.Id;
     }
 
     private int _clienteCpfIndex;
@@ -122,15 +122,15 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     public async Task Post_VeiculoNaoPertenceAoCliente_DeveRetornar400()
     {
         var clientEndpoints = _fixture.CriarClientesEndpoints();
-        var cliente1Result = (CreatedAtRoute<ClienteViewModel>)(await clientEndpoints.Post(
+        var cliente1Result = Assert.IsType<CreatedAtRoute<ClienteViewModel>>(await clientEndpoints.Post(
             new CriarClienteCommand { NomeCompleto = "Cliente Dono", Identificacao = "529.982.247-25", Email = "dono@email.com" },
-            CancellationToken.None)).Result!;
-        var clienteDono = cliente1Result.Value.Id;
+            CancellationToken.None));
+        var clienteDono = cliente1Result.Value!.Id;
 
-        var cliente2Result = (CreatedAtRoute<ClienteViewModel>)(await clientEndpoints.Post(
+        var cliente2Result = Assert.IsType<CreatedAtRoute<ClienteViewModel>>(await clientEndpoints.Post(
             new CriarClienteCommand { NomeCompleto = "Cliente Ordem", Identificacao = "123.456.789-09", Email = "ordem@email.com" },
-            CancellationToken.None)).Result!;
-        var clienteOrdem = cliente2Result.Value.Id;
+            CancellationToken.None));
+        var clienteOrdem = cliente2Result.Value!.Id;
 
         var veiculoEndpoints = _fixture.CriarVeiculosEndpoints();
         var veiculoResult = (CreatedAtRoute<VeiculoViewModel>)(await veiculoEndpoints.Post(

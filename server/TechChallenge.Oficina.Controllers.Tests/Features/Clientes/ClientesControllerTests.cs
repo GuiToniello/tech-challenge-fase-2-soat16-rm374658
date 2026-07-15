@@ -1,57 +1,67 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
-using TechChallenge.Oficina.API.Features.Clientes;
 using TechChallenge.Oficina.Application.Features.Clientes.Commands;
 using TechChallenge.Oficina.Application.Features.Clientes.Queries;
 using TechChallenge.Oficina.Application.Features.Clientes.Services;
 using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
+using TechChallenge.Oficina.Controllers.Features.Clientes;
 using TechChallenge.Oficina.Domain.Exceptions;
 using Xunit;
 
-namespace TechChallenge.Oficina.API.Tests.Features.Clientes;
+namespace TechChallenge.Oficina.Controllers.Tests.Features.Clientes;
 
 public sealed class ClientEndpointsTests
 {
     private readonly Mock<IClienteService> _serviceMock = new();
+    private readonly Mock<IClientAdapter> _adapterMock = new();
 
     [Fact]
     public async Task Post_DeveRetornarCreatedAtRoute_QuandoSucesso()
     {
-        var endpoints = CriarEndpoints();
+        var controller = CriarController();
         var command = new CriarClienteCommand { NomeCompleto = "Cliente", Identificacao = "52998224725" };
         var cliente = new ClienteViewModel { Id = Guid.NewGuid(), NomeCompleto = "Cliente" };
+        var expectedResult = new ClienteResult<ClienteViewModel, Exception>(cliente);
+        var adaptedResult = new object();
 
         _serviceMock
             .Setup(service => service.CriarAsync(command, It.IsAny<CancellationToken>()))
             .ReturnsAsync(cliente);
 
-        var resultado = await endpoints.Post(command, CancellationToken.None);
+        _adapterMock
+            .Setup(adapter => adapter.Adapt(It.IsAny<ClienteResult<ClienteViewModel, Exception>>()))
+            .Returns(adaptedResult);
 
-        var created = Assert.IsType<CreatedAtRoute<ClienteViewModel>>(resultado.Result);
-        Assert.Equal("GetClienteById", created.RouteName);
-        Assert.Equal(cliente, created.Value);
+        var resultado = await controller.Post(command, CancellationToken.None);
+
+        Assert.Equal(adaptedResult, resultado);
+        _adapterMock.Verify(adapter => adapter.Adapt(It.IsAny<ClienteResult<ClienteViewModel, Exception>>()), Times.Once);
     }
 
     [Fact]
     public async Task Post_DeveRetornarBadRequest_QuandoDomainException()
     {
-        var endpoints = CriarEndpoints();
+        var controller = CriarController();
         var command = new CriarClienteCommand { NomeCompleto = "Cliente", Identificacao = "111" };
+        var adaptedResult = new object();
 
         _serviceMock
             .Setup(service => service.CriarAsync(command, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new DomainException("erro de domínio"));
 
-        var resultado = await endpoints.Post(command, CancellationToken.None);
+        _adapterMock
+            .Setup(adapter => adapter.Adapt(It.IsAny<ClienteResult<ClienteViewModel, Exception>>()))
+            .Returns(adaptedResult);
 
-        var badRequest = Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado.Result);
-        Assert.Equal("erro de domínio", ObterMensagem(badRequest.Value));
+        var resultado = await controller.Post(command, CancellationToken.None);
+
+        Assert.Equal(adaptedResult, resultado);
+        _adapterMock.Verify(adapter => adapter.Adapt(It.IsAny<ClienteResult<ClienteViewModel, Exception>>()), Times.Once);
     }
 
     [Fact]
     public async Task GetById_DeveRetornarOk_QuandoClienteExiste()
     {
-        var endpoints = CriarEndpoints();
+        var controller = CriarController();
         var id = Guid.NewGuid();
         var cliente = new ClienteViewModel { Id = id, NomeCompleto = "Cliente" };
 
@@ -59,32 +69,34 @@ public sealed class ClientEndpointsTests
             .Setup(service => service.ObterPorIdAsync(It.Is<ObterClientePorIdQuery>(q => q.Id == id), It.IsAny<CancellationToken>()))
             .ReturnsAsync(cliente);
 
-        var resultado = await endpoints.GetById(id, CancellationToken.None);
+        var resultado = await controller.GetById(id, CancellationToken.None);
 
-        var ok = Assert.IsType<Ok<ClienteViewModel>>(resultado.Result);
-        Assert.Equal(cliente, ok.Value);
+        Assert.NotNull(resultado.Value);
+        Assert.Null(resultado.Error);
+        Assert.Equal(cliente, resultado.Value);
     }
 
     [Fact]
     public async Task GetById_DeveRetornarNotFound_QuandoClienteNaoExiste()
     {
-        var endpoints = CriarEndpoints();
+        var controller = CriarController();
         var id = Guid.NewGuid();
 
         _serviceMock
             .Setup(service => service.ObterPorIdAsync(It.Is<ObterClientePorIdQuery>(q => q.Id == id), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new KeyNotFoundException("não encontrado"));
 
-        var resultado = await endpoints.GetById(id, CancellationToken.None);
+        var resultado = await controller.GetById(id, CancellationToken.None);
 
-        var notFound = Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
-        Assert.Equal("não encontrado", ObterMensagem(notFound.Value));
+        Assert.Null(resultado.Value);
+        Assert.NotNull(resultado.Error);
+        Assert.IsType<KeyNotFoundException>(resultado.Error);
     }
 
     [Fact]
     public async Task Put_DeveRetornarOk_QuandoSucesso()
     {
-        var endpoints = CriarEndpoints();
+        var controller = CriarController();
         var command = new AtualizarClienteCommand { Id = Guid.NewGuid(), NomeCompleto = "Atualizado", Identificacao = "52998224725" };
         var cliente = new ClienteViewModel { Id = command.Id, NomeCompleto = "Atualizado" };
 
@@ -92,110 +104,115 @@ public sealed class ClientEndpointsTests
             .Setup(service => service.AtualizarAsync(command, It.IsAny<CancellationToken>()))
             .ReturnsAsync(cliente);
 
-        var resultado = await endpoints.Put(command, CancellationToken.None);
+        var resultado = await controller.Put(command, CancellationToken.None);
 
-        var ok = Assert.IsType<Ok<ClienteViewModel>>(resultado.Result);
-        Assert.Equal(cliente, ok.Value);
+        Assert.NotNull(resultado.Value);
+        Assert.Null(resultado.Error);
+        Assert.Equal(cliente, resultado.Value);
     }
 
     [Fact]
     public async Task Put_DeveRetornarBadRequest_QuandoDomainException()
     {
-        var endpoints = CriarEndpoints();
+        var controller = CriarController();
         var command = new AtualizarClienteCommand { Id = Guid.NewGuid(), NomeCompleto = "Atualizado", Identificacao = "111" };
 
         _serviceMock
             .Setup(service => service.AtualizarAsync(command, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new DomainException("erro de domínio"));
 
-        var resultado = await endpoints.Put(command, CancellationToken.None);
+        var resultado = await controller.Put(command, CancellationToken.None);
 
-        var badRequest = Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado.Result);
-        Assert.Equal("erro de domínio", ObterMensagem(badRequest.Value));
+        Assert.Null(resultado.Value);
+        Assert.NotNull(resultado.Error);
+        Assert.IsType<DomainException>(resultado.Error);
     }
 
     [Fact]
     public async Task Put_DeveRetornarNotFound_QuandoNaoEncontrado()
     {
-        var endpoints = CriarEndpoints();
+        var controller = CriarController();
         var command = new AtualizarClienteCommand { Id = Guid.NewGuid(), NomeCompleto = "Atualizado", Identificacao = "52998224725" };
 
         _serviceMock
             .Setup(service => service.AtualizarAsync(command, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new KeyNotFoundException("não encontrado"));
 
-        var resultado = await endpoints.Put(command, CancellationToken.None);
+        var resultado = await controller.Put(command, CancellationToken.None);
 
-        var notFound = Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
-        Assert.Equal("não encontrado", ObterMensagem(notFound.Value));
+        Assert.Null(resultado.Value);
+        Assert.NotNull(resultado.Error);
+        Assert.IsType<KeyNotFoundException>(resultado.Error);
     }
 
     [Fact]
     public async Task Delete_DeveRetornarNoContent_QuandoSucesso()
     {
-        var endpoints = CriarEndpoints();
+        var controller = CriarController();
         var id = Guid.NewGuid();
 
-        var resultado = await endpoints.Delete(id, CancellationToken.None);
+        var resultado = await controller.Delete(id, CancellationToken.None);
 
-        Assert.IsType<NoContent>(resultado.Result);
+        Assert.NotNull(resultado.Value);
+        Assert.Null(resultado.Error);
+        Assert.True(resultado.Value);
         _serviceMock.Verify(service => service.ExcluirAsync(It.Is<ExcluirClienteCommand>(c => c.Id == id), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
     public async Task Delete_DeveRetornarNotFound_QuandoNaoEncontrado()
     {
-        var endpoints = CriarEndpoints();
+        var controller = CriarController();
         var id = Guid.NewGuid();
 
         _serviceMock
             .Setup(service => service.ExcluirAsync(It.Is<ExcluirClienteCommand>(c => c.Id == id), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new KeyNotFoundException("não encontrado"));
 
-        var resultado = await endpoints.Delete(id, CancellationToken.None);
+        var resultado = await controller.Delete(id, CancellationToken.None);
 
-        var notFound = Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
-        Assert.Equal("não encontrado", ObterMensagem(notFound.Value));
+        Assert.False(resultado.Value);
+        Assert.NotNull(resultado.Error);
+        Assert.IsType<KeyNotFoundException>(resultado.Error);
     }
 
     [Fact]
     public async Task Get_DeveRetornarOkComColecao()
     {
-        var endpoints = CriarEndpoints();
-        IReadOnlyCollection<ClienteViewModel> clientes = [new ClienteViewModel { NomeCompleto = "Cliente" }];
+        var controller = CriarController();
+        IReadOnlyCollection<ClienteViewModel> clientes = new List<ClienteViewModel> { new ClienteViewModel { NomeCompleto = "Cliente" } };
 
         _serviceMock
             .Setup(service => service.ListarAsync(It.IsAny<ListarClientesQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(clientes);
 
-        var resultado = await endpoints.Get(CancellationToken.None);
+        var resultado = await controller.Get(CancellationToken.None);
 
+        Assert.NotNull(resultado.Value);
+        Assert.Null(resultado.Error);
         Assert.Equal(clientes, resultado.Value);
     }
 
     [Fact]
     public async Task Get_DeveRetornarOkComColecaoVazia_QuandoSemClientes()
     {
-        var endpoints = CriarEndpoints();
+        var controller = CriarController();
         IReadOnlyCollection<ClienteViewModel> clientes = [];
 
         _serviceMock
             .Setup(service => service.ListarAsync(It.IsAny<ListarClientesQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(clientes);
 
-        var resultado = await endpoints.Get(CancellationToken.None);
+        var resultado = await controller.Get(CancellationToken.None);
 
+        Assert.NotNull(resultado.Value);
+        Assert.Null(resultado.Error);
         var value = Assert.IsAssignableFrom<IReadOnlyCollection<ClienteViewModel>>(resultado.Value);
         Assert.Empty(value);
     }
 
-    private ClientEndpoints CriarEndpoints()
+    private ClienteController CriarController()
     {
-        return new ClientEndpoints(_serviceMock.Object);
-    }
-
-    private static string? ObterMensagem(IReadOnlyDictionary<string, string?>? value)
-    {
-        return value is not null && value.TryGetValue("message", out var message) ? message : null;
+        return new ClienteController(_serviceMock.Object, _adapterMock.Object);
     }
 }

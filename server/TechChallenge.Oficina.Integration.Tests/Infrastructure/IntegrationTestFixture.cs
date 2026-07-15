@@ -28,6 +28,7 @@ using TechChallenge.Oficina.Infra.Data.Features.Insumos;
 using TechChallenge.Oficina.Infra.Data.Features.OrdensServico;
 using TechChallenge.Oficina.Infra.Data.Features.Servicos;
 using TechChallenge.Oficina.Infra.Data.Features.Veiculos;
+using TechChallenge.Oficina.Controllers.Features.Clientes;
 
 namespace TechChallenge.Oficina.Integration.Tests.Infrastructure;
 
@@ -67,7 +68,8 @@ public sealed class IntegrationTestFixture : IDisposable
         services.AddSingleton(emailSenderMock.Object);
 
         services.AddApplication();
-        services.AddScoped<ClientEndpoints>();
+        services.AddScoped<IClientAdapter, ClienteAdapter>();
+        services.AddScoped<ClienteController>();
         services.AddScoped<IndicadoresEndpoints>();
         services.AddScoped<InsumoEndpoints>();
         services.AddScoped<VeiculoEndpoints>();
@@ -81,8 +83,8 @@ public sealed class IntegrationTestFixture : IDisposable
     private T Obter<T>() where T : notnull
         => _scope.ServiceProvider.GetRequiredService<T>();
 
-    public ClientEndpoints CriarClientesEndpoints()
-        => Obter<ClientEndpoints>();
+    public ClienteController CriarClientesEndpoints()
+        => Obter<ClienteController>();
 
     public InsumoEndpoints CriarInsumosEndpoints()
         => Obter<InsumoEndpoints>();
