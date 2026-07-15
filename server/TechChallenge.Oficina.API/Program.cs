@@ -44,6 +44,7 @@ var resendSettings = builder.Configuration
     ?? new ResendSettings();
 builder.Services.AddInfraEmail(resendSettings);
 
+builder.Services.AddScoped<IClienteAdapter, ClienteAdapter>();
 builder.Services.AddScoped<IClienteController, ClienteController>();
 builder.Services.AddScoped<IServicoController, ServicoController>();
 builder.Services.AddScoped<IServicoAdapter, ServicoAdapter>();
