@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
 using TechChallenge.Oficina.API.Extensions;
 using TechChallenge.Oficina.API.Features.Clientes;
 using TechChallenge.Oficina.API.Features.Indicadores;
@@ -10,6 +9,7 @@ using TechChallenge.Oficina.API.Middleware;
 using TechChallenge.Oficina.API.Settings;
 using TechChallenge.Oficina.Application;
 using TechChallenge.Oficina.Controllers.Features.Clientes;
+using TechChallenge.Oficina.Controllers.Features.Indicadores;
 using TechChallenge.Oficina.Controllers.Features.Insumos;
 using TechChallenge.Oficina.Controllers.Features.OrdensServico;
 using TechChallenge.Oficina.Controllers.Features.Servicos;
@@ -44,20 +44,17 @@ var resendSettings = builder.Configuration
     ?? new ResendSettings();
 builder.Services.AddInfraEmail(resendSettings);
 
-builder.Services.AddScoped<ClienteController>();
-builder.Services.AddScoped<IClientAdapter, ClienteAdapter>();
-builder.Services.AddScoped<ServicoController>();
+builder.Services.AddScoped<IClienteController, ClienteController>();
+builder.Services.AddScoped<IServicoController, ServicoController>();
 builder.Services.AddScoped<IServicoAdapter, ServicoAdapter>();
-builder.Services.AddScoped<OrdensServicoController>();
+builder.Services.AddScoped<IOrdensServicoController, OrdensServicoController>();
 builder.Services.AddScoped<IOrdensServicoAdapter, OrdensServicoAdapter>();
-builder.Services.AddScoped<VeiculoController>();
+builder.Services.AddScoped<IVeiculoController, VeiculoController>();
 builder.Services.AddScoped<IVeiculoAdapter, VeiculoAdapter>();
-builder.Services.AddScoped<InsumoController>();
+builder.Services.AddScoped<IInsumoController, InsumoController>();
 builder.Services.AddScoped<IInsumoAdapter, InsumoAdapter>();
-builder.Services.RegisterIndicadoresEndpoints();
-builder.Services.RegisterVeiculoEndpoints();
-builder.Services.RegisterServicoEndpoints();
-builder.Services.RegisterOrdensServicoEndpoints();
+builder.Services.AddScoped<IIndicadoresAdapter, IndicadoresAdapter>();
+builder.Services.AddScoped<IIndicadoresController, IndicadoresController>();
 
 var app = builder.Build();
 

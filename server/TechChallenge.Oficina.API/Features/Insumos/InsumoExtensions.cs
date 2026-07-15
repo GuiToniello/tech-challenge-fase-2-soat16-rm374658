@@ -4,7 +4,7 @@ using TechChallenge.Oficina.Controllers.Features.Insumos;
 
 namespace TechChallenge.Oficina.API.Features.Insumos
 {
-    public static class InsumoEndpoints
+    public static class InsumoExtensions
     {
         public static RouteGroupBuilder MapInsumoEndpoints(
             this IEndpointRouteBuilder routes)
@@ -16,7 +16,7 @@ namespace TechChallenge.Oficina.API.Features.Insumos
             group.MapPost(
                 string.Empty,
                 (
-                    InsumoController insumoController,
+                    IInsumoController insumoController,
                     CriarInsumoCommand command,
                     CancellationToken cancellationToken
                 ) => insumoController.Post(command, cancellationToken))
@@ -26,7 +26,7 @@ namespace TechChallenge.Oficina.API.Features.Insumos
             group.MapGet(
                 "/{id:guid}",
                 (
-                    InsumoController insumoController,
+                    IInsumoController insumoController,
                     Guid id,
                     CancellationToken cancellationToken
                 ) => insumoController.GetById(id, cancellationToken))
@@ -37,7 +37,7 @@ namespace TechChallenge.Oficina.API.Features.Insumos
             group.MapGet(
                 string.Empty,
                 (
-                    InsumoController insumoController,
+                    IInsumoController insumoController,
                     CancellationToken cancellationToken
                 ) => insumoController.Get(cancellationToken))
                 .Produces<IReadOnlyCollection<InsumoViewModel>>(StatusCodes.Status200OK);
@@ -45,7 +45,7 @@ namespace TechChallenge.Oficina.API.Features.Insumos
             group.MapPut(
                 string.Empty,
                 (
-                    InsumoController insumoController,
+                    IInsumoController insumoController,
                     AtualizarInsumoCommand command,
                     CancellationToken cancellationToken
                 ) => insumoController.Put(command, cancellationToken))
@@ -56,7 +56,7 @@ namespace TechChallenge.Oficina.API.Features.Insumos
             group.MapDelete(
                 "/{id:guid}",
                 (
-                    InsumoController insumoController,
+                    IInsumoController insumoController,
                     Guid id,
                     CancellationToken cancellationToken
                 ) => insumoController.Delete(id, cancellationToken))

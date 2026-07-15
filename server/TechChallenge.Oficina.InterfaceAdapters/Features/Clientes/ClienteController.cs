@@ -6,12 +6,12 @@ using TechChallenge.Oficina.Domain.Exceptions;
 
 namespace TechChallenge.Oficina.Controllers.Features.Clientes
 {
-    public class ClienteController
+    public class ClienteController : IClienteController
     {
         private readonly IClienteService _clienteService;
-        private readonly IClientAdapter _clientAdapter;
+        private readonly IClienteAdapter _clientAdapter;
 
-        public ClienteController(IClienteService clienteService, IClientAdapter clientAdapter)
+        public ClienteController(IClienteService clienteService, IClienteAdapter clientAdapter)
         {
             _clienteService = clienteService;
             _clientAdapter = clientAdapter;

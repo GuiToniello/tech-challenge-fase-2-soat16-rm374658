@@ -12,7 +12,7 @@ namespace TechChallenge.Oficina.Controllers.Tests.Features.Clientes;
 public sealed class ClientEndpointsTests
 {
     private readonly Mock<IClienteService> _serviceMock = new();
-    private readonly Mock<IClientAdapter> _adapterMock = new();
+    private readonly Mock<IClienteAdapter> _adapterMock = new();
 
 
     [Fact]

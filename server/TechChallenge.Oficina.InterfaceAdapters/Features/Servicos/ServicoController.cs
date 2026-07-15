@@ -6,7 +6,7 @@ using TechChallenge.Oficina.Domain.Exceptions;
 
 namespace TechChallenge.Oficina.Controllers.Features.Servicos
 {
-    public class ServicoController
+    public class ServicoController : IServicoController
     {
         private readonly IServicoService _servicoService;
         private readonly IServicoAdapter _servicoAdapter;

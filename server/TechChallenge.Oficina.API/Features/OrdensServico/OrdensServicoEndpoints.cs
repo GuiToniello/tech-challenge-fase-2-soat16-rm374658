@@ -1,57 +1,167 @@
 using TechChallenge.Oficina.Application.Features.OrdensServico.Commands;
+using TechChallenge.Oficina.Application.Features.OrdensServico.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.OrdensServico;
 
 namespace TechChallenge.Oficina.API.Features.OrdensServico
 {
-    public class OrdensServicoEndpoints
+    public static class OrdensServicoEndpoints
     {
-        private readonly OrdensServicoController _ordensServicoController;
-
-        public OrdensServicoEndpoints(OrdensServicoController ordensServicoController)
+        public static RouteGroupBuilder MapOrdensServicoEndpoints(this IEndpointRouteBuilder routes)
         {
-            _ordensServicoController = ordensServicoController;
+            var group = routes
+                .MapGroup("/api/ordens-servico")
+                .WithTags("OrdensServico");
+
+            group.MapPost(
+                string.Empty,
+                (
+                    IOrdensServicoController ordensServicoController,
+                    CriarOrdemServicoCommand command,
+                    CancellationToken cancellationToken
+                ) => ordensServicoController.Post(command, cancellationToken))
+                .Produces<OrdemServicoViewModel>(StatusCodes.Status201Created)
+                .Produces(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status404NotFound);
+
+            group.MapGet(
+                "/{id:guid}",
+                (
+                    IOrdensServicoController ordensServicoController,
+                    Guid id,
+                    CancellationToken cancellationToken
+                ) => ordensServicoController.GetById(id, cancellationToken))
+                .WithName("GetOrdemServicoById")
+                .Produces<OrdemServicoViewModel>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound);
+
+            group.MapGet(
+                string.Empty,
+                (
+                    IOrdensServicoController ordensServicoController,
+                    CancellationToken cancellationToken
+                ) => ordensServicoController.Get(cancellationToken))
+                .Produces<IReadOnlyCollection<OrdemServicoViewModel>>(StatusCodes.Status200OK);
+
+            group.MapGet(
+                "/{id:guid}/acompanhamento",
+                (
+                    IOrdensServicoController ordensServicoController,
+                    Guid id,
+                    CancellationToken cancellationToken
+                ) => ordensServicoController.GetAcompanhamento(id, cancellationToken))
+                .Produces<AcompanhamentoOrdemServicoViewModel>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound);
+
+            group.MapGet(
+                "/cliente/{clienteId:guid}",
+                (
+                    IOrdensServicoController ordensServicoController,
+                    Guid clienteId,
+                    CancellationToken cancellationToken
+                ) => ordensServicoController.GetByCliente(clienteId, cancellationToken))
+                .Produces<IReadOnlyCollection<AcompanhamentoOrdemServicoViewModel>>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound);
+
+            group.MapPut(
+                string.Empty,
+                (
+                    IOrdensServicoController ordensServicoController,
+                    AtualizarOrdemServicoCommand command,
+                    CancellationToken cancellationToken
+                ) => ordensServicoController.Put(command, cancellationToken))
+                .Produces<OrdemServicoViewModel>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status404NotFound);
+
+            group.MapDelete(
+                "/{id:guid}",
+                (
+                    IOrdensServicoController ordensServicoController,
+                    Guid id,
+                    CancellationToken cancellationToken
+                ) => ordensServicoController.Delete(id, cancellationToken))
+                .Produces(StatusCodes.Status204NoContent)
+                .Produces(StatusCodes.Status404NotFound);
+
+            group.MapPost(
+                "/{id:guid}/em-diagnostico",
+                (
+                    IOrdensServicoController ordensServicoController,
+                    Guid id,
+                    CancellationToken cancellationToken
+                ) => ordensServicoController.AlterarParaEmDiagnostico(id, cancellationToken))
+                .Produces<OrdemServicoViewModel>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status404NotFound);
+
+            group.MapPost(
+                "/{id:guid}/em-execucao",
+                (
+                    IOrdensServicoController ordensServicoController,
+                    Guid id,
+                    CancellationToken cancellationToken
+                ) => ordensServicoController.AlterarParaEmExecucao(id, cancellationToken))
+                .Produces<OrdemServicoViewModel>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status404NotFound);
+
+            group.MapPost(
+                "/{id:guid}/finalizar",
+                (
+                    IOrdensServicoController ordensServicoController,
+                    Guid id,
+                    CancellationToken cancellationToken
+                ) => ordensServicoController.AlterarParaFinalizada(id, cancellationToken))
+                .Produces<OrdemServicoViewModel>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status404NotFound);
+
+            group.MapPost(
+                "/{id:guid}/entregar",
+                (
+                    IOrdensServicoController ordensServicoController,
+                    Guid id,
+                    CancellationToken cancellationToken
+                ) => ordensServicoController.AlterarParaEntregue(id, cancellationToken))
+                .Produces<OrdemServicoViewModel>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status404NotFound);
+
+            group.MapPost(
+                "/{id:guid}/gerar-orcamento",
+                (
+                    IOrdensServicoController ordensServicoController,
+                    Guid id,
+                    CancellationToken cancellationToken
+                ) => ordensServicoController.GerarOrcamento(id, cancellationToken))
+                .Produces<OrdemServicoViewModel>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status404NotFound);
+
+            group.MapPost(
+                "/{id:guid}/enviar-orcamento",
+                (
+                    IOrdensServicoController ordensServicoController,
+                    Guid id,
+                    CancellationToken cancellationToken
+                ) => ordensServicoController.EnviarOrcamento(id, cancellationToken))
+                .Produces(StatusCodes.Status204NoContent)
+                .Produces(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status404NotFound);
+
+            group.MapPost(
+                "/{id:guid}/aprovar-orcamento",
+                (
+                    IOrdensServicoController ordensServicoController,
+                    Guid id,
+                    CancellationToken cancellationToken
+                ) => ordensServicoController.AprovarOrcamento(id, cancellationToken))
+                .Produces<OrdemServicoViewModel>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status404NotFound);
+
+            return group;
         }
 
-        public async Task<object> Post(CriarOrdemServicoCommand command, CancellationToken cancellationToken)
-            => await _ordensServicoController.Post(command, cancellationToken);
-
-        public async Task<object> GetById(Guid id, CancellationToken cancellationToken)
-            => await _ordensServicoController.GetById(id, cancellationToken);
-
-        public async Task<object> Get(CancellationToken cancellationToken)
-            => await _ordensServicoController.Get(cancellationToken);
-
-        public async Task<object> GetAcompanhamento(Guid id, CancellationToken cancellationToken)
-            => await _ordensServicoController.GetAcompanhamento(id, cancellationToken);
-
-        public async Task<object> GetByCliente(Guid clienteId, CancellationToken cancellationToken)
-            => await _ordensServicoController.GetByCliente(clienteId, cancellationToken);
-
-        public async Task<object> Put(AtualizarOrdemServicoCommand command, CancellationToken cancellationToken)
-            => await _ordensServicoController.Put(command, cancellationToken);
-
-        public async Task<object> Delete(Guid id, CancellationToken cancellationToken)
-            => await _ordensServicoController.Delete(id, cancellationToken);
-
-        public async Task<object> AlterarParaEmDiagnostico(Guid id, CancellationToken cancellationToken)
-            => await _ordensServicoController.AlterarParaEmDiagnostico(id, cancellationToken);
-
-        public async Task<object> AlterarParaEmExecucao(Guid id, CancellationToken cancellationToken)
-            => await _ordensServicoController.AlterarParaEmExecucao(id, cancellationToken);
-
-        public async Task<object> AlterarParaFinalizada(Guid id, CancellationToken cancellationToken)
-            => await _ordensServicoController.AlterarParaFinalizada(id, cancellationToken);
-
-        public async Task<object> AlterarParaEntregue(Guid id, CancellationToken cancellationToken)
-            => await _ordensServicoController.AlterarParaEntregue(id, cancellationToken);
-
-        public async Task<object> GerarOrcamento(Guid id, CancellationToken cancellationToken)
-            => await _ordensServicoController.GerarOrcamento(id, cancellationToken);
-
-        public async Task<object> EnviarOrcamento(Guid id, CancellationToken cancellationToken)
-            => await _ordensServicoController.EnviarOrcamento(id, cancellationToken);
-
-        public async Task<object> AprovarOrcamento(Guid id, CancellationToken cancellationToken)
-            => await _ordensServicoController.AprovarOrcamento(id, cancellationToken);
     }
 }

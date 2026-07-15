@@ -6,7 +6,7 @@ using TechChallenge.Oficina.Domain.Exceptions;
 
 namespace TechChallenge.Oficina.Controllers.Features.OrdensServico
 {
-    public class OrdensServicoController
+    public class OrdensServicoController : IOrdensServicoController
     {
         private readonly IOrdemServicoService _ordemServicoService;
         private readonly IOrdensServicoAdapter _ordensServicoAdapter;

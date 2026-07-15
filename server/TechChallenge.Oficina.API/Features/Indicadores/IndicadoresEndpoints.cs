@@ -1,22 +1,25 @@
-using Microsoft.AspNetCore.Http.HttpResults;
-using TechChallenge.Oficina.Application.Features.Indicadores.Queries;
 using TechChallenge.Oficina.Application.Features.Indicadores.ViewModels;
+using TechChallenge.Oficina.Controllers.Features.Indicadores;
 
 namespace TechChallenge.Oficina.API.Features.Indicadores
 {
-    public sealed class IndicadoresEndpoints
+    public static class IndicadoresEndpoints
     {
-        private readonly TechChallenge.Oficina.Application.Features.Indicadores.IIndicadorService _indicadorService;
-
-        public IndicadoresEndpoints(TechChallenge.Oficina.Application.Features.Indicadores.IIndicadorService indicadorService)
+        public static RouteGroupBuilder MapIndicadoresEndpoints(this IEndpointRouteBuilder routes)
         {
-            _indicadorService = indicadorService;
-        }
+            var group = routes
+                .MapGroup("/api/indicadores")
+                .WithTags("Indicadores");
 
-        public async Task<Ok<IndicadorViewModel>> Get(CancellationToken cancellationToken)
-        {
-            var indicadores = await _indicadorService.ObterAsync(new ObterIndicadoresQuery(), cancellationToken);
-            return TypedResults.Ok(indicadores);
+            group.MapGet(
+                string.Empty,
+                (
+                    IIndicadoresController controller,
+                    CancellationToken cancellationToken
+                ) => controller.Get(cancellationToken))
+                .Produces<IndicadorViewModel>(StatusCodes.Status200OK);
+
+            return group;
         }
     }
 }

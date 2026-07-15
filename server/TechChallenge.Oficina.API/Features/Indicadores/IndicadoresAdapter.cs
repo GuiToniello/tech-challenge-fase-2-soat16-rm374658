@@ -1,24 +1,20 @@
-﻿using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
-using TechChallenge.Oficina.Controllers.Features.Clientes;
+﻿using TechChallenge.Oficina.Application.Features.Indicadores.ViewModels;
+using TechChallenge.Oficina.Controllers.Features.Indicadores;
 using TechChallenge.Oficina.Domain.Exceptions;
 
-namespace TechChallenge.Oficina.API.Features.Clientes
+namespace TechChallenge.Oficina.API.Features.Indicadores
 {
-    public class ClienteAdapter : IClienteAdapter
+    public class IndicadoresAdapter : IIndicadoresAdapter
     {
-        public object Adapt(ClienteResult<ClienteViewModel, Exception> result, bool created = false)
+        public object Adapt(IndicadoresResult<IndicadorViewModel, Exception> result)
         {
             if (result.Value != null)
-                if (created)
-                    return TypedResults.CreatedAtRoute(result.Value, "PostCliente", new { id = result.Value.Id });
-                else
                     return TypedResults.Ok(result.Value);
 
             return CriaErro(result.Error!);
         }
 
-
-        public object Adapt(ClienteResult<bool, Exception> result)
+        public object Adapt(IndicadoresResult<bool, Exception> result)
         {
             if (result.Value)
                 return TypedResults.Ok(result.Value);
@@ -26,7 +22,7 @@ namespace TechChallenge.Oficina.API.Features.Clientes
             return CriaErro(result.Error!);
         }
 
-        public object Adapt(ClienteResult<IReadOnlyCollection<ClienteViewModel>, Exception> result)
+        public object Adapt(IndicadoresResult<IReadOnlyCollection<IndicadorViewModel>, Exception> result)
         {
             if (result.Value != null)
                 return TypedResults.Ok(result.Value);

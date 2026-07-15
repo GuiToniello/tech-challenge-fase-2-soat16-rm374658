@@ -3,7 +3,7 @@ using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
 
 namespace TechChallenge.Oficina.Controllers.Features.Clientes
 {
-    public interface IClientAdapter
+    public interface IClienteAdapter
     {
         object Adapt(ClienteResult<ClienteViewModel, Exception> result, bool created = false);
 

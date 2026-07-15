@@ -16,7 +16,7 @@ namespace TechChallenge.Oficina.API.Features.Clientes
             group.MapPost(
                 string.Empty,
                 (
-                    ClienteController clienteController,
+                    IClienteController clienteController,
                     CriarClienteCommand command,
                     CancellationToken cancellationToken
                 ) => clienteController.Post(command, cancellationToken))
@@ -27,7 +27,7 @@ namespace TechChallenge.Oficina.API.Features.Clientes
             group.MapGet(
                 "/{id:guid}",
                 (
-                    ClienteController clienteController,
+                    IClienteController clienteController,
                     Guid id,
                     CancellationToken cancellationToken
                 ) => clienteController.GetById(id, cancellationToken))
@@ -38,7 +38,7 @@ namespace TechChallenge.Oficina.API.Features.Clientes
             group.MapGet(
                 string.Empty,
                 (
-                    ClienteController clienteController,
+                    IClienteController clienteController,
                     CancellationToken cancellationToken
                 ) => clienteController.Get(cancellationToken))
                 .Produces<IReadOnlyCollection<ClienteViewModel>>(StatusCodes.Status200OK);
@@ -46,7 +46,7 @@ namespace TechChallenge.Oficina.API.Features.Clientes
             group.MapPut(
                 string.Empty,
                 (
-                    ClienteController clienteController,
+                    IClienteController clienteController,
                     AtualizarClienteCommand command,
                     CancellationToken cancellationToken
                 ) => clienteController.Put(command, cancellationToken))
@@ -57,7 +57,7 @@ namespace TechChallenge.Oficina.API.Features.Clientes
             group.MapDelete(
                 "/{id:guid}",
                 (
-                    ClienteController clienteController,
+                    IClienteController clienteController,
                     Guid id,
                     CancellationToken cancellationToken
                 ) => clienteController.Delete(id, cancellationToken))

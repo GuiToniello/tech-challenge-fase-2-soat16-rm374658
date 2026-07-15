@@ -15,6 +15,7 @@ using TechChallenge.Oficina.API.Features.OrdensServico;
 using TechChallenge.Oficina.API.Features.Servicos;
 using TechChallenge.Oficina.API.Features.Veiculos;
 using TechChallenge.Oficina.Controllers.Features.Clientes;
+using TechChallenge.Oficina.Controllers.Features.Indicadores;
 using TechChallenge.Oficina.Controllers.Features.Insumos;
 using TechChallenge.Oficina.Controllers.Features.OrdensServico;
 using TechChallenge.Oficina.Controllers.Features.Servicos;
@@ -72,15 +73,16 @@ public sealed class IntegrationTestFixture : IDisposable
         services.AddSingleton(emailSenderMock.Object);
 
         services.AddApplication();
-        services.AddScoped<IClientAdapter, ClienteAdapter>();
+        services.AddScoped<IClienteAdapter, ClienteAdapter>();
         services.AddScoped<ClienteController>();
+        services.AddScoped<IIndicadoresAdapter, IndicadoresAdapter>();
+        services.AddScoped<IIndicadoresController, IndicadoresController>();
         services.AddScoped<IServicoAdapter, ServicoAdapter>();
         services.AddScoped<ServicoController>();
         services.AddScoped<IOrdensServicoAdapter, OrdensServicoAdapter>();
         services.AddScoped<OrdensServicoController>();
         services.AddScoped<IVeiculoAdapter, VeiculoAdapter>();
         services.AddScoped<VeiculoController>();
-        services.AddScoped<IndicadoresEndpoints>();
         services.AddScoped<InsumoController>();
         services.AddScoped<IInsumoAdapter, InsumoAdapter>();
 
@@ -106,8 +108,8 @@ public sealed class IntegrationTestFixture : IDisposable
     public OrdensServicoController CriarOrdensServicoEndpoints()
         => Obter<OrdensServicoController>();
 
-    public IndicadoresEndpoints CriarIndicadoresEndpoints()
-        => Obter<IndicadoresEndpoints>();
+    public IIndicadoresController CriarIndicadoresEndpoints()
+        => Obter<IIndicadoresController>();
 
     public void Dispose()
     {

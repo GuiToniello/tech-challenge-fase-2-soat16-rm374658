@@ -6,7 +6,7 @@ using TechChallenge.Oficina.Domain.Exceptions;
 
 namespace TechChallenge.Oficina.Controllers.Features.Veiculos
 {
-    public class VeiculoController
+    public class VeiculoController : IVeiculoController
     {
         private readonly IVeiculoService _veiculoService;
         private readonly IVeiculoAdapter _veiculoAdapter;

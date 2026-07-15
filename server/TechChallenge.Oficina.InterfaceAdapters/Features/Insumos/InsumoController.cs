@@ -6,7 +6,7 @@ using TechChallenge.Oficina.Domain.Exceptions;
 
 namespace TechChallenge.Oficina.Controllers.Features.Insumos
 {
-    public class InsumoController
+    public class InsumoController : IInsumoController
     {
         private readonly IInsumoService _insumoService;
         private readonly IInsumoAdapter _insumoAdapter;

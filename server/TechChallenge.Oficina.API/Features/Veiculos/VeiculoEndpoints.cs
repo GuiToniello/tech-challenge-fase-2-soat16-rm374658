@@ -16,7 +16,7 @@ namespace TechChallenge.Oficina.API.Features.Veiculos
             group.MapPost(
                 string.Empty,
                 (
-                    VeiculoController veiculoController,
+                    IVeiculoController veiculoController,
                     CriarVeiculoCommand command,
                     CancellationToken cancellationToken
                 ) => veiculoController.Post(command, cancellationToken))
@@ -27,7 +27,7 @@ namespace TechChallenge.Oficina.API.Features.Veiculos
             group.MapGet(
                 "/{id:guid}",
                 (
-                    VeiculoController veiculoController,
+                    IVeiculoController veiculoController,
                     Guid id,
                     CancellationToken cancellationToken
                 ) => veiculoController.GetById(id, cancellationToken))
@@ -38,7 +38,7 @@ namespace TechChallenge.Oficina.API.Features.Veiculos
             group.MapGet(
                 string.Empty,
                 (
-                    VeiculoController veiculoController,
+                    IVeiculoController veiculoController,
                     Guid? clienteId,
                     CancellationToken cancellationToken
                 ) => veiculoController.Get(clienteId, cancellationToken))
@@ -47,7 +47,7 @@ namespace TechChallenge.Oficina.API.Features.Veiculos
             group.MapPut(
                 string.Empty,
                 (
-                    VeiculoController veiculoController,
+                    IVeiculoController veiculoController,
                     AtualizarVeiculoCommand command,
                     CancellationToken cancellationToken
                 ) => veiculoController.Put(command, cancellationToken))
@@ -58,7 +58,7 @@ namespace TechChallenge.Oficina.API.Features.Veiculos
             group.MapDelete(
                 "/{id:guid}",
                 (
-                    VeiculoController veiculoController,
+                    IVeiculoController veiculoController,
                     Guid id,
                     CancellationToken cancellationToken
                 ) => veiculoController.Delete(id, cancellationToken))

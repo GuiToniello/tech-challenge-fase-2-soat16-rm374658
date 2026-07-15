@@ -16,7 +16,7 @@ namespace TechChallenge.Oficina.API.Features.Servicos
             group.MapPost(
                 string.Empty,
                 (
-                    ServicoController servicoController,
+                    IServicoController servicoController,
                     CriarServicoCommand command,
                     CancellationToken cancellationToken
                 ) => servicoController.Post(command, cancellationToken))
@@ -27,7 +27,7 @@ namespace TechChallenge.Oficina.API.Features.Servicos
             group.MapGet(
                 "/{id:guid}",
                 (
-                    ServicoController servicoController,
+                    IServicoController servicoController,
                     Guid id,
                     CancellationToken cancellationToken
                 ) => servicoController.GetById(id, cancellationToken))
@@ -38,7 +38,7 @@ namespace TechChallenge.Oficina.API.Features.Servicos
             group.MapGet(
                 string.Empty,
                 (
-                    ServicoController servicoController,
+                    IServicoController servicoController,
                     CancellationToken cancellationToken
                 ) => servicoController.Get(cancellationToken))
                 .Produces<IReadOnlyCollection<ServicoViewModel>>(StatusCodes.Status200OK);
@@ -46,7 +46,7 @@ namespace TechChallenge.Oficina.API.Features.Servicos
             group.MapPut(
                 string.Empty,
                 (
-                    ServicoController servicoController,
+                    IServicoController servicoController,
                     AtualizarServicoCommand command,
                     CancellationToken cancellationToken
                 ) => servicoController.Put(command, cancellationToken))
@@ -57,7 +57,7 @@ namespace TechChallenge.Oficina.API.Features.Servicos
             group.MapDelete(
                 "/{id:guid}",
                 (
-                    ServicoController servicoController,
+                    IServicoController servicoController,
                     Guid id,
                     CancellationToken cancellationToken
                 ) => servicoController.Delete(id, cancellationToken))
