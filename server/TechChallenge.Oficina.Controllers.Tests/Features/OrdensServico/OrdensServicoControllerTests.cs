@@ -17,7 +17,6 @@ public sealed class OrdensServicoControllerTests
     [Fact]
     public async Task Post_DeveRetornarAdaptado_QuandoSucesso()
     {
-        ConfigurarAdapterParaOrdemResult();
         var controller = CriarController();
         var command = new CriarOrdemServicoCommand { ClienteId = Guid.NewGuid(), VeiculoId = Guid.NewGuid(), ServicoIds = [Guid.NewGuid()] };
         var ordem = new OrdemServicoViewModel { Id = Guid.NewGuid() };
@@ -28,107 +27,127 @@ public sealed class OrdensServicoControllerTests
             .ReturnsAsync(ordem);
 
         _adapterMock
-            .Setup(adapter => adapter.Adapt(It.IsAny<OrdensServicoResult<OrdemServicoViewModel, Exception>>(), true))
+            .Setup(adapter => adapter.Adapt(It.IsAny<OrdensServicoResult<OrdemServicoViewModel, Exception>>(), It.IsAny<bool>()))
             .Returns(adaptedResult);
 
         var resultado = await controller.Post(command, CancellationToken.None);
 
         Assert.Equal(adaptedResult, resultado);
-        _adapterMock.Verify(adapter => adapter.Adapt(It.IsAny<OrdensServicoResult<OrdemServicoViewModel, Exception>>(), true), Times.Once);
+        _adapterMock.Verify(adapter => adapter.Adapt(It.IsAny<OrdensServicoResult<OrdemServicoViewModel, Exception>>(), It.IsAny<bool>()), Times.Once);
     }
 
     [Fact]
     public async Task GetById_DeveRepassarIdCorretamente()
     {
-        ConfigurarAdapterParaOrdemResult();
         var controller = CriarController();
         var id = Guid.NewGuid();
         var ordem = new OrdemServicoViewModel { Id = id };
+        var adaptedResult = new object();
 
         _serviceMock
             .Setup(service => service.ObterPorIdAsync(It.Is<ObterOrdemServicoPorIdQuery>(q => q.Id == id), It.IsAny<CancellationToken>()))
             .ReturnsAsync(ordem);
 
-        var response = await controller.GetById(id, CancellationToken.None);
-        var resultado = Assert.IsType<OrdensServicoResult<OrdemServicoViewModel, Exception>>(response);
+        _adapterMock
+            .Setup(adapter => adapter.Adapt(It.IsAny<OrdensServicoResult<OrdemServicoViewModel, Exception>>()))
+            .Returns(adaptedResult);
 
-        Assert.NotNull(resultado.Value);
-        Assert.Null(resultado.Error);
-        Assert.Equal(ordem, resultado.Value);
+        var response = await controller.GetById(id, CancellationToken.None);
+
+        Assert.Equal(adaptedResult, response);
         _serviceMock.Verify(service => service.ObterPorIdAsync(It.Is<ObterOrdemServicoPorIdQuery>(q => q.Id == id), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
     public async Task Get_DeveRepassarQuery()
     {
-        ConfigurarAdapterParaColecaoResult();
         var controller = CriarController();
         IReadOnlyCollection<OrdemServicoViewModel> ordens = [new OrdemServicoViewModel { Id = Guid.NewGuid() }];
+        var adaptedResult = new object();
 
         _serviceMock
             .Setup(service => service.ListarAsync(It.IsAny<ListarOrdensServicoQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(ordens);
 
-        await controller.Get(CancellationToken.None);
+        _adapterMock
+            .Setup(adapter => adapter.Adapt(It.IsAny<OrdensServicoResult<IReadOnlyCollection<OrdemServicoViewModel>, Exception>>()))
+            .Returns(adaptedResult);
 
+        var response = await controller.Get(CancellationToken.None);
+
+        Assert.Equal(adaptedResult, response);
         _serviceMock.Verify(service => service.ListarAsync(It.IsAny<ListarOrdensServicoQuery>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
     public async Task Delete_DeveRepassarIdCorretamente()
     {
-        ConfigurarAdapterParaBoolResult();
         var controller = CriarController();
         var id = Guid.NewGuid();
+        var adaptedResult = new object();
 
         _serviceMock
             .Setup(service => service.ExcluirAsync(It.Is<ExcluirOrdemServicoCommand>(c => c.Id == id), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        await controller.Delete(id, CancellationToken.None);
+        _adapterMock
+            .Setup(adapter => adapter.Empty())
+            .Returns(adaptedResult);
 
+        var response = await controller.Delete(id, CancellationToken.None);
+
+        Assert.Equal(adaptedResult, response);
         _serviceMock.Verify(service => service.ExcluirAsync(It.Is<ExcluirOrdemServicoCommand>(c => c.Id == id), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
     public async Task GerarOrcamento_DeveRepassarComandoComId()
     {
-        ConfigurarAdapterParaOrdemResult();
         var controller = CriarController();
         var id = Guid.NewGuid();
-        var ordem = new OrdemServicoViewModel { Id = id };
+        var adaptedResult = new object();
 
         _serviceMock
             .Setup(service => service.GerarOrcamentoAsync(It.Is<AlterarStatusOrdemServicoCommand>(c => c.Id == id), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(ordem);
+            .ReturnsAsync(new OrdemServicoViewModel { Id = id });
 
-        await controller.GerarOrcamento(id, CancellationToken.None);
+        _adapterMock
+            .Setup(adapter => adapter.Adapt(It.IsAny<OrdensServicoResult<OrdemServicoViewModel, Exception>>()))
+            .Returns(adaptedResult);
 
+        var response = await controller.GerarOrcamento(id, CancellationToken.None);
+
+        Assert.Equal(adaptedResult, response);
         _serviceMock.Verify(service => service.GerarOrcamentoAsync(It.Is<AlterarStatusOrdemServicoCommand>(c => c.Id == id), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
     public async Task EnviarOrcamento_DeveRepassarIdCorretamente()
     {
-        ConfigurarAdapterParaEmpty();
         var controller = CriarController();
         var id = Guid.NewGuid();
+        var adaptedResult = new object();
 
         _serviceMock
             .Setup(service => service.EnviarOrcamentoPorEmailAsync(It.Is<AlterarStatusOrdemServicoCommand>(c => c.Id == id), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        await controller.EnviarOrcamento(id, CancellationToken.None);
+        _adapterMock
+            .Setup(adapter => adapter.Empty())
+            .Returns(adaptedResult);
 
+        var response = await controller.EnviarOrcamento(id, CancellationToken.None);
+
+        Assert.Equal(adaptedResult, response);
         _serviceMock.Verify(service => service.EnviarOrcamentoPorEmailAsync(It.Is<AlterarStatusOrdemServicoCommand>(c => c.Id == id), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
     public async Task Post_DeveRetornarAdaptado_QuandoDomainException()
     {
-        ConfigurarAdapterParaOrdemResult();
         var controller = CriarController();
         var command = new CriarOrdemServicoCommand { ClienteId = Guid.NewGuid(), VeiculoId = Guid.NewGuid(), ServicoIds = [Guid.NewGuid()] };
+        var adaptedResult = new object();
 
         _serviceMock
             .Setup(service => service.CriarAsync(command, It.IsAny<CancellationToken>()))
@@ -136,39 +155,12 @@ public sealed class OrdensServicoControllerTests
 
         _adapterMock
             .Setup(adapter => adapter.Adapt(It.IsAny<OrdensServicoResult<OrdemServicoViewModel, Exception>>(), It.IsAny<bool>()))
-            .Returns(new object());
+            .Returns(adaptedResult);
 
-        await controller.Post(command, CancellationToken.None);
+        var response = await controller.Post(command, CancellationToken.None);
 
+        Assert.Equal(adaptedResult, response);
         _adapterMock.Verify(adapter => adapter.Adapt(It.IsAny<OrdensServicoResult<OrdemServicoViewModel, Exception>>(), It.IsAny<bool>()), Times.Once);
-    }
-
-    private void ConfigurarAdapterParaOrdemResult()
-    {
-        _adapterMock
-            .Setup(adapter => adapter.Adapt(It.IsAny<OrdensServicoResult<OrdemServicoViewModel, Exception>>(), It.IsAny<bool>()))
-            .Returns((OrdensServicoResult<OrdemServicoViewModel, Exception> result, bool _) => result);
-    }
-
-    private void ConfigurarAdapterParaColecaoResult()
-    {
-        _adapterMock
-            .Setup(adapter => adapter.Adapt(It.IsAny<OrdensServicoResult<IReadOnlyCollection<OrdemServicoViewModel>, Exception>>()))
-            .Returns((OrdensServicoResult<IReadOnlyCollection<OrdemServicoViewModel>, Exception> result) => result);
-    }
-
-    private void ConfigurarAdapterParaBoolResult()
-    {
-        _adapterMock
-            .Setup(adapter => adapter.Adapt(It.IsAny<OrdensServicoResult<bool, Exception>>()))
-            .Returns((OrdensServicoResult<bool, Exception> result) => result);
-    }
-
-    private void ConfigurarAdapterParaEmpty()
-    {
-        _adapterMock
-            .Setup(adapter => adapter.Empty())
-            .Returns(new object());
     }
 
     private OrdensServicoController CriarController()

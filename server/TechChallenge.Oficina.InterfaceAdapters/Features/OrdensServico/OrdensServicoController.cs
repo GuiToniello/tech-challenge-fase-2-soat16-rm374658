@@ -29,11 +29,13 @@ namespace TechChallenge.Oficina.Controllers.Features.OrdensServico
             catch (DomainException exception)
             {
                 var result = OrdensServicoResult.FromError<OrdemServicoViewModel>(exception);
+
                 return _ordensServicoAdapter.Adapt(result);
             }
             catch (KeyNotFoundException exception)
             {
                 var result = OrdensServicoResult.FromError<OrdemServicoViewModel>(exception);
+
                 return _ordensServicoAdapter.Adapt(result);
             }
         }
@@ -107,11 +109,13 @@ namespace TechChallenge.Oficina.Controllers.Features.OrdensServico
             catch (DomainException exception)
             {
                 var result = OrdensServicoResult.FromError<OrdemServicoViewModel>(exception);
+
                 return _ordensServicoAdapter.Adapt(result);
             }
             catch (KeyNotFoundException exception)
             {
                 var result = OrdensServicoResult.FromError<OrdemServicoViewModel>(exception);
+
                 return _ordensServicoAdapter.Adapt(result);
             }
         }

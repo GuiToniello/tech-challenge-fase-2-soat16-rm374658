@@ -1,5 +1,6 @@
 using TechChallenge.Oficina.Application.Features.OrdensServico.Commands;
 using TechChallenge.Oficina.Application.Features.OrdensServico.ViewModels;
+using TechChallenge.Oficina.Controllers.Features.OrdensServico;
 
 namespace TechChallenge.Oficina.API.Features.OrdensServico
 {
@@ -165,6 +166,7 @@ namespace TechChallenge.Oficina.API.Features.OrdensServico
         public static void RegisterOrdensServicoEndpoints(this IServiceCollection services)
         {
             services.AddScoped<OrdensServicoEndpoints>();
+            services.AddScoped<OrdensServicoController>();
         }
     }
 }
