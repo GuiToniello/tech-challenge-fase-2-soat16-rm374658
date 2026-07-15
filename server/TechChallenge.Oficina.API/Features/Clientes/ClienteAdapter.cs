@@ -1,18 +1,23 @@
 ﻿using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.Clientes;
 using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.Domain.Features.Insumos;
 
 namespace TechChallenge.Oficina.API.Features.Clientes
 {
     public class ClienteAdapter : IClientAdapter
     {
-        public object Adapt(ClienteResult<ClienteViewModel, Exception> result)
+        public object Adapt(ClienteResult<ClienteViewModel, Exception> result, bool created = false)
         {
-            if(result.Value != null)
-                return TypedResults.CreatedAtRoute(result.Value);
+            if (result.Value != null)
+                if (created)
+                    return TypedResults.CreatedAtRoute(result.Value, "PostCliente", new { id = result.Value.Id });
+                else
+                    return TypedResults.Ok(result.Value);
 
             return CriaErro(result.Error!);
         }
+
 
         public object Adapt(ClienteResult<bool, Exception> result)
         {
@@ -22,13 +27,26 @@ namespace TechChallenge.Oficina.API.Features.Clientes
             return CriaErro(result.Error!);
         }
 
+        public object Adapt(ClienteResult<IReadOnlyCollection<ClienteViewModel>, Exception> result)
+        {
+            if (result.Value != null)
+                return TypedResults.Ok(result.Value);
+
+            return CriaErro(result.Error!);
+        }
+
+        public object Empty()
+        {
+            return TypedResults.NoContent();
+        }
+
         public object CriaErro(Exception ex)
         {
             if (ex is DomainException)
-                return TypedResults.BadRequest(ex.Message);
+                return TypedResults.BadRequest(new {  Message = ex.Message });
 
             if (ex is KeyNotFoundException)
-                return TypedResults.NotFound(ex.Message);
+                return TypedResults.NotFound(new {  Message = ex.Message });
 
             return TypedResults.Problem(ex?.Message);
         }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using TechChallenge.Oficina.API.Features.Clientes;
 using Xunit;
@@ -50,7 +51,8 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        Assert.IsType<BadRequest<string>>(resultado);
+        var badRequest = Assert.IsAssignableFrom<IStatusCodeHttpResult>(resultado);
+        Assert.Equal(StatusCodes.Status400BadRequest, badRequest.StatusCode);
     }
 
     [Fact]
@@ -65,7 +67,8 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Post(command, CancellationToken.None);
 
-        Assert.IsType<BadRequest<string>>(resultado);
+        var badRequest = Assert.IsAssignableFrom<IStatusCodeHttpResult>(resultado);
+        Assert.Equal(StatusCodes.Status400BadRequest, badRequest.StatusCode);
     }
 
     [Fact]
@@ -77,7 +80,8 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Post(new CriarClienteCommand { NomeCompleto = "Outro Cliente", Identificacao = cpf }, CancellationToken.None);
 
-        Assert.IsType<BadRequest<string>>(resultado);
+        var badRequest = Assert.IsAssignableFrom<IStatusCodeHttpResult>(resultado);
+        Assert.Equal(StatusCodes.Status400BadRequest, badRequest.StatusCode);
     }
 
     [Fact]
@@ -91,9 +95,9 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.GetById(id, CancellationToken.None);
 
-        Assert.NotNull(resultado.Value);
-        Assert.Null(resultado.Error);
-        Assert.Equal(id, resultado.Value.Id);
+        var ok = Assert.IsType<Ok<ClienteViewModel>>(resultado);
+        Assert.NotNull(ok.Value);
+        Assert.Equal(id, ok.Value.Id);
     }
 
     [Fact]
@@ -103,8 +107,8 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.GetById(Guid.NewGuid(), CancellationToken.None);
 
-        Assert.NotNull(resultado.Error);
-        Assert.Null(resultado.Value);
+        var notFound = Assert.IsAssignableFrom<IStatusCodeHttpResult>(resultado);
+        Assert.Equal(StatusCodes.Status404NotFound, notFound.StatusCode);
     }
 
     [Fact]
@@ -114,9 +118,9 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Get(CancellationToken.None);
 
-        Assert.NotNull(resultado.Value);
-        Assert.Null(resultado.Error);
-        Assert.Empty(resultado.Value);
+        var ok = Assert.IsType<Ok<IReadOnlyCollection<ClienteViewModel>>>(resultado);
+        Assert.NotNull(ok.Value);
+        Assert.Empty(ok.Value);
     }
 
     [Fact]
@@ -127,9 +131,9 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Get(CancellationToken.None);
 
-        Assert.NotNull(resultado.Value);
-        Assert.Null(resultado.Error);
-        Assert.NotEmpty(resultado.Value);
+        var ok = Assert.IsType<Ok<IReadOnlyCollection<ClienteViewModel>>>(resultado);
+        Assert.NotNull(ok.Value);
+        Assert.NotEmpty(ok.Value);
     }
 
     [Fact]
@@ -149,9 +153,9 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Put(command, CancellationToken.None);
 
-        Assert.NotNull(resultado.Value);
-        Assert.Null(resultado.Error);
-        Assert.Equal("Fernanda Rocha Atualizada", resultado.Value.NomeCompleto);
+        var ok = Assert.IsType<Ok<ClienteViewModel>>(resultado);
+        Assert.NotNull(ok.Value);
+        Assert.Equal("Fernanda Rocha Atualizada", ok.Value.NomeCompleto);
     }
 
     [Fact]
@@ -167,9 +171,8 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Put(command, CancellationToken.None);
 
-        Assert.Null(resultado.Value);
-        Assert.NotNull(resultado.Error);
-        Assert.IsType<KeyNotFoundException>(resultado.Error);
+        var notFound = Assert.IsAssignableFrom<IStatusCodeHttpResult>(resultado);
+        Assert.Equal(StatusCodes.Status404NotFound, notFound.StatusCode);
     }
 
     [Fact]
@@ -183,9 +186,7 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Delete(id, CancellationToken.None);
 
-        Assert.NotNull(resultado.Value);
-        Assert.Null(resultado.Error);
-        Assert.True(resultado.Value);
+        Assert.IsType<NoContent>(resultado);
     }
 
     [Fact]
@@ -195,8 +196,7 @@ public sealed class ClientEndpointsIntegrationTests : IDisposable
 
         var resultado = await endpoints.Delete(Guid.NewGuid(), CancellationToken.None);
 
-        Assert.False(resultado.Value);
-        Assert.NotNull(resultado.Error);
-        Assert.IsType<KeyNotFoundException>(resultado.Error);
+        var notFound = Assert.IsAssignableFrom<IStatusCodeHttpResult>(resultado);
+        Assert.Equal(StatusCodes.Status404NotFound, notFound.StatusCode);
     }
 }

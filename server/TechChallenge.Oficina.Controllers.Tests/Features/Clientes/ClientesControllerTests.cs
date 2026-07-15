@@ -14,13 +14,13 @@ public sealed class ClientEndpointsTests
     private readonly Mock<IClienteService> _serviceMock = new();
     private readonly Mock<IClientAdapter> _adapterMock = new();
 
+
     [Fact]
     public async Task Post_DeveRetornarCreatedAtRoute_QuandoSucesso()
     {
         var controller = CriarController();
         var command = new CriarClienteCommand { NomeCompleto = "Cliente", Identificacao = "52998224725" };
         var cliente = new ClienteViewModel { Id = Guid.NewGuid(), NomeCompleto = "Cliente" };
-        var expectedResult = new ClienteResult<ClienteViewModel, Exception>(cliente);
         var adaptedResult = new object();
 
         _serviceMock
@@ -28,13 +28,13 @@ public sealed class ClientEndpointsTests
             .ReturnsAsync(cliente);
 
         _adapterMock
-            .Setup(adapter => adapter.Adapt(It.IsAny<ClienteResult<ClienteViewModel, Exception>>()))
+            .Setup(adapter => adapter.Adapt(It.IsAny<ClienteResult<ClienteViewModel, Exception>>(), true))
             .Returns(adaptedResult);
 
         var resultado = await controller.Post(command, CancellationToken.None);
 
         Assert.Equal(adaptedResult, resultado);
-        _adapterMock.Verify(adapter => adapter.Adapt(It.IsAny<ClienteResult<ClienteViewModel, Exception>>()), Times.Once);
+        _adapterMock.Verify(adapter => adapter.Adapt(It.IsAny<ClienteResult<ClienteViewModel, Exception>>(), true), Times.Once);
     }
 
     [Fact]
@@ -49,18 +49,19 @@ public sealed class ClientEndpointsTests
             .ThrowsAsync(new DomainException("erro de domínio"));
 
         _adapterMock
-            .Setup(adapter => adapter.Adapt(It.IsAny<ClienteResult<ClienteViewModel, Exception>>()))
+            .Setup(adapter => adapter.Adapt(It.IsAny<ClienteResult<ClienteViewModel, Exception>>(), It.IsAny<bool>()))
             .Returns(adaptedResult);
 
         var resultado = await controller.Post(command, CancellationToken.None);
 
         Assert.Equal(adaptedResult, resultado);
-        _adapterMock.Verify(adapter => adapter.Adapt(It.IsAny<ClienteResult<ClienteViewModel, Exception>>()), Times.Once);
+        _adapterMock.Verify(adapter => adapter.Adapt(It.IsAny<ClienteResult<ClienteViewModel, Exception>>(), It.IsAny<bool>()), Times.Once);
     }
 
     [Fact]
     public async Task GetById_DeveRetornarOk_QuandoClienteExiste()
     {
+        ConfigurarAdapterParaClienteResult();
         var controller = CriarController();
         var id = Guid.NewGuid();
         var cliente = new ClienteViewModel { Id = id, NomeCompleto = "Cliente" };
@@ -69,7 +70,8 @@ public sealed class ClientEndpointsTests
             .Setup(service => service.ObterPorIdAsync(It.Is<ObterClientePorIdQuery>(q => q.Id == id), It.IsAny<CancellationToken>()))
             .ReturnsAsync(cliente);
 
-        var resultado = await controller.GetById(id, CancellationToken.None);
+        var response = await controller.GetById(id, CancellationToken.None);
+        var resultado = Assert.IsType<ClienteResult<ClienteViewModel, Exception>>(response);
 
         Assert.NotNull(resultado.Value);
         Assert.Null(resultado.Error);
@@ -79,6 +81,7 @@ public sealed class ClientEndpointsTests
     [Fact]
     public async Task GetById_DeveRetornarNotFound_QuandoClienteNaoExiste()
     {
+        ConfigurarAdapterParaClienteResult();
         var controller = CriarController();
         var id = Guid.NewGuid();
 
@@ -86,7 +89,8 @@ public sealed class ClientEndpointsTests
             .Setup(service => service.ObterPorIdAsync(It.Is<ObterClientePorIdQuery>(q => q.Id == id), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new KeyNotFoundException("não encontrado"));
 
-        var resultado = await controller.GetById(id, CancellationToken.None);
+        var response = await controller.GetById(id, CancellationToken.None);
+        var resultado = Assert.IsType<ClienteResult<ClienteViewModel, Exception>>(response);
 
         Assert.Null(resultado.Value);
         Assert.NotNull(resultado.Error);
@@ -96,6 +100,7 @@ public sealed class ClientEndpointsTests
     [Fact]
     public async Task Put_DeveRetornarOk_QuandoSucesso()
     {
+        ConfigurarAdapterParaClienteResult();
         var controller = CriarController();
         var command = new AtualizarClienteCommand { Id = Guid.NewGuid(), NomeCompleto = "Atualizado", Identificacao = "52998224725" };
         var cliente = new ClienteViewModel { Id = command.Id, NomeCompleto = "Atualizado" };
@@ -104,7 +109,8 @@ public sealed class ClientEndpointsTests
             .Setup(service => service.AtualizarAsync(command, It.IsAny<CancellationToken>()))
             .ReturnsAsync(cliente);
 
-        var resultado = await controller.Put(command, CancellationToken.None);
+        var response = await controller.Put(command, CancellationToken.None);
+        var resultado = Assert.IsType<ClienteResult<ClienteViewModel, Exception>>(response);
 
         Assert.NotNull(resultado.Value);
         Assert.Null(resultado.Error);
@@ -114,6 +120,7 @@ public sealed class ClientEndpointsTests
     [Fact]
     public async Task Put_DeveRetornarBadRequest_QuandoDomainException()
     {
+        ConfigurarAdapterParaClienteResult();
         var controller = CriarController();
         var command = new AtualizarClienteCommand { Id = Guid.NewGuid(), NomeCompleto = "Atualizado", Identificacao = "111" };
 
@@ -121,7 +128,8 @@ public sealed class ClientEndpointsTests
             .Setup(service => service.AtualizarAsync(command, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new DomainException("erro de domínio"));
 
-        var resultado = await controller.Put(command, CancellationToken.None);
+        var response = await controller.Put(command, CancellationToken.None);
+        var resultado = Assert.IsType<ClienteResult<ClienteViewModel, Exception>>(response);
 
         Assert.Null(resultado.Value);
         Assert.NotNull(resultado.Error);
@@ -131,6 +139,7 @@ public sealed class ClientEndpointsTests
     [Fact]
     public async Task Put_DeveRetornarNotFound_QuandoNaoEncontrado()
     {
+        ConfigurarAdapterParaClienteResult();
         var controller = CriarController();
         var command = new AtualizarClienteCommand { Id = Guid.NewGuid(), NomeCompleto = "Atualizado", Identificacao = "52998224725" };
 
@@ -138,7 +147,8 @@ public sealed class ClientEndpointsTests
             .Setup(service => service.AtualizarAsync(command, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new KeyNotFoundException("não encontrado"));
 
-        var resultado = await controller.Put(command, CancellationToken.None);
+        var response = await controller.Put(command, CancellationToken.None);
+        var resultado = Assert.IsType<ClienteResult<ClienteViewModel, Exception>>(response);
 
         Assert.Null(resultado.Value);
         Assert.NotNull(resultado.Error);
@@ -148,10 +158,12 @@ public sealed class ClientEndpointsTests
     [Fact]
     public async Task Delete_DeveRetornarNoContent_QuandoSucesso()
     {
+        ConfigurarAdapterParaEmpty();
         var controller = CriarController();
         var id = Guid.NewGuid();
 
-        var resultado = await controller.Delete(id, CancellationToken.None);
+        var response = await controller.Delete(id, CancellationToken.None);
+        var resultado = Assert.IsType<ClienteResult<bool, Exception>>(response);
 
         Assert.NotNull(resultado.Value);
         Assert.Null(resultado.Error);
@@ -162,6 +174,7 @@ public sealed class ClientEndpointsTests
     [Fact]
     public async Task Delete_DeveRetornarNotFound_QuandoNaoEncontrado()
     {
+        ConfigurarAdapterParaBoolResult();
         var controller = CriarController();
         var id = Guid.NewGuid();
 
@@ -169,7 +182,8 @@ public sealed class ClientEndpointsTests
             .Setup(service => service.ExcluirAsync(It.Is<ExcluirClienteCommand>(c => c.Id == id), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new KeyNotFoundException("não encontrado"));
 
-        var resultado = await controller.Delete(id, CancellationToken.None);
+        var response = await controller.Delete(id, CancellationToken.None);
+        var resultado = Assert.IsType<ClienteResult<bool, Exception>>(response);
 
         Assert.False(resultado.Value);
         Assert.NotNull(resultado.Error);
@@ -179,6 +193,7 @@ public sealed class ClientEndpointsTests
     [Fact]
     public async Task Get_DeveRetornarOkComColecao()
     {
+        ConfigurarAdapterParaColecaoResult();
         var controller = CriarController();
         IReadOnlyCollection<ClienteViewModel> clientes = new List<ClienteViewModel> { new ClienteViewModel { NomeCompleto = "Cliente" } };
 
@@ -186,7 +201,8 @@ public sealed class ClientEndpointsTests
             .Setup(service => service.ListarAsync(It.IsAny<ListarClientesQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(clientes);
 
-        var resultado = await controller.Get(CancellationToken.None);
+        var response = await controller.Get(CancellationToken.None);
+        var resultado = Assert.IsType<ClienteResult<IReadOnlyCollection<ClienteViewModel>, Exception>>(response);
 
         Assert.NotNull(resultado.Value);
         Assert.Null(resultado.Error);
@@ -196,6 +212,7 @@ public sealed class ClientEndpointsTests
     [Fact]
     public async Task Get_DeveRetornarOkComColecaoVazia_QuandoSemClientes()
     {
+        ConfigurarAdapterParaColecaoResult();
         var controller = CriarController();
         IReadOnlyCollection<ClienteViewModel> clientes = [];
 
@@ -203,12 +220,41 @@ public sealed class ClientEndpointsTests
             .Setup(service => service.ListarAsync(It.IsAny<ListarClientesQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(clientes);
 
-        var resultado = await controller.Get(CancellationToken.None);
+        var response = await controller.Get(CancellationToken.None);
+        var resultado = Assert.IsType<ClienteResult<IReadOnlyCollection<ClienteViewModel>, Exception>>(response);
 
         Assert.NotNull(resultado.Value);
         Assert.Null(resultado.Error);
         var value = Assert.IsAssignableFrom<IReadOnlyCollection<ClienteViewModel>>(resultado.Value);
         Assert.Empty(value);
+    }
+
+    private void ConfigurarAdapterParaClienteResult()
+    {
+        _adapterMock
+            .Setup(adapter => adapter.Adapt(It.IsAny<ClienteResult<ClienteViewModel, Exception>>(), It.IsAny<bool>()))
+            .Returns((ClienteResult<ClienteViewModel, Exception> result, bool _) => result);
+    }
+
+    private void ConfigurarAdapterParaColecaoResult()
+    {
+        _adapterMock
+            .Setup(adapter => adapter.Adapt(It.IsAny<ClienteResult<IReadOnlyCollection<ClienteViewModel>, Exception>>()))
+            .Returns((ClienteResult<IReadOnlyCollection<ClienteViewModel>, Exception> result) => result);
+    }
+
+    private void ConfigurarAdapterParaBoolResult()
+    {
+        _adapterMock
+            .Setup(adapter => adapter.Adapt(It.IsAny<ClienteResult<bool, Exception>>()))
+            .Returns((ClienteResult<bool, Exception> result) => result);
+    }
+
+    private void ConfigurarAdapterParaEmpty()
+    {
+        _adapterMock
+            .Setup(adapter => adapter.Empty())
+            .Returns(new ClienteResult<bool, Exception>(true));
     }
 
     private ClienteController CriarController()

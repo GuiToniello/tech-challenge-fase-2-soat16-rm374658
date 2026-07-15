@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using TechChallenge.Oficina.API.Features.Clientes;
 using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.Clientes;
@@ -17,7 +18,7 @@ public sealed class ClienteAdapterTests
         var cliente = new ClienteViewModel { Id = Guid.NewGuid(), NomeCompleto = "João Silva" };
         var result = new ClienteResult<ClienteViewModel, Exception>(cliente);
 
-        var adaptado = _adapter.Adapt(result);
+        var adaptado = _adapter.Adapt(result, true);
 
         var createdAtRoute = Assert.IsType<CreatedAtRoute<ClienteViewModel>>(adaptado);
         Assert.Equal(cliente, createdAtRoute.Value);
@@ -31,8 +32,10 @@ public sealed class ClienteAdapterTests
 
         var adaptado = _adapter.Adapt(result);
 
-        var badRequest = Assert.IsType<BadRequest<string>>(adaptado);
-        Assert.Equal("Nome inválido", badRequest.Value);
+        var badRequest = Assert.IsAssignableFrom<IStatusCodeHttpResult>(adaptado);
+        Assert.Equal(StatusCodes.Status400BadRequest, badRequest.StatusCode);
+        var valueResult = Assert.IsAssignableFrom<IValueHttpResult>(adaptado);
+        Assert.Equal("Nome inválido", valueResult.Value?.GetType().GetProperty("Message")?.GetValue(valueResult.Value));
     }
 
     [Fact]
@@ -43,8 +46,10 @@ public sealed class ClienteAdapterTests
 
         var adaptado = _adapter.Adapt(result);
 
-        var notFound = Assert.IsType<NotFound<string>>(adaptado);
-        Assert.Equal("Cliente não encontrado", notFound.Value);
+        var notFound = Assert.IsAssignableFrom<IStatusCodeHttpResult>(adaptado);
+        Assert.Equal(StatusCodes.Status404NotFound, notFound.StatusCode);
+        var valueResult = Assert.IsAssignableFrom<IValueHttpResult>(adaptado);
+        Assert.Equal("Cliente não encontrado", valueResult.Value?.GetType().GetProperty("Message")?.GetValue(valueResult.Value));
     }
 
     [Fact]
@@ -78,8 +83,10 @@ public sealed class ClienteAdapterTests
 
         var adaptado = _adapter.Adapt(result);
 
-        var notFound = Assert.IsType<NotFound<string>>(adaptado);
-        Assert.Equal("Cliente não encontrado", notFound.Value);
+        var notFound = Assert.IsAssignableFrom<IStatusCodeHttpResult>(adaptado);
+        Assert.Equal(StatusCodes.Status404NotFound, notFound.StatusCode);
+        var valueResult = Assert.IsAssignableFrom<IValueHttpResult>(adaptado);
+        Assert.Equal("Cliente não encontrado", valueResult.Value?.GetType().GetProperty("Message")?.GetValue(valueResult.Value));
     }
 
     [Fact]
@@ -90,8 +97,10 @@ public sealed class ClienteAdapterTests
 
         var adaptado = _adapter.Adapt(result);
 
-        var badRequest = Assert.IsType<BadRequest<string>>(adaptado);
-        Assert.Equal("Erro de validação", badRequest.Value);
+        var badRequest = Assert.IsAssignableFrom<IStatusCodeHttpResult>(adaptado);
+        Assert.Equal(StatusCodes.Status400BadRequest, badRequest.StatusCode);
+        var valueResult = Assert.IsAssignableFrom<IValueHttpResult>(adaptado);
+        Assert.Equal("Erro de validação", valueResult.Value?.GetType().GetProperty("Message")?.GetValue(valueResult.Value));
     }
 
     [Fact]

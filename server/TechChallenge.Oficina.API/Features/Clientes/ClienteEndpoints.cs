@@ -20,6 +20,7 @@ namespace TechChallenge.Oficina.API.Features.Clientes
                     CriarClienteCommand command,
                     CancellationToken cancellationToken
                 ) => clienteController.Post(command, cancellationToken))
+                .WithName("PostCliente")
                 .Produces<ClienteViewModel>(StatusCodes.Status201Created)
                 .Produces(StatusCodes.Status400BadRequest);
 

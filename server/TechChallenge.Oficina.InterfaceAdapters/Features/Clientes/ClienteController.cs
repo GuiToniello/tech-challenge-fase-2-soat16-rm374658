@@ -24,7 +24,7 @@ namespace TechChallenge.Oficina.Controllers.Features.Clientes
                 var cliente = await _clienteService.CriarAsync(command, cancellationToken);
                 var result = ClienteResult.From(cliente);
 
-                return _clientAdapter.Adapt(result);
+                return _clientAdapter.Adapt(result, true);
             }
             catch (DomainException exception)
             {
@@ -34,54 +34,64 @@ namespace TechChallenge.Oficina.Controllers.Features.Clientes
             }
         }
 
-        public async Task<ClienteResult<ClienteViewModel, KeyNotFoundException>> GetById(Guid id, CancellationToken cancellationToken)
+        public async Task<object> GetById(Guid id, CancellationToken cancellationToken)
         {
             try
             {
                 var query = new ObterClientePorIdQuery { Id = id };
                 var cliente = await _clienteService.ObterPorIdAsync(query, cancellationToken);
-                return new ClienteResult<ClienteViewModel, KeyNotFoundException>(cliente);
+                var result = ClienteResult.From(cliente);
+
+                return _clientAdapter.Adapt(result);
             }
             catch (KeyNotFoundException exception)
             {
-                return new ClienteResult<ClienteViewModel, KeyNotFoundException>(exception);
+                var result = ClienteResult.FromError<ClienteViewModel>(exception);
+                return _clientAdapter.Adapt(result);
             }
         }
 
-        public async Task<ClienteResult<IReadOnlyCollection<ClienteViewModel>, DomainException>> Get(CancellationToken cancellationToken)
+        public async Task<object> Get(CancellationToken cancellationToken)
         {
             var clientes = await _clienteService.ListarAsync(new ListarClientesQuery(), cancellationToken);
-            return new ClienteResult<IReadOnlyCollection<ClienteViewModel>, DomainException>(clientes);
+            var result = ClienteResult.From(clientes);
+
+            return _clientAdapter.Adapt(result);
         }
 
-        public async Task<ClienteResult<ClienteViewModel, Exception>> Put(AtualizarClienteCommand command, CancellationToken cancellationToken)
+        public async Task<object> Put(AtualizarClienteCommand command, CancellationToken cancellationToken)
         {
             try
             {
                 var cliente = await _clienteService.AtualizarAsync(command, cancellationToken);
-                return new ClienteResult<ClienteViewModel, Exception>(cliente);
+                var result = ClienteResult.From(cliente);
+                return _clientAdapter.Adapt(result);
             }
             catch (DomainException exception)
             {
-                return new ClienteResult<ClienteViewModel, Exception>(exception);
+                var result = ClienteResult.FromError<ClienteViewModel>(exception);
+                return _clientAdapter.Adapt(result);
             }
             catch (KeyNotFoundException exception)
             {
-                return new ClienteResult<ClienteViewModel, Exception>(exception);
+                var result = ClienteResult.FromError<ClienteViewModel>(exception);
+                return _clientAdapter.Adapt(result);
             }
         }
 
-        public async Task<ClienteResult<Boolean, KeyNotFoundException>> Delete(Guid id, CancellationToken cancellationToken)
+        public async Task<object> Delete(Guid id, CancellationToken cancellationToken)
         {
             try
             {
                 var command = new ExcluirClienteCommand { Id = id };
                 await _clienteService.ExcluirAsync(command, cancellationToken);
-                return new ClienteResult<Boolean, KeyNotFoundException>(true);
+
+                return _clientAdapter.Empty();
             }
             catch (KeyNotFoundException exception)
             {
-                return new ClienteResult<Boolean, KeyNotFoundException>(exception);
+                var result = ClienteResult.FromError<bool>(exception);
+                return _clientAdapter.Adapt(result);
             }
         }
     }
