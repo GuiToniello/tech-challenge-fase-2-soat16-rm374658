@@ -29,6 +29,7 @@ using TechChallenge.Oficina.Infra.Data.Features.OrdensServico;
 using TechChallenge.Oficina.Infra.Data.Features.Servicos;
 using TechChallenge.Oficina.Infra.Data.Features.Veiculos;
 using TechChallenge.Oficina.Controllers.Features.Clientes;
+using TechChallenge.Oficina.Controllers.Features.Veiculos;
 
 namespace TechChallenge.Oficina.Integration.Tests.Infrastructure;
 
@@ -70,9 +71,10 @@ public sealed class IntegrationTestFixture : IDisposable
         services.AddApplication();
         services.AddScoped<IClientAdapter, ClienteAdapter>();
         services.AddScoped<ClienteController>();
+        services.AddScoped<IVeiculoAdapter, VeiculoAdapter>();
+        services.AddScoped<VeiculoController>();
         services.AddScoped<IndicadoresEndpoints>();
         services.AddScoped<InsumoEndpoints>();
-        services.AddScoped<VeiculoEndpoints>();
         services.AddScoped<ServicoEndpoints>();
         services.AddScoped<OrdensServicoEndpoints>();
 
@@ -89,8 +91,8 @@ public sealed class IntegrationTestFixture : IDisposable
     public InsumoEndpoints CriarInsumosEndpoints()
         => Obter<InsumoEndpoints>();
 
-    public VeiculoEndpoints CriarVeiculosEndpoints()
-        => Obter<VeiculoEndpoints>();
+    public VeiculoController CriarVeiculosEndpoints()
+        => Obter<VeiculoController>();
 
     public ServicoEndpoints CriarServicosEndpoints()
         => Obter<ServicoEndpoints>();

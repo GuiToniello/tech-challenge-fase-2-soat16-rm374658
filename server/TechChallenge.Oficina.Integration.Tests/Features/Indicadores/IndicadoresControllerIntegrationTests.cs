@@ -92,9 +92,9 @@ public sealed class IndicadoresEndpointsIntegrationTests : IDisposable
     private async Task<Guid> CriarVeiculoAsync(Guid clienteId)
     {
         var endpoints = _fixture.CriarVeiculosEndpoints();
-        var result = (Microsoft.AspNetCore.Http.HttpResults.CreatedAtRoute<VeiculoViewModel>)(await endpoints.Post(
+        var result = Assert.IsType<CreatedAtRoute<VeiculoViewModel>>(await endpoints.Post(
             new CriarVeiculoCommand { Placa = "DEF2G45", Marca = "VW", Modelo = "Gol", Ano = 2021, Renavam = "11122233344", ClienteId = clienteId },
-            CancellationToken.None)).Result!;
+            CancellationToken.None));
         return result.Value!.Id;
     }
 

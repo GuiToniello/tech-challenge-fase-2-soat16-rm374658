@@ -40,9 +40,9 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     private async Task<Guid> CriarVeiculoAsync(Guid clienteId)
     {
         var endpoints = _fixture.CriarVeiculosEndpoints();
-        var result = (CreatedAtRoute<VeiculoViewModel>)(await endpoints.Post(
+        var result = Assert.IsType<CreatedAtRoute<VeiculoViewModel>>(await endpoints.Post(
             new CriarVeiculoCommand { Placa = "ABC1D23", Marca = "Ford", Modelo = "Ka", Ano = 2022, Renavam = "12345678901", ClienteId = clienteId },
-            CancellationToken.None)).Result!;
+            CancellationToken.None));
         return result.Value.Id;
     }
 
@@ -133,9 +133,9 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
         var clienteOrdem = cliente2Result.Value!.Id;
 
         var veiculoEndpoints = _fixture.CriarVeiculosEndpoints();
-        var veiculoResult = (CreatedAtRoute<VeiculoViewModel>)(await veiculoEndpoints.Post(
+        var veiculoResult = Assert.IsType<CreatedAtRoute<VeiculoViewModel>>(await veiculoEndpoints.Post(
             new CriarVeiculoCommand { Placa = "QQQ1Q11", Marca = "Fiat", Modelo = "Uno", Ano = 2020, Renavam = "00011122233", ClienteId = clienteDono },
-            CancellationToken.None)).Result!;
+            CancellationToken.None));
         var veiculoDoCliente1 = veiculoResult.Value.Id;
 
         var insumoEndpoints = _fixture.CriarInsumosEndpoints();

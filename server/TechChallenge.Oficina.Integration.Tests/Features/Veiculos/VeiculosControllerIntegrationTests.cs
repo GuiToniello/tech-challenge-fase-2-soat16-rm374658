@@ -54,7 +54,7 @@ public sealed class VeiculosControllerIntegrationTests : IDisposable
         var resultado = await endpoints.Post(command, CancellationToken.None);
 
         // Assert
-        var created = Assert.IsType<CreatedAtRoute<VeiculoViewModel>>(resultado.Result);
+        var created = Assert.IsType<CreatedAtRoute<VeiculoViewModel>>(resultado);
         Assert.NotEqual(Guid.Empty, created.Value!.Id);
         Assert.Equal("ABC1D23", created.Value.Placa);
         Assert.Equal(clienteId, created.Value.ClienteId);
@@ -71,7 +71,7 @@ public sealed class VeiculosControllerIntegrationTests : IDisposable
         var resultado = await endpoints.Post(command, CancellationToken.None);
 
         // Assert
-        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado);
     }
 
     [Fact]
@@ -94,7 +94,7 @@ public sealed class VeiculosControllerIntegrationTests : IDisposable
         var resultado = await endpoints.Post(command, CancellationToken.None);
 
         // Assert
-        Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado);
     }
 
     [Fact]
@@ -109,7 +109,7 @@ public sealed class VeiculosControllerIntegrationTests : IDisposable
         var resultado = await endpoints.Post(VeiculoValido(clienteId), CancellationToken.None);
 
         // Assert
-        Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado);
     }
 
     // ------------------------------------------------------------------ //
@@ -122,14 +122,14 @@ public sealed class VeiculosControllerIntegrationTests : IDisposable
         // Arrange
         var clienteId = await CriarClienteAsync();
         var endpoints = _fixture.CriarVeiculosEndpoints();
-        var created = (CreatedAtRoute<VeiculoViewModel>)(await endpoints.Post(VeiculoValido(clienteId), CancellationToken.None)).Result!;
+        var created = Assert.IsType<CreatedAtRoute<VeiculoViewModel>>(await endpoints.Post(VeiculoValido(clienteId), CancellationToken.None));
         var id = created.Value!.Id;
 
         // Act
         var resultado = await endpoints.GetById(id, CancellationToken.None);
 
         // Assert
-        var ok = Assert.IsType<Ok<VeiculoViewModel>>(resultado.Result);
+        var ok = Assert.IsType<Ok<VeiculoViewModel>>(resultado);
         Assert.Equal(id, ok.Value!.Id);
     }
 
@@ -143,7 +143,7 @@ public sealed class VeiculosControllerIntegrationTests : IDisposable
         var resultado = await endpoints.GetById(Guid.NewGuid(), CancellationToken.None);
 
         // Assert
-        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado);
     }
 
     // ------------------------------------------------------------------ //
@@ -176,7 +176,7 @@ public sealed class VeiculosControllerIntegrationTests : IDisposable
         // Arrange
         var clienteId = await CriarClienteAsync();
         var endpoints = _fixture.CriarVeiculosEndpoints();
-        var created = (CreatedAtRoute<VeiculoViewModel>)(await endpoints.Post(VeiculoValido(clienteId), CancellationToken.None)).Result!;
+        var created = Assert.IsType<CreatedAtRoute<VeiculoViewModel>>(await endpoints.Post(VeiculoValido(clienteId), CancellationToken.None));
         var id = created.Value!.Id;
         var command = new AtualizarVeiculoCommand
         {
@@ -193,7 +193,7 @@ public sealed class VeiculosControllerIntegrationTests : IDisposable
         var resultado = await endpoints.Put(command, CancellationToken.None);
 
         // Assert
-        var ok = Assert.IsType<Ok<VeiculoViewModel>>(resultado.Result);
+        var ok = Assert.IsType<Ok<VeiculoViewModel>>(resultado);
         Assert.Equal("XYZ9W88", ok.Value!.Placa);
         Assert.Equal("Honda", ok.Value.Marca);
     }
@@ -219,7 +219,7 @@ public sealed class VeiculosControllerIntegrationTests : IDisposable
         var resultado = await endpoints.Put(command, CancellationToken.None);
 
         // Assert
-        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado);
     }
 
     // ------------------------------------------------------------------ //
@@ -232,14 +232,14 @@ public sealed class VeiculosControllerIntegrationTests : IDisposable
         // Arrange
         var clienteId = await CriarClienteAsync();
         var endpoints = _fixture.CriarVeiculosEndpoints();
-        var created = (CreatedAtRoute<VeiculoViewModel>)(await endpoints.Post(VeiculoValido(clienteId), CancellationToken.None)).Result!;
+        var created = Assert.IsType<CreatedAtRoute<VeiculoViewModel>>(await endpoints.Post(VeiculoValido(clienteId), CancellationToken.None));
         var id = created.Value!.Id;
 
         // Act
         var resultado = await endpoints.Delete(id, CancellationToken.None);
 
         // Assert
-        Assert.IsType<NoContent>(resultado.Result);
+        Assert.IsType<NoContent>(resultado);
     }
 
     [Fact]
@@ -252,6 +252,6 @@ public sealed class VeiculosControllerIntegrationTests : IDisposable
         var resultado = await endpoints.Delete(Guid.NewGuid(), CancellationToken.None);
 
         // Assert
-        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado);
     }
 }

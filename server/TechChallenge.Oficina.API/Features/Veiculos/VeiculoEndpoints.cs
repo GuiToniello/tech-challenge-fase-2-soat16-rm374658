@@ -1,94 +1,71 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using TechChallenge.Oficina.Application.Features.Veiculos.Commands;
-using TechChallenge.Oficina.Application.Features.Veiculos.Queries;
-using TechChallenge.Oficina.Application.Features.Veiculos.Services;
 using TechChallenge.Oficina.Application.Features.Veiculos.ViewModels;
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.Controllers.Features.Veiculos;
 
 namespace TechChallenge.Oficina.API.Features.Veiculos
 {
-    public class VeiculoEndpoints
+    public static class VeiculoEndpoints
     {
-        private readonly IVeiculoService _veiculoService;
-
-        public VeiculoEndpoints(IVeiculoService veiculoService)
+        public static RouteGroupBuilder MapVeiculoEndpoints(
+            this IEndpointRouteBuilder routes)
         {
-            _veiculoService = veiculoService;
-        }
+            var group = routes
+                .MapGroup("/api/veiculos")
+                .WithTags("Veiculos");
 
-        public async Task<Results<CreatedAtRoute<VeiculoViewModel>, BadRequest<Dictionary<string, string?>>, NotFound<Dictionary<string, string?>>>> Post(CriarVeiculoCommand command, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var veiculo = await _veiculoService.CriarAsync(command, cancellationToken);
-                return TypedResults.CreatedAtRoute(veiculo, "GetVeiculoById", new { id = veiculo.Id });
-            }
-            catch (DomainException exception)
-            {
-                return TypedResults.BadRequest(CriarErro(exception.Message));
-            }
-            catch (KeyNotFoundException exception)
-            {
-                return TypedResults.NotFound(CriarErro(exception.Message));
-            }
-        }
+            group.MapPost(
+                string.Empty,
+                (
+                    VeiculoController veiculoController,
+                    CriarVeiculoCommand command,
+                    CancellationToken cancellationToken
+                ) => veiculoController.Post(command, cancellationToken))
+                .Produces<VeiculoViewModel>(StatusCodes.Status201Created)
+                .Produces(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status404NotFound);
 
-        public async Task<Results<Ok<VeiculoViewModel>, NotFound<Dictionary<string, string?>>>> GetById(Guid id, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var query = new ObterVeiculoPorIdQuery { Id = id };
-                var veiculo = await _veiculoService.ObterPorIdAsync(query, cancellationToken);
-                return TypedResults.Ok(veiculo);
-            }
-            catch (KeyNotFoundException exception)
-            {
-                return TypedResults.NotFound(CriarErro(exception.Message));
-            }
-        }
+            group.MapGet(
+                "/{id:guid}",
+                (
+                    VeiculoController veiculoController,
+                    Guid id,
+                    CancellationToken cancellationToken
+                ) => veiculoController.GetById(id, cancellationToken))
+                .WithName("GetVeiculoById")
+                .Produces<VeiculoViewModel>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status404NotFound);
 
-        public async Task<Ok<IReadOnlyCollection<VeiculoViewModel>>> Get(Guid? clienteId, CancellationToken cancellationToken)
-        {
-            var veiculos = await _veiculoService.ListarAsync(new ListarVeiculosQuery { ClienteId = clienteId }, cancellationToken);
-            return TypedResults.Ok(veiculos);
-        }
+            group.MapGet(
+                string.Empty,
+                (
+                    VeiculoController veiculoController,
+                    Guid? clienteId,
+                    CancellationToken cancellationToken
+                ) => veiculoController.Get(clienteId, cancellationToken))
+                .Produces<IReadOnlyCollection<VeiculoViewModel>>(StatusCodes.Status200OK);
 
-        public async Task<Results<Ok<VeiculoViewModel>, BadRequest<Dictionary<string, string?>>, NotFound<Dictionary<string, string?>>>> Put(AtualizarVeiculoCommand command, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var veiculo = await _veiculoService.AtualizarAsync(command, cancellationToken);
-                return TypedResults.Ok(veiculo);
-            }
-            catch (DomainException exception)
-            {
-                return TypedResults.BadRequest(CriarErro(exception.Message));
-            }
-            catch (KeyNotFoundException exception)
-            {
-                return TypedResults.NotFound(CriarErro(exception.Message));
-            }
-        }
+            group.MapPut(
+                string.Empty,
+                (
+                    VeiculoController veiculoController,
+                    AtualizarVeiculoCommand command,
+                    CancellationToken cancellationToken
+                ) => veiculoController.Put(command, cancellationToken))
+                .Produces<VeiculoViewModel>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status404NotFound);
 
-        public async Task<Results<NoContent, NotFound<Dictionary<string, string?>>>> Delete(Guid id, CancellationToken cancellationToken)
-        {
-            try
-            {
-                await _veiculoService.ExcluirAsync(new ExcluirVeiculoCommand { Id = id }, cancellationToken);
-                return TypedResults.NoContent();
-            }
-            catch (KeyNotFoundException exception)
-            {
-                return TypedResults.NotFound(CriarErro(exception.Message));
-            }
-        }
+            group.MapDelete(
+                "/{id:guid}",
+                (
+                    VeiculoController veiculoController,
+                    Guid id,
+                    CancellationToken cancellationToken
+                ) => veiculoController.Delete(id, cancellationToken))
+                .Produces(StatusCodes.Status204NoContent)
+                .Produces(StatusCodes.Status404NotFound);
 
-        private static Dictionary<string, string?> CriarErro(string? message)
-        {
-            return new Dictionary<string, string?>
-            {
-                ["message"] = message
-            };
+            return group;
         }
     }
 }
