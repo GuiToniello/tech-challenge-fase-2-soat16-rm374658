@@ -1,10 +1,10 @@
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Orcamentos;
-using TechChallenge.Oficina.Domain.Features.OrdensServico.Enums;
-using TechChallenge.Oficina.Domain.Features.OrdensServico.VOs;
-using TechChallenge.Oficina.Domain.Features.Servicos;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Orcamentos;
+using TechChallenge.Oficina.Entities.Features.OrdensServico.Enums;
+using TechChallenge.Oficina.Entities.Features.OrdensServico.VOs;
+using TechChallenge.Oficina.Entities.Features.Servicos;
 
-namespace TechChallenge.Oficina.Domain.Features.OrdensServico;
+namespace TechChallenge.Oficina.Entities.Features.OrdensServico;
 
 public class OrdemServico
 {

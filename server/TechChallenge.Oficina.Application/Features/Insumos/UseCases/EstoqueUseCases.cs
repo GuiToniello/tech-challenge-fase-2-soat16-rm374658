@@ -1,13 +1,13 @@
-using TechChallenge.Oficina.Domain.Features.Insumos;
-using TechChallenge.Oficina.Domain.Features.Servicos;
+using TechChallenge.Oficina.Entities.Features.Insumos;
+using TechChallenge.Oficina.Entities.Features.Servicos;
 
-namespace TechChallenge.Oficina.Application.Features.Insumos.Services;
+namespace TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
 
-public sealed class EstoqueService : IEstoqueService
+public sealed class EstoqueUseCases : IEstoqueUseCases
 {
     private readonly IInsumoRepository _insumoRepository;
 
-    public EstoqueService(IInsumoRepository insumoRepository)
+    public EstoqueUseCases(IInsumoRepository insumoRepository)
     {
         _insumoRepository = insumoRepository;
     }

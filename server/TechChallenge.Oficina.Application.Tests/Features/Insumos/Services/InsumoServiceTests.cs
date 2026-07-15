@@ -1,21 +1,21 @@
 using AutoMapper;
 using Moq;
-using TechChallenge.Oficina.Application.Features.Insumos.Commands;
-using TechChallenge.Oficina.Application.Features.Insumos.Queries;
-using TechChallenge.Oficina.Application.Features.Insumos.Services;
-using TechChallenge.Oficina.Application.Features.Insumos.ViewModels;
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Insumos;
+using TechChallenge.Oficina.UseCases.Features.Insumos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Insumos.Queries;
+using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Insumos.ViewModels;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Insumos;
 using Xunit;
 
-namespace TechChallenge.Oficina.Application.Tests.Features.Insumos.Services;
+namespace TechChallenge.Oficina.UseCases.Tests.Features.Insumos.Services;
 
 public sealed class InsumoServiceTests
 {
     private readonly Mock<IMapper> _mapperMock = new();
     private readonly Mock<IInsumoRepository> _repositoryMock = new();
 
-    private InsumoService CriarService() => new(_mapperMock.Object, _repositoryMock.Object);
+    private InsumoUseCases CriarService() => new(_mapperMock.Object, _repositoryMock.Object);
 
     private static Insumo CriarInsumo() => Insumo.Criar("Óleo 5W30", "Bosch", 10, 29.9m);
 

@@ -1,17 +1,17 @@
 using AutoMapper;
-using TechChallenge.Oficina.Application.Features.Insumos.Commands;
-using TechChallenge.Oficina.Application.Features.Insumos.Queries;
-using TechChallenge.Oficina.Application.Features.Insumos.ViewModels;
-using TechChallenge.Oficina.Domain.Features.Insumos;
+using TechChallenge.Oficina.UseCases.Features.Insumos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Insumos.Queries;
+using TechChallenge.Oficina.UseCases.Features.Insumos.ViewModels;
+using TechChallenge.Oficina.Entities.Features.Insumos;
 
-namespace TechChallenge.Oficina.Application.Features.Insumos.Services;
+namespace TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
 
-public sealed class InsumoService : IInsumoService
+public sealed class InsumoUseCases : IInsumoUseCases
 {
     private readonly IMapper _mapper;
     private readonly IInsumoRepository _insumoRepository;
 
-    public InsumoService(IMapper mapper, IInsumoRepository insumoRepository)
+    public InsumoUseCases(IMapper mapper, IInsumoRepository insumoRepository)
     {
         _mapper = mapper;
         _insumoRepository = insumoRepository;

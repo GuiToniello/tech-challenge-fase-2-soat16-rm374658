@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using TechChallenge.Oficina.API.Features.Servicos;
-using TechChallenge.Oficina.Application.Features.Servicos.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Servicos.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.Servicos;
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.Entities.Exceptions;
 using Xunit;
 
 namespace TechChallenge.Oficina.API.Tests.Features.Servicos;

@@ -1,11 +1,11 @@
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Insumos;
-using TechChallenge.Oficina.Domain.Features.OrdensServico;
-using TechChallenge.Oficina.Domain.Features.OrdensServico.Enums;
-using TechChallenge.Oficina.Domain.Features.Servicos;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Insumos;
+using TechChallenge.Oficina.Entities.Features.OrdensServico;
+using TechChallenge.Oficina.Entities.Features.OrdensServico.Enums;
+using TechChallenge.Oficina.Entities.Features.Servicos;
 using Xunit;
 
-namespace TechChallenge.Oficina.Domain.Tests.Features.OrdensServico;
+namespace TechChallenge.Oficina.Entities.Tests.Features.OrdensServico;
 
 public sealed class OrdemServicoDomainTests
 {
@@ -273,7 +273,7 @@ public sealed class OrdemServicoDomainTests
     {
         var servico = CriarServicoComItens("Troca", (1, 10m));
 
-        var action = () => TechChallenge.Oficina.Domain.Features.Orcamentos.Orcamento.Criar(Guid.Empty, [servico]);
+        var action = () => TechChallenge.Oficina.Entities.Features.Orcamentos.Orcamento.Criar(Guid.Empty, [servico]);
 
         var exception = Assert.Throws<DomainException>(action);
         Assert.Equal("A ordem de servico do orcamento e obrigatoria.", exception.Message);
@@ -284,7 +284,7 @@ public sealed class OrdemServicoDomainTests
     {
         var servico = CriarServicoComItens("Troca", (1, 10m));
 
-        var action = () => TechChallenge.Oficina.Domain.Features.Orcamentos.Orcamento.Criar(Guid.NewGuid(), [servico], default(DateTime));
+        var action = () => TechChallenge.Oficina.Entities.Features.Orcamentos.Orcamento.Criar(Guid.NewGuid(), [servico], default(DateTime));
 
         var exception = Assert.Throws<DomainException>(action);
         Assert.Equal("A data de geracao do orcamento e obrigatoria.", exception.Message);
@@ -293,7 +293,7 @@ public sealed class OrdemServicoDomainTests
     [Fact]
     public void Orcamento_Criar_DeveLancarQuandoNaoPossuirServicos()
     {
-        var action = () => TechChallenge.Oficina.Domain.Features.Orcamentos.Orcamento.Criar(Guid.NewGuid(), []);
+        var action = () => TechChallenge.Oficina.Entities.Features.Orcamentos.Orcamento.Criar(Guid.NewGuid(), []);
 
         var exception = Assert.Throws<DomainException>(action);
         Assert.Equal("A ordem de servico deve possuir ao menos um servico para gerar orcamento.", exception.Message);
@@ -302,7 +302,7 @@ public sealed class OrdemServicoDomainTests
     [Fact]
     public void OrcamentoServico_Criar_DeveLancarQuandoServicoForNulo()
     {
-        var action = () => TechChallenge.Oficina.Domain.Features.Orcamentos.OrcamentoServico.Criar(null!);
+        var action = () => TechChallenge.Oficina.Entities.Features.Orcamentos.OrcamentoServico.Criar(null!);
 
         var exception = Assert.Throws<DomainException>(action);
         Assert.Equal("O servico do orcamento e obrigatorio.", exception.Message);

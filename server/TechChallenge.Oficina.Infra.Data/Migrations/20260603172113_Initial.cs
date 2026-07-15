@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace TechChallenge.Oficina.Infra.Data.Migrations
+namespace TechChallenge.Oficina.DB.Data.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration

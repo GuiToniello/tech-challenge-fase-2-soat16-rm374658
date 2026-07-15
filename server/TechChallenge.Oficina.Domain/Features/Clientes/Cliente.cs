@@ -1,8 +1,8 @@
 using System.Net.Mail;
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Clientes.VOs;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Clientes.VOs;
 
-namespace TechChallenge.Oficina.Domain.Features.Clientes;
+namespace TechChallenge.Oficina.Entities.Features.Clientes;
 
 public class Cliente
 {

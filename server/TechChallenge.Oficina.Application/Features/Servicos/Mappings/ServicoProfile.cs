@@ -1,9 +1,9 @@
 using AutoMapper;
-using TechChallenge.Oficina.Application.Features.Servicos.ViewModels;
-using TechChallenge.Oficina.Domain.Features.Insumos;
-using TechChallenge.Oficina.Domain.Features.Servicos;
+using TechChallenge.Oficina.UseCases.Features.Servicos.ViewModels;
+using TechChallenge.Oficina.Entities.Features.Insumos;
+using TechChallenge.Oficina.Entities.Features.Servicos;
 
-namespace TechChallenge.Oficina.Application.Features.Servicos.Mappings;
+namespace TechChallenge.Oficina.UseCases.Features.Servicos.Mappings;
 
 public sealed class ServicoProfile : Profile
 {

@@ -1,6 +1,6 @@
-using TechChallenge.Oficina.Domain.Features.OrdensServico;
+using TechChallenge.Oficina.Entities.Features.OrdensServico;
 
-namespace TechChallenge.Oficina.Domain.Features.Orcamentos;
+namespace TechChallenge.Oficina.Entities.Features.Orcamentos;
 
 public interface IOrcamentoEmailSender
 {

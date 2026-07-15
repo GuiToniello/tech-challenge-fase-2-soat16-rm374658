@@ -1,6 +1,6 @@
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.Entities.Exceptions;
 
-namespace TechChallenge.Oficina.Domain.Features.Insumos;
+namespace TechChallenge.Oficina.Entities.Features.Insumos;
 
 public class Insumo
 {

@@ -1,6 +1,6 @@
-using TechChallenge.Oficina.Application.Features.Insumos.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Insumos.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.Insumos;
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.Entities.Exceptions;
 
 namespace TechChallenge.Oficina.API.Features.Insumos
 {

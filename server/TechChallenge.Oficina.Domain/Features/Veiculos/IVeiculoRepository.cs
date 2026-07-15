@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Domain.Features.Veiculos;
+namespace TechChallenge.Oficina.Entities.Features.Veiculos;
 
 public interface IVeiculoRepository
 {

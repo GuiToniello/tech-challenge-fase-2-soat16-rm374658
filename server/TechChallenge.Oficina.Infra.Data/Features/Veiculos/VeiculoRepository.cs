@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using TechChallenge.Oficina.Domain.Features.Veiculos;
-using TechChallenge.Oficina.Domain.Features.Veiculos.VOs;
-using TechChallenge.Oficina.Infra.Data.Context;
+using TechChallenge.Oficina.Entities.Features.Veiculos;
+using TechChallenge.Oficina.Entities.Features.Veiculos.VOs;
+using TechChallenge.Oficina.DB.Data.Context;
 
-namespace TechChallenge.Oficina.Infra.Data.Features.Veiculos;
+namespace TechChallenge.Oficina.DB.Data.Features.Veiculos;
 
 public sealed class VeiculoRepository : IVeiculoRepository
 {

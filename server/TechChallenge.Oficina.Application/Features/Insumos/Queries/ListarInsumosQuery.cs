@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Application.Features.Insumos.Queries;
+namespace TechChallenge.Oficina.UseCases.Features.Insumos.Queries;
 
 public sealed class ListarInsumosQuery
 {

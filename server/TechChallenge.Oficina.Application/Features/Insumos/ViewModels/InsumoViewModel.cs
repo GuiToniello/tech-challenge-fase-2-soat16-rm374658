@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Application.Features.Insumos.ViewModels;
+namespace TechChallenge.Oficina.UseCases.Features.Insumos.ViewModels;
 
 public sealed class InsumoViewModel
 {

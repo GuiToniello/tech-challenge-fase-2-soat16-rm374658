@@ -1,7 +1,7 @@
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Clientes.Enums;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Clientes.Enums;
 
-namespace TechChallenge.Oficina.Domain.Features.Clientes.VOs;
+namespace TechChallenge.Oficina.Entities.Features.Clientes.VOs;
 
 public sealed class IdentificacaoCliente : IEquatable<IdentificacaoCliente>
 {

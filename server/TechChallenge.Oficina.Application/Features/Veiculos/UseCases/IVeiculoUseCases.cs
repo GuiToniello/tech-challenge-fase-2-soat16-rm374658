@@ -1,10 +1,10 @@
-using TechChallenge.Oficina.Application.Features.Veiculos.Commands;
-using TechChallenge.Oficina.Application.Features.Veiculos.Queries;
-using TechChallenge.Oficina.Application.Features.Veiculos.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.Queries;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.ViewModels;
 
-namespace TechChallenge.Oficina.Application.Features.Veiculos.Services;
+namespace TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
 
-public interface IVeiculoService
+public interface IVeiculoUseCases
 {
     Task<VeiculoViewModel> CriarAsync(CriarVeiculoCommand command, CancellationToken cancellationToken = default);
     Task<VeiculoViewModel> AtualizarAsync(AtualizarVeiculoCommand command, CancellationToken cancellationToken = default);

@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using TechChallenge.Oficina.Domain.Features.OrdensServico;
-using TechChallenge.Oficina.Domain.Features.OrdensServico.Enums;
-using TechChallenge.Oficina.Infra.Data.Context;
+using TechChallenge.Oficina.Entities.Features.OrdensServico;
+using TechChallenge.Oficina.Entities.Features.OrdensServico.Enums;
+using TechChallenge.Oficina.DB.Data.Context;
 
-namespace TechChallenge.Oficina.Infra.Data.Features.OrdensServico;
+namespace TechChallenge.Oficina.DB.Data.Features.OrdensServico;
 
 public sealed class OrdemServicoRepository : IOrdemServicoRepository
 {

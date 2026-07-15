@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
+namespace TechChallenge.Oficina.UseCases.Features.Clientes.ViewModels;
 
 public sealed class ClienteViewModel
 {

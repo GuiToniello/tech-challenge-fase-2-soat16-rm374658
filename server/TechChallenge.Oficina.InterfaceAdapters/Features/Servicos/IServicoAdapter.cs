@@ -1,4 +1,4 @@
-using TechChallenge.Oficina.Application.Features.Servicos.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Servicos.ViewModels;
 
 namespace TechChallenge.Oficina.Controllers.Features.Servicos
 {

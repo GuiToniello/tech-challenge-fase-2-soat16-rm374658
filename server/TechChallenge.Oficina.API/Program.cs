@@ -7,16 +7,16 @@ using TechChallenge.Oficina.API.Features.Servicos;
 using TechChallenge.Oficina.API.Features.Veiculos;
 using TechChallenge.Oficina.API.Middleware;
 using TechChallenge.Oficina.API.Settings;
-using TechChallenge.Oficina.Application;
+using TechChallenge.Oficina.UseCases;
 using TechChallenge.Oficina.Controllers.Features.Clientes;
 using TechChallenge.Oficina.Controllers.Features.Indicadores;
 using TechChallenge.Oficina.Controllers.Features.Insumos;
 using TechChallenge.Oficina.Controllers.Features.OrdensServico;
 using TechChallenge.Oficina.Controllers.Features.Servicos;
 using TechChallenge.Oficina.Controllers.Features.Veiculos;
-using TechChallenge.Oficina.Infra.Data;
-using TechChallenge.Oficina.Infra.Email;
-using TechChallenge.Oficina.Infra.Email.Configuration;
+using TechChallenge.Oficina.DB.Data;
+using TechChallenge.Oficina.Email;
+using TechChallenge.Oficina.Email.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TechChallenge.Oficina.Domain.Features.Clientes;
+using TechChallenge.Oficina.Entities.Features.Clientes;
 
-namespace TechChallenge.Oficina.Infra.Data.Features.Clientes;
+namespace TechChallenge.Oficina.DB.Data.Features.Clientes;
 
 public sealed class ClienteConfiguration : IEntityTypeConfiguration<Cliente>
 {

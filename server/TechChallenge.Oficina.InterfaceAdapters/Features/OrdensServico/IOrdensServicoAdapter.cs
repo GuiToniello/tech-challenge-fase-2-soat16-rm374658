@@ -1,4 +1,4 @@
-using TechChallenge.Oficina.Application.Features.OrdensServico.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.ViewModels;
 
 namespace TechChallenge.Oficina.Controllers.Features.OrdensServico
 {

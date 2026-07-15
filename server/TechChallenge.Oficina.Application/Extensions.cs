@@ -1,49 +1,49 @@
 using Microsoft.Extensions.DependencyInjection;
-using TechChallenge.Oficina.Application.Features.Clientes.Commands;
-using TechChallenge.Oficina.Application.Features.Clientes.Mappings;
-using TechChallenge.Oficina.Application.Features.Clientes.Queries;
-using TechChallenge.Oficina.Application.Features.Clientes.Services;
-using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
-using TechChallenge.Oficina.Application.Features.Indicadores;
-using TechChallenge.Oficina.Application.Features.Indicadores.Services;
-using TechChallenge.Oficina.Application.Features.Insumos.Commands;
-using TechChallenge.Oficina.Application.Features.Insumos.Queries;
-using TechChallenge.Oficina.Application.Features.Insumos.Services;
-using TechChallenge.Oficina.Application.Features.Insumos.ViewModels;
-using TechChallenge.Oficina.Application.Features.OrdensServico.Commands;
-using TechChallenge.Oficina.Application.Features.OrdensServico.Mappings;
-using TechChallenge.Oficina.Application.Features.OrdensServico.Queries;
-using TechChallenge.Oficina.Application.Features.OrdensServico.Services;
-using TechChallenge.Oficina.Application.Features.OrdensServico.ViewModels;
-using TechChallenge.Oficina.Application.Features.Servicos.Commands;
-using TechChallenge.Oficina.Application.Features.Servicos.Queries;
-using TechChallenge.Oficina.Application.Features.Servicos.Services;
-using TechChallenge.Oficina.Application.Features.Servicos.ViewModels;
-using TechChallenge.Oficina.Application.Features.Veiculos.Commands;
-using TechChallenge.Oficina.Application.Features.Veiculos.Queries;
-using TechChallenge.Oficina.Application.Features.Veiculos.Services;
-using TechChallenge.Oficina.Application.Features.Veiculos.ViewModels;
-using TechChallenge.Oficina.Domain.Features.Clientes;
-using TechChallenge.Oficina.Domain.Features.Insumos;
-using TechChallenge.Oficina.Domain.Features.OrdensServico;
-using TechChallenge.Oficina.Domain.Features.Servicos;
-using TechChallenge.Oficina.Domain.Features.Veiculos;
+using TechChallenge.Oficina.UseCases.Features.Clientes.Commands;
+using TechChallenge.Oficina.UseCases.Features.Clientes.Mappings;
+using TechChallenge.Oficina.UseCases.Features.Clientes.Queries;
+using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Clientes.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Indicadores.Services;
+using TechChallenge.Oficina.UseCases.Features.Insumos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Insumos.Queries;
+using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Insumos.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.Commands;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.Mappings;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.Queries;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Servicos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Servicos.Queries;
+using TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Servicos.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.Queries;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.ViewModels;
+using TechChallenge.Oficina.Entities.Features.Clientes;
+using TechChallenge.Oficina.Entities.Features.Insumos;
+using TechChallenge.Oficina.Entities.Features.OrdensServico;
+using TechChallenge.Oficina.Entities.Features.Servicos;
+using TechChallenge.Oficina.Entities.Features.Veiculos;
+using TechChallenge.Oficina.UseCases.Features.Indicadores.UseCases;
 
-namespace TechChallenge.Oficina.Application;
+namespace TechChallenge.Oficina.UseCases;
 
 public static class Extensions
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddAutoMapper(_ => { }, typeof(ClienteProfile).Assembly, typeof(OrdemServicoProfile).Assembly);
-        services.AddScoped<IClienteService, ClienteService>();
-        services.AddScoped<IIndicadorService, IndicadorService>();
-        services.AddScoped<IInsumoService, InsumoService>();
-        services.AddScoped<IEstoqueService, EstoqueService>();
-        services.AddScoped<IOrdemServicoServicesFacade, OrdemServicoServicesFacade>();
-        services.AddScoped<IOrdemServicoService, OrdemServicoService>();
-        services.AddScoped<IServicoService, ServicoService>();
-        services.AddScoped<IVeiculoService, VeiculoService>();
+        services.AddScoped<IClienteUseCases, ClienteUseCases>();
+        services.AddScoped<IIndicadorUseCases, IndicadorUseCases>();
+        services.AddScoped<IInsumoUseCases, InsumoUseCases>();
+        services.AddScoped<IEstoqueUseCases, EstoqueUseCases>();
+        services.AddScoped<IOrdemServicoUseCasesFacade, OrdemServicoUseCasesFacade>();
+        services.AddScoped<IOrdemServicoUseCases, OrdemServicoUseCases>();
+        services.AddScoped<IServicoUseCases, ServicoUseCases>();
+        services.AddScoped<IVeiculoUseCases, VeiculoUseCases>();
         return services;
     }
 }

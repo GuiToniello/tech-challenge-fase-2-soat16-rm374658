@@ -1,4 +1,4 @@
-using TechChallenge.Oficina.Application.Features.Insumos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Insumos.Commands;
 
 namespace TechChallenge.Oficina.Controllers.Features.Insumos
 {

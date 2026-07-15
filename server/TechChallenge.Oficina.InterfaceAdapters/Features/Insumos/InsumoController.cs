@@ -1,17 +1,17 @@
-using TechChallenge.Oficina.Application.Features.Insumos.Commands;
-using TechChallenge.Oficina.Application.Features.Insumos.Queries;
-using TechChallenge.Oficina.Application.Features.Insumos.Services;
-using TechChallenge.Oficina.Application.Features.Insumos.ViewModels;
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.UseCases.Features.Insumos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Insumos.Queries;
+using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Insumos.ViewModels;
+using TechChallenge.Oficina.Entities.Exceptions;
 
 namespace TechChallenge.Oficina.Controllers.Features.Insumos
 {
     public class InsumoController : IInsumoController
     {
-        private readonly IInsumoService _insumoService;
+        private readonly IInsumoUseCases _insumoService;
         private readonly IInsumoAdapter _insumoAdapter;
 
-        public InsumoController(IInsumoService insumoService, IInsumoAdapter insumoAdapter)
+        public InsumoController(IInsumoUseCases insumoService, IInsumoAdapter insumoAdapter)
         {
             _insumoService = insumoService;
             _insumoAdapter = insumoAdapter;

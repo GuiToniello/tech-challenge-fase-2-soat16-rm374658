@@ -1,17 +1,17 @@
 using Moq;
-using TechChallenge.Oficina.Application.Features.OrdensServico.Commands;
-using TechChallenge.Oficina.Application.Features.OrdensServico.Queries;
-using TechChallenge.Oficina.Application.Features.OrdensServico.Services;
-using TechChallenge.Oficina.Application.Features.OrdensServico.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.Commands;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.Queries;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.OrdensServico;
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.Entities.Exceptions;
 using Xunit;
 
 namespace TechChallenge.Oficina.Controllers.Tests.Features.OrdensServico;
 
 public sealed class OrdensServicoControllerTests
 {
-    private readonly Mock<IOrdemServicoService> _serviceMock = new();
+    private readonly Mock<IOrdemServicoUseCases> _serviceMock = new();
     private readonly Mock<IOrdensServicoAdapter> _adapterMock = new();
 
     [Fact]

@@ -1,9 +1,9 @@
 using Moq;
 using Resend;
-using TechChallenge.Oficina.Infra.Email.Features.Orcamentos;
+using TechChallenge.Oficina.Email.Features.Orcamentos;
 using Xunit;
 
-namespace TechChallenge.Oficina.Infra.Email.Tests.Features.Orcamentos;
+namespace TechChallenge.Oficina.Email.Tests.Features.Orcamentos;
 
 public sealed class ResendClientAdapterTests
 {

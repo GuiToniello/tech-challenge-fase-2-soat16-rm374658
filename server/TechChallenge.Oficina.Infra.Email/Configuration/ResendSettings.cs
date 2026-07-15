@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Infra.Email.Configuration;
+namespace TechChallenge.Oficina.Email.Configuration;
 
 public sealed class ResendSettings
 {

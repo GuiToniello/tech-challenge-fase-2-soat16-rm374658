@@ -1,9 +1,9 @@
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Insumos;
-using TechChallenge.Oficina.Domain.Features.Servicos;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Insumos;
+using TechChallenge.Oficina.Entities.Features.Servicos;
 using Xunit;
 
-namespace TechChallenge.Oficina.Domain.Tests.Features.Servicos;
+namespace TechChallenge.Oficina.Entities.Tests.Features.Servicos;
 
 public sealed class ServicoDomainTests
 {

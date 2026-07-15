@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Application.Features.Veiculos.Commands;
+namespace TechChallenge.Oficina.UseCases.Features.Veiculos.Commands;
 
 public sealed class CriarVeiculoCommand
 {

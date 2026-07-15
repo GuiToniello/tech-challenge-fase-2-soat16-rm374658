@@ -1,6 +1,6 @@
-using TechChallenge.Oficina.Domain.Features.OrdensServico.Enums;
+using TechChallenge.Oficina.Entities.Features.OrdensServico.Enums;
 
-namespace TechChallenge.Oficina.Domain.Features.OrdensServico;
+namespace TechChallenge.Oficina.Entities.Features.OrdensServico;
 
 public interface IOrdemServicoRepository
 {

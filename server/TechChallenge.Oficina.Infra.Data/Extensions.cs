@@ -1,20 +1,20 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using TechChallenge.Oficina.Domain.Features.Clientes;
-using TechChallenge.Oficina.Domain.Features.Insumos;
-using TechChallenge.Oficina.Domain.Features.Indicadores;
-using TechChallenge.Oficina.Domain.Features.OrdensServico;
-using TechChallenge.Oficina.Domain.Features.Servicos;
-using TechChallenge.Oficina.Domain.Features.Veiculos;
-using TechChallenge.Oficina.Infra.Data.Context;
-using TechChallenge.Oficina.Infra.Data.Features.Clientes;
-using TechChallenge.Oficina.Infra.Data.Features.Insumos;
-using TechChallenge.Oficina.Infra.Data.Features.Indicadores;
-using TechChallenge.Oficina.Infra.Data.Features.OrdensServico;
-using TechChallenge.Oficina.Infra.Data.Features.Servicos;
-using TechChallenge.Oficina.Infra.Data.Features.Veiculos;
+using TechChallenge.Oficina.Entities.Features.Clientes;
+using TechChallenge.Oficina.Entities.Features.Insumos;
+using TechChallenge.Oficina.Entities.Features.Indicadores;
+using TechChallenge.Oficina.Entities.Features.OrdensServico;
+using TechChallenge.Oficina.Entities.Features.Servicos;
+using TechChallenge.Oficina.Entities.Features.Veiculos;
+using TechChallenge.Oficina.DB.Data.Context;
+using TechChallenge.Oficina.DB.Data.Features.Clientes;
+using TechChallenge.Oficina.DB.Data.Features.Insumos;
+using TechChallenge.Oficina.DB.Data.Features.Indicadores;
+using TechChallenge.Oficina.DB.Data.Features.OrdensServico;
+using TechChallenge.Oficina.DB.Data.Features.Servicos;
+using TechChallenge.Oficina.DB.Data.Features.Veiculos;
 
-namespace TechChallenge.Oficina.Infra.Data;
+namespace TechChallenge.Oficina.DB.Data;
 
 public static class Extensions
 {

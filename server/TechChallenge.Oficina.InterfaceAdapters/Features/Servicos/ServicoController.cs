@@ -1,17 +1,17 @@
-using TechChallenge.Oficina.Application.Features.Servicos.Commands;
-using TechChallenge.Oficina.Application.Features.Servicos.Queries;
-using TechChallenge.Oficina.Application.Features.Servicos.Services;
-using TechChallenge.Oficina.Application.Features.Servicos.ViewModels;
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.UseCases.Features.Servicos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Servicos.Queries;
+using TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Servicos.ViewModels;
+using TechChallenge.Oficina.Entities.Exceptions;
 
 namespace TechChallenge.Oficina.Controllers.Features.Servicos
 {
     public class ServicoController : IServicoController
     {
-        private readonly IServicoService _servicoService;
+        private readonly IServicoUseCases _servicoService;
         private readonly IServicoAdapter _servicoAdapter;
 
-        public ServicoController(IServicoService servicoService, IServicoAdapter servicoAdapter)
+        public ServicoController(IServicoUseCases servicoService, IServicoAdapter servicoAdapter)
         {
             _servicoService = servicoService;
             _servicoAdapter = servicoAdapter;

@@ -1,7 +1,7 @@
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Veiculos.VOs;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Veiculos.VOs;
 
-namespace TechChallenge.Oficina.Domain.Features.Veiculos;
+namespace TechChallenge.Oficina.Entities.Features.Veiculos;
 
 public class Veiculo
 {

@@ -1,17 +1,17 @@
 using Moq;
-using TechChallenge.Oficina.Application.Features.Insumos.Commands;
-using TechChallenge.Oficina.Application.Features.Insumos.Queries;
-using TechChallenge.Oficina.Application.Features.Insumos.Services;
-using TechChallenge.Oficina.Application.Features.Insumos.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Insumos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Insumos.Queries;
+using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Insumos.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.Insumos;
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.Entities.Exceptions;
 using Xunit;
 
 namespace TechChallenge.Oficina.Controllers.Tests.Features.Insumos;
 
 public sealed class InsumosControllerTests
 {
-    private readonly Mock<IInsumoService> _serviceMock = new();
+    private readonly Mock<IInsumoUseCases> _serviceMock = new();
     private readonly Mock<IInsumoAdapter> _adapterMock = new();
 
     [Fact]

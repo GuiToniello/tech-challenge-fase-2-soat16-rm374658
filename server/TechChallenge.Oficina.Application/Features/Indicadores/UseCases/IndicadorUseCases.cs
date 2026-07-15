@@ -1,18 +1,19 @@
 using AutoMapper;
-using TechChallenge.Oficina.Application.Features.Indicadores.Queries;
-using TechChallenge.Oficina.Application.Features.Indicadores.ViewModels;
-using TechChallenge.Oficina.Domain.Features.Indicadores;
-using TechChallenge.Oficina.Domain.Features.OrdensServico;
-using TechChallenge.Oficina.Domain.Features.OrdensServico.Enums;
+using TechChallenge.Oficina.UseCases.Features.Indicadores.Queries;
+using TechChallenge.Oficina.UseCases.Features.Indicadores.ViewModels;
+using TechChallenge.Oficina.Entities.Features.Indicadores;
+using TechChallenge.Oficina.Entities.Features.OrdensServico;
+using TechChallenge.Oficina.Entities.Features.OrdensServico.Enums;
+using TechChallenge.Oficina.UseCases.Features.Indicadores.UseCases;
 
-namespace TechChallenge.Oficina.Application.Features.Indicadores.Services;
+namespace TechChallenge.Oficina.UseCases.Features.Indicadores.Services;
 
-public sealed class IndicadorService : IIndicadorService
+public sealed class IndicadorUseCases : IIndicadorUseCases
 {
     private readonly IIndicadorRepository _indicadorRepository;
     private readonly IOrdemServicoRepository _ordemServicoRepository;
 
-    public IndicadorService(IIndicadorRepository indicadorRepository, IOrdemServicoRepository ordemServicoRepository)
+    public IndicadorUseCases(IIndicadorRepository indicadorRepository, IOrdemServicoRepository ordemServicoRepository)
     {
         _indicadorRepository = indicadorRepository;
         _ordemServicoRepository = ordemServicoRepository;

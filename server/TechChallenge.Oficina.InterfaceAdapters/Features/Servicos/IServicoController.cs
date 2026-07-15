@@ -1,4 +1,4 @@
-using TechChallenge.Oficina.Application.Features.Servicos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Servicos.Commands;
 
 namespace TechChallenge.Oficina.Controllers.Features.Servicos
 {

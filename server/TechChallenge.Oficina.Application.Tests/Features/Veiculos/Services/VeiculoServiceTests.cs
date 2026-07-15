@@ -1,16 +1,16 @@
 using AutoMapper;
 using Moq;
-using TechChallenge.Oficina.Application.Features.Veiculos.Commands;
-using TechChallenge.Oficina.Application.Features.Veiculos.Queries;
-using TechChallenge.Oficina.Application.Features.Veiculos.Services;
-using TechChallenge.Oficina.Application.Features.Veiculos.ViewModels;
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Clientes;
-using TechChallenge.Oficina.Domain.Features.Clientes.VOs;
-using TechChallenge.Oficina.Domain.Features.Veiculos;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.Queries;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.ViewModels;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Clientes;
+using TechChallenge.Oficina.Entities.Features.Clientes.VOs;
+using TechChallenge.Oficina.Entities.Features.Veiculos;
 using Xunit;
 
-namespace TechChallenge.Oficina.Application.Tests.Features.Veiculos.Services;
+namespace TechChallenge.Oficina.UseCases.Tests.Features.Veiculos.Services;
 
 public sealed class VeiculoServiceTests
 {
@@ -18,7 +18,7 @@ public sealed class VeiculoServiceTests
     private readonly Mock<IVeiculoRepository> _veiculoRepositoryMock = new();
     private readonly Mock<IClienteRepository> _clienteRepositoryMock = new();
 
-    private VeiculoService CriarService() =>
+    private VeiculoUseCases CriarService() =>
         new(_mapperMock.Object, _veiculoRepositoryMock.Object, _clienteRepositoryMock.Object);
 
     private static Cliente CriarCliente() =>

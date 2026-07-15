@@ -1,11 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
-using TechChallenge.Oficina.Domain.Features.Orcamentos;
-using TechChallenge.Oficina.Infra.Email;
-using TechChallenge.Oficina.Infra.Email.Configuration;
-using TechChallenge.Oficina.Infra.Email.Features.Orcamentos;
+using TechChallenge.Oficina.Entities.Features.Orcamentos;
+using TechChallenge.Oficina.Email;
+using TechChallenge.Oficina.Email.Configuration;
+using TechChallenge.Oficina.Email.Features.Orcamentos;
 using Xunit;
 
-namespace TechChallenge.Oficina.Infra.Email.Tests;
+namespace TechChallenge.Oficina.DB.Email.Tests;
 
 public sealed class ExtensionsTests
 {

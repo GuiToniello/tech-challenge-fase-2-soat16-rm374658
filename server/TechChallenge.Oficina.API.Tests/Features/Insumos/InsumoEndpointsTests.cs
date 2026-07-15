@@ -1,17 +1,17 @@
 using Moq;
 using TechChallenge.Oficina.API.Features.Insumos;
-using TechChallenge.Oficina.Application.Features.Insumos.Commands;
-using TechChallenge.Oficina.Application.Features.Insumos.Queries;
-using TechChallenge.Oficina.Application.Features.Insumos.Services;
-using TechChallenge.Oficina.Application.Features.Insumos.ViewModels;
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.UseCases.Features.Insumos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Insumos.Queries;
+using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Insumos.ViewModels;
+using TechChallenge.Oficina.Entities.Exceptions;
 using Xunit;
 
 namespace TechChallenge.Oficina.API.Tests.Features.Insumos;
 
 public sealed class InsumoEndpointsTests
 {
-    private readonly Mock<IInsumoService> _insumoServiceMock = new();
+    private readonly Mock<IInsumoUseCases> _insumoServiceMock = new();
 
     [Fact]
     public async Task MapInsumoEndpoints_Post_DeveInvocarServico_ComCommandCorreto()

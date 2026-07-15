@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Domain.Features.Indicadores;
+namespace TechChallenge.Oficina.Entities.Features.Indicadores;
 
 public interface IIndicadorService<TObterQuery, TViewModel>
 {

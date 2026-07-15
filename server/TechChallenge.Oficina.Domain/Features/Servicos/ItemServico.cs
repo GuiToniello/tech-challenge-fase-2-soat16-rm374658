@@ -1,7 +1,7 @@
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Insumos;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Insumos;
 
-namespace TechChallenge.Oficina.Domain.Features.Servicos;
+namespace TechChallenge.Oficina.Entities.Features.Servicos;
 
 public class ItemServico
 {

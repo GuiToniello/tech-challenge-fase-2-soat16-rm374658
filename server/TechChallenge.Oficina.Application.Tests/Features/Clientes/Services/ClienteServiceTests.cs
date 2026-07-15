@@ -1,15 +1,15 @@
 using AutoMapper;
 using Moq;
-using TechChallenge.Oficina.Application.Features.Clientes.Commands;
-using TechChallenge.Oficina.Application.Features.Clientes.Queries;
-using TechChallenge.Oficina.Application.Features.Clientes.Services;
-using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Clientes;
-using TechChallenge.Oficina.Domain.Features.Clientes.VOs;
+using TechChallenge.Oficina.UseCases.Features.Clientes.Commands;
+using TechChallenge.Oficina.UseCases.Features.Clientes.Queries;
+using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Clientes.ViewModels;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Clientes;
+using TechChallenge.Oficina.Entities.Features.Clientes.VOs;
 using Xunit;
 
-namespace TechChallenge.Oficina.Application.Tests.Features.Clientes.Services;
+namespace TechChallenge.Oficina.UseCases.Tests.Features.Clientes.Services;
 
 public sealed class ClienteServiceTests
 {
@@ -239,8 +239,8 @@ public sealed class ClienteServiceTests
         _repositoryMock.Verify(repo => repo.AdicionarAsync(It.IsAny<Cliente>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
-    private ClienteService CriarService()
+    private ClienteUseCases CriarService()
     {
-        return new ClienteService(_mapperMock.Object, _repositoryMock.Object);
+        return new ClienteUseCases(_mapperMock.Object, _repositoryMock.Object);
     }
 }

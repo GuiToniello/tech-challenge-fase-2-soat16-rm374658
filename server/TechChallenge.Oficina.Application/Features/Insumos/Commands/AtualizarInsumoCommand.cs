@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace TechChallenge.Oficina.Application.Features.Insumos.Commands;
+namespace TechChallenge.Oficina.UseCases.Features.Insumos.Commands;
 
 public sealed class AtualizarInsumoCommand
 {

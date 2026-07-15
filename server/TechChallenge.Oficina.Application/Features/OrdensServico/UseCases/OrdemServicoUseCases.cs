@@ -1,25 +1,25 @@
 using AutoMapper;
-using TechChallenge.Oficina.Application.Features.OrdensServico.Commands;
-using TechChallenge.Oficina.Application.Features.OrdensServico.Queries;
-using TechChallenge.Oficina.Application.Features.OrdensServico.ViewModels;
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Clientes;
-using TechChallenge.Oficina.Domain.Features.OrdensServico;
-using TechChallenge.Oficina.Domain.Features.Servicos;
-using TechChallenge.Oficina.Domain.Features.Veiculos;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.Commands;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.Queries;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.ViewModels;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Clientes;
+using TechChallenge.Oficina.Entities.Features.OrdensServico;
+using TechChallenge.Oficina.Entities.Features.Servicos;
+using TechChallenge.Oficina.Entities.Features.Veiculos;
 
-namespace TechChallenge.Oficina.Application.Features.OrdensServico.Services;
+namespace TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
 
-public sealed class OrdemServicoService : IOrdemServicoService
+public sealed class OrdemServicoUseCases : IOrdemServicoUseCases
 {
     private readonly IMapper _mapper;
     private readonly IOrdemServicoRepository _ordemServicoRepository;
     private readonly IClienteRepository _clienteRepository;
     private readonly IVeiculoRepository _veiculoRepository;
     private readonly IServicoRepository _servicoRepository;
-    private readonly IOrdemServicoServicesFacade _ordemServicoServicesFacade;
+    private readonly IOrdemServicoUseCasesFacade _ordemServicoServicesFacade;
 
-    public OrdemServicoService(IMapper mapper, IOrdemServicoRepository ordemServicoRepository, IClienteRepository clienteRepository, IVeiculoRepository veiculoRepository, IServicoRepository servicoRepository, IOrdemServicoServicesFacade ordemServicoServicesFacade)
+    public OrdemServicoUseCases(IMapper mapper, IOrdemServicoRepository ordemServicoRepository, IClienteRepository clienteRepository, IVeiculoRepository veiculoRepository, IServicoRepository servicoRepository, IOrdemServicoUseCasesFacade ordemServicoServicesFacade)
     {
         _mapper = mapper;
         _ordemServicoRepository = ordemServicoRepository;

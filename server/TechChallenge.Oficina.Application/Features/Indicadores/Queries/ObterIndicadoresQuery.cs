@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Application.Features.Indicadores.Queries;
+namespace TechChallenge.Oficina.UseCases.Features.Indicadores.Queries;
 
 public sealed class ObterIndicadoresQuery
 {

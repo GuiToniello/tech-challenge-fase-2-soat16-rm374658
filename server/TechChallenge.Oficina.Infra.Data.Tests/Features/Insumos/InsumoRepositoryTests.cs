@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using TechChallenge.Oficina.Domain.Features.Insumos;
-using TechChallenge.Oficina.Infra.Data.Context;
-using TechChallenge.Oficina.Infra.Data.Features.Insumos;
+using TechChallenge.Oficina.Entities.Features.Insumos;
+using TechChallenge.Oficina.DB.Data.Context;
+using TechChallenge.Oficina.DB.Data.Features.Insumos;
 using Xunit;
 
-namespace TechChallenge.Oficina.Infra.Data.Tests.Features.Insumos;
+namespace TechChallenge.Oficina.DB.Data.Tests.Features.Insumos;
 
 public sealed class InsumoRepositoryTests
 {

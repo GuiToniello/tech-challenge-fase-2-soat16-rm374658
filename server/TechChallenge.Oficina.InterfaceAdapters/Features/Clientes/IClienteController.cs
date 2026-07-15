@@ -1,4 +1,4 @@
-using TechChallenge.Oficina.Application.Features.Clientes.Commands;
+using TechChallenge.Oficina.UseCases.Features.Clientes.Commands;
 
 namespace TechChallenge.Oficina.Controllers.Features.Clientes
 {

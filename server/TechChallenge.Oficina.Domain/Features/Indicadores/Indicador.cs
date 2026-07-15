@@ -1,6 +1,6 @@
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.Entities.Exceptions;
 
-namespace TechChallenge.Oficina.Domain.Features.Indicadores;
+namespace TechChallenge.Oficina.Entities.Features.Indicadores;
 
 public sealed class Indicador
 {

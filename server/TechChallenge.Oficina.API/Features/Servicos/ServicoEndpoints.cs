@@ -1,5 +1,5 @@
-using TechChallenge.Oficina.Application.Features.Servicos.Commands;
-using TechChallenge.Oficina.Application.Features.Servicos.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Servicos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Servicos.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.Servicos;
 
 namespace TechChallenge.Oficina.API.Features.Servicos

@@ -1,8 +1,8 @@
 using System.Text;
 using System.Text.RegularExpressions;
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.Entities.Exceptions;
 
-namespace TechChallenge.Oficina.Domain.Features.Veiculos.VOs;
+namespace TechChallenge.Oficina.Entities.Features.Veiculos.VOs;
 
 public readonly struct PlacaMercosul : IEquatable<PlacaMercosul>
 {

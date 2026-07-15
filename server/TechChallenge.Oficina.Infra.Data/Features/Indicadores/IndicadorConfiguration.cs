@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TechChallenge.Oficina.Domain.Features.Indicadores;
+using TechChallenge.Oficina.Entities.Features.Indicadores;
 
-namespace TechChallenge.Oficina.Infra.Data.Features.Indicadores;
+namespace TechChallenge.Oficina.DB.Data.Features.Indicadores;
 
 public sealed class IndicadorConfiguration : IEntityTypeConfiguration<Indicador>
 {

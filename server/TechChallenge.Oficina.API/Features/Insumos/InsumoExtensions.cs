@@ -1,5 +1,5 @@
-using TechChallenge.Oficina.Application.Features.Insumos.Commands;
-using TechChallenge.Oficina.Application.Features.Insumos.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Insumos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Insumos.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.Insumos;
 
 namespace TechChallenge.Oficina.API.Features.Insumos

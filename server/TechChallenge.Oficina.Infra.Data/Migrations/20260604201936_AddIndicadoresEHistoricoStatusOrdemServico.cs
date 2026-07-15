@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace TechChallenge.Oficina.Infra.Data.Migrations
+namespace TechChallenge.Oficina.DB.Data.Migrations
 {
     /// <inheritdoc />
     public partial class AddIndicadoresEHistoricoStatusOrdemServico : Migration

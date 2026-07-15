@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Clientes\Interfaces\" />
     <Folder Include="Features\Servicos\Interfaces\" />
     <Folder Include="Features\Veiculos\Interfaces\" />
   </ItemGroup>

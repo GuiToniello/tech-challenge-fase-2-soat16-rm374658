@@ -1,20 +1,20 @@
 using AutoMapper;
-using TechChallenge.Oficina.Application.Features.Servicos.Commands;
-using TechChallenge.Oficina.Application.Features.Servicos.Queries;
-using TechChallenge.Oficina.Application.Features.Servicos.ViewModels;
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Insumos;
-using TechChallenge.Oficina.Domain.Features.Servicos;
+using TechChallenge.Oficina.UseCases.Features.Servicos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Servicos.Queries;
+using TechChallenge.Oficina.UseCases.Features.Servicos.ViewModels;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Insumos;
+using TechChallenge.Oficina.Entities.Features.Servicos;
 
-namespace TechChallenge.Oficina.Application.Features.Servicos.Services;
+namespace TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
 
-public sealed class ServicoService : IServicoService
+public sealed class ServicoUseCases : IServicoUseCases
 {
     private readonly IMapper _mapper;
     private readonly IServicoRepository _servicoRepository;
     private readonly IInsumoRepository _insumoRepository;
 
-    public ServicoService(IMapper mapper, IServicoRepository servicoRepository, IInsumoRepository insumoRepository)
+    public ServicoUseCases(IMapper mapper, IServicoRepository servicoRepository, IInsumoRepository insumoRepository)
     {
         _mapper = mapper;
         _servicoRepository = servicoRepository;

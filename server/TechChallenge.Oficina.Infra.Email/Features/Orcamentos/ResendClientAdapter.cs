@@ -1,6 +1,6 @@
 using Resend;
 
-namespace TechChallenge.Oficina.Infra.Email.Features.Orcamentos;
+namespace TechChallenge.Oficina.Email.Features.Orcamentos;
 
 public sealed class ResendClientAdapter : IResendClient
 {

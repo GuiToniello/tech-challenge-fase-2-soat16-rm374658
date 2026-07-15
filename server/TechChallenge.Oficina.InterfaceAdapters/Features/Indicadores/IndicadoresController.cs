@@ -1,14 +1,14 @@
-using TechChallenge.Oficina.Application.Features.Indicadores;
-using TechChallenge.Oficina.Application.Features.Indicadores.Queries;
+using TechChallenge.Oficina.UseCases.Features.Indicadores.Queries;
+using TechChallenge.Oficina.UseCases.Features.Indicadores.UseCases;
 
 namespace TechChallenge.Oficina.Controllers.Features.Indicadores
 {
     public sealed class IndicadoresController : IIndicadoresController
     {
-        private readonly IIndicadorService _indicadorService;
+        private readonly IIndicadorUseCases _indicadorService;
         private readonly IIndicadoresAdapter _indicadoresAdapter;
 
-        public IndicadoresController(IIndicadorService indicadorService, IIndicadoresAdapter indicadoresAdapter)
+        public IndicadoresController(IIndicadorUseCases indicadorService, IIndicadoresAdapter indicadoresAdapter)
         {
             _indicadorService = indicadorService;
             _indicadoresAdapter = indicadoresAdapter;

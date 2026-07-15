@@ -1,21 +1,21 @@
 using AutoMapper;
-using TechChallenge.Oficina.Application.Features.Veiculos.Commands;
-using TechChallenge.Oficina.Application.Features.Veiculos.Queries;
-using TechChallenge.Oficina.Application.Features.Veiculos.ViewModels;
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Clientes;
-using TechChallenge.Oficina.Domain.Features.Veiculos;
-using TechChallenge.Oficina.Domain.Features.Veiculos.VOs;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.Queries;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.ViewModels;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Clientes;
+using TechChallenge.Oficina.Entities.Features.Veiculos;
+using TechChallenge.Oficina.Entities.Features.Veiculos.VOs;
 
-namespace TechChallenge.Oficina.Application.Features.Veiculos.Services;
+namespace TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
 
-public sealed class VeiculoService : IVeiculoService
+public sealed class VeiculoUseCases : IVeiculoUseCases
 {
     private readonly IMapper _mapper;
     private readonly IVeiculoRepository _veiculoRepository;
     private readonly IClienteRepository _clienteRepository;
 
-    public VeiculoService(IMapper mapper, IVeiculoRepository veiculoRepository, IClienteRepository clienteRepository)
+    public VeiculoUseCases(IMapper mapper, IVeiculoRepository veiculoRepository, IClienteRepository clienteRepository)
     {
         _mapper = mapper;
         _veiculoRepository = veiculoRepository;

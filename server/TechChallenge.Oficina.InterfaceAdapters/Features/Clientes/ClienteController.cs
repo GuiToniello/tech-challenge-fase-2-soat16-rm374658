@@ -1,17 +1,17 @@
-﻿using TechChallenge.Oficina.Application.Features.Clientes.Commands;
-using TechChallenge.Oficina.Application.Features.Clientes.Queries;
-using TechChallenge.Oficina.Application.Features.Clientes.Services;
-using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
-using TechChallenge.Oficina.Domain.Exceptions;
+﻿using TechChallenge.Oficina.UseCases.Features.Clientes.Commands;
+using TechChallenge.Oficina.UseCases.Features.Clientes.Queries;
+using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Clientes.ViewModels;
+using TechChallenge.Oficina.Entities.Exceptions;
 
 namespace TechChallenge.Oficina.Controllers.Features.Clientes
 {
     public class ClienteController : IClienteController
     {
-        private readonly IClienteService _clienteService;
+        private readonly IClienteUseCases _clienteService;
         private readonly IClienteAdapter _clientAdapter;
 
-        public ClienteController(IClienteService clienteService, IClienteAdapter clientAdapter)
+        public ClienteController(IClienteUseCases clienteService, IClienteAdapter clientAdapter)
         {
             _clienteService = clienteService;
             _clientAdapter = clientAdapter;

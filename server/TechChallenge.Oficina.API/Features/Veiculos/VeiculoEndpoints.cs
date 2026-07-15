@@ -1,5 +1,5 @@
-using TechChallenge.Oficina.Application.Features.Veiculos.Commands;
-using TechChallenge.Oficina.Application.Features.Veiculos.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.Veiculos;
 
 namespace TechChallenge.Oficina.API.Features.Veiculos

@@ -1,8 +1,8 @@
-using TechChallenge.Oficina.Domain.Features.Servicos;
+using TechChallenge.Oficina.Entities.Features.Servicos;
 
-namespace TechChallenge.Oficina.Domain.Features.Insumos;
+namespace TechChallenge.Oficina.Entities.Features.Insumos;
 
-public interface IEstoqueService
+public interface IEstoqueUseCases
 {
     Task VerificarDisponibilidadeParaOrcamentoAsync(IReadOnlyCollection<Servico> servicos, CancellationToken cancellationToken = default);
     Task DebitarEstoqueParaOrdemServicoAsync(IReadOnlyCollection<Servico> servicos, CancellationToken cancellationToken = default);

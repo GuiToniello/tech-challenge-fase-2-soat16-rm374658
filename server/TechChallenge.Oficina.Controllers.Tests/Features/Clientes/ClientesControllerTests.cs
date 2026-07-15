@@ -1,17 +1,17 @@
 using Moq;
-using TechChallenge.Oficina.Application.Features.Clientes.Commands;
-using TechChallenge.Oficina.Application.Features.Clientes.Queries;
-using TechChallenge.Oficina.Application.Features.Clientes.Services;
-using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Clientes.Commands;
+using TechChallenge.Oficina.UseCases.Features.Clientes.Queries;
+using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Clientes.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.Clientes;
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.Entities.Exceptions;
 using Xunit;
 
 namespace TechChallenge.Oficina.Controllers.Tests.Features.Clientes;
 
 public sealed class ClientEndpointsTests
 {
-    private readonly Mock<IClienteService> _serviceMock = new();
+    private readonly Mock<IClienteUseCases> _serviceMock = new();
     private readonly Mock<IClienteAdapter> _adapterMock = new();
 
 

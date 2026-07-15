@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TechChallenge.Oficina.Domain.Features.Orcamentos;
-using TechChallenge.Oficina.Domain.Features.OrdensServico;
-using TechChallenge.Oficina.Domain.Features.OrdensServico.VOs;
+using TechChallenge.Oficina.Entities.Features.Orcamentos;
+using TechChallenge.Oficina.Entities.Features.OrdensServico;
+using TechChallenge.Oficina.Entities.Features.OrdensServico.VOs;
 
-namespace TechChallenge.Oficina.Infra.Data.Features.OrdensServico;
+namespace TechChallenge.Oficina.DB.Data.Features.OrdensServico;
 
 public sealed class OrdemServicoConfiguration : IEntityTypeConfiguration<OrdemServico>
 {
@@ -34,12 +34,12 @@ public sealed class OrdemServicoConfiguration : IEntityTypeConfiguration<OrdemSe
         builder.HasIndex(ordemServico => ordemServico.VeiculoId);
         builder.HasIndex(ordemServico => ordemServico.Status);
 
-        builder.HasOne<TechChallenge.Oficina.Domain.Features.Clientes.Cliente>()
+        builder.HasOne<TechChallenge.Oficina.Entities.Features.Clientes.Cliente>()
             .WithMany()
             .HasForeignKey(ordemServico => ordemServico.ClienteId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne<TechChallenge.Oficina.Domain.Features.Veiculos.Veiculo>()
+        builder.HasOne<TechChallenge.Oficina.Entities.Features.Veiculos.Veiculo>()
             .WithMany()
             .HasForeignKey(ordemServico => ordemServico.VeiculoId)
             .OnDelete(DeleteBehavior.Restrict);
@@ -49,7 +49,7 @@ public sealed class OrdemServicoConfiguration : IEntityTypeConfiguration<OrdemSe
             .UsingEntity<Dictionary<string, object>>(
                 "ordens_servico_servicos",
                 right => right
-                    .HasOne<TechChallenge.Oficina.Domain.Features.Servicos.Servico>()
+                    .HasOne<TechChallenge.Oficina.Entities.Features.Servicos.Servico>()
                     .WithMany()
                     .HasForeignKey("servico_id")
                     .OnDelete(DeleteBehavior.Restrict),

@@ -1,17 +1,17 @@
-using TechChallenge.Oficina.Application.Features.Veiculos.Commands;
-using TechChallenge.Oficina.Application.Features.Veiculos.Queries;
-using TechChallenge.Oficina.Application.Features.Veiculos.Services;
-using TechChallenge.Oficina.Application.Features.Veiculos.ViewModels;
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.Queries;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.ViewModels;
+using TechChallenge.Oficina.Entities.Exceptions;
 
 namespace TechChallenge.Oficina.Controllers.Features.Veiculos
 {
     public class VeiculoController : IVeiculoController
     {
-        private readonly IVeiculoService _veiculoService;
+        private readonly IVeiculoUseCases _veiculoService;
         private readonly IVeiculoAdapter _veiculoAdapter;
 
-        public VeiculoController(IVeiculoService veiculoService, IVeiculoAdapter veiculoAdapter)
+        public VeiculoController(IVeiculoUseCases veiculoService, IVeiculoAdapter veiculoAdapter)
         {
             _veiculoService = veiculoService;
             _veiculoAdapter = veiculoAdapter;

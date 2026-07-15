@@ -1,17 +1,17 @@
 using Moq;
-using TechChallenge.Oficina.Application.Features.Insumos.Services;
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Insumos;
-using TechChallenge.Oficina.Domain.Features.Servicos;
+using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Insumos;
+using TechChallenge.Oficina.Entities.Features.Servicos;
 using Xunit;
 
-namespace TechChallenge.Oficina.Application.Tests.Features.Insumos.Services;
+namespace TechChallenge.Oficina.UseCases.Tests.Features.Insumos.Services;
 
 public sealed class EstoqueServiceTests
 {
     private readonly Mock<IInsumoRepository> _insumoRepositoryMock = new();
 
-    private EstoqueService CriarService() => new(_insumoRepositoryMock.Object);
+    private EstoqueUseCases CriarService() => new(_insumoRepositoryMock.Object);
 
     private static Servico CriarServicoComItens(string nome, params (Insumo insumo, int quantidade)[] itens)
     {

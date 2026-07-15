@@ -1,7 +1,7 @@
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.OrdensServico.Enums;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.OrdensServico.Enums;
 
-namespace TechChallenge.Oficina.Domain.Features.OrdensServico.VOs;
+namespace TechChallenge.Oficina.Entities.Features.OrdensServico.VOs;
 
 public sealed class HistoricoStatusOrdemServico : IEquatable<HistoricoStatusOrdemServico>
 {

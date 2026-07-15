@@ -1,17 +1,17 @@
 using Moq;
-using TechChallenge.Oficina.Application.Features.Clientes.Commands;
-using TechChallenge.Oficina.Application.Features.Clientes.Queries;
-using TechChallenge.Oficina.Application.Features.Clientes.Services;
-using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Clientes.Commands;
+using TechChallenge.Oficina.UseCases.Features.Clientes.Queries;
+using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Clientes.ViewModels;
 using TechChallenge.Oficina.API.Features.Clientes;
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.Entities.Exceptions;
 using Xunit;
 
 namespace TechChallenge.Oficina.API.Tests.Features.Clientes;
 
 public sealed class ClienteEndpointsTests
 {
-    private readonly Mock<IClienteService> _clienteServiceMock = new();
+    private readonly Mock<IClienteUseCases> _clienteServiceMock = new();
 
     [Fact]
     public async Task MapClienteEndpoints_Post_DeveInvocarServico_ComCommandCorreto()

@@ -1,22 +1,22 @@
 using AutoMapper;
 using Moq;
-using TechChallenge.Oficina.Application.Features.Indicadores;
-using TechChallenge.Oficina.Application.Features.OrdensServico.Commands;
-using TechChallenge.Oficina.Application.Features.OrdensServico.Queries;
-using TechChallenge.Oficina.Application.Features.OrdensServico.Services;
-using TechChallenge.Oficina.Application.Features.OrdensServico.ViewModels;
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Clientes;
-using TechChallenge.Oficina.Domain.Features.Clientes.VOs;
-using TechChallenge.Oficina.Domain.Features.Insumos;
-using TechChallenge.Oficina.Domain.Features.Orcamentos;
-using TechChallenge.Oficina.Domain.Features.OrdensServico;
-using TechChallenge.Oficina.Domain.Features.OrdensServico.Enums;
-using TechChallenge.Oficina.Domain.Features.Servicos;
-using TechChallenge.Oficina.Domain.Features.Veiculos;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.Commands;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.Queries;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.ViewModels;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Clientes;
+using TechChallenge.Oficina.Entities.Features.Clientes.VOs;
+using TechChallenge.Oficina.Entities.Features.Insumos;
+using TechChallenge.Oficina.Entities.Features.Orcamentos;
+using TechChallenge.Oficina.Entities.Features.OrdensServico;
+using TechChallenge.Oficina.Entities.Features.OrdensServico.Enums;
+using TechChallenge.Oficina.Entities.Features.Servicos;
+using TechChallenge.Oficina.Entities.Features.Veiculos;
 using Xunit;
+using TechChallenge.Oficina.UseCases.Features.Indicadores.UseCases;
 
-namespace TechChallenge.Oficina.Application.Tests.Features.OrdensServico.Services;
+namespace TechChallenge.Oficina.UseCases.Tests.Features.OrdensServico.Services;
 
 public sealed class OrdemServicoServiceTests
 {
@@ -25,18 +25,18 @@ public sealed class OrdemServicoServiceTests
     private readonly Mock<IClienteRepository> _clienteRepositoryMock = new();
     private readonly Mock<IVeiculoRepository> _veiculoRepositoryMock = new();
     private readonly Mock<IServicoRepository> _servicoRepositoryMock = new();
-    private readonly Mock<IEstoqueService> _estoqueServiceMock = new();
-    private readonly Mock<IIndicadorService> _indicadorServiceMock = new();
+    private readonly Mock<IEstoqueUseCases> _estoqueServiceMock = new();
+    private readonly Mock<IIndicadorUseCases> _indicadorServiceMock = new();
     private readonly Mock<IOrcamentoEmailSender> _orcamentoEmailSenderMock = new();
-    private readonly Mock<IOrdemServicoServicesFacade> _ordemServicoServicesFacadeMock = new();
+    private readonly Mock<IOrdemServicoUseCasesFacade> _ordemServicoServicesFacadeMock = new();
 
-    private OrdemServicoService CriarService()
+    private OrdemServicoUseCases CriarService()
     {
         _ordemServicoServicesFacadeMock.SetupGet(f => f.EstoqueService).Returns(_estoqueServiceMock.Object);
         _ordemServicoServicesFacadeMock.SetupGet(f => f.IndicadorService).Returns(_indicadorServiceMock.Object);
         _ordemServicoServicesFacadeMock.SetupGet(f => f.OrcamentoEmailSender).Returns(_orcamentoEmailSenderMock.Object);
 
-        return new OrdemServicoService(
+        return new OrdemServicoUseCases(
             _mapperMock.Object,
             _ordemServicoRepositoryMock.Object,
             _clienteRepositoryMock.Object,

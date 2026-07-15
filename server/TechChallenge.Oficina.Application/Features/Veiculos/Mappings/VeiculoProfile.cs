@@ -1,8 +1,8 @@
 using AutoMapper;
-using TechChallenge.Oficina.Application.Features.Veiculos.ViewModels;
-using TechChallenge.Oficina.Domain.Features.Veiculos;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.ViewModels;
+using TechChallenge.Oficina.Entities.Features.Veiculos;
 
-namespace TechChallenge.Oficina.Application.Features.Veiculos.Mappings;
+namespace TechChallenge.Oficina.UseCases.Features.Veiculos.Mappings;
 
 public sealed class VeiculoProfile : Profile
 {

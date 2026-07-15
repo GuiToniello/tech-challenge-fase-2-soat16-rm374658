@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using TechChallenge.Oficina.Domain.Features.Clientes;
-using TechChallenge.Oficina.Infra.Data.Context;
+using TechChallenge.Oficina.Entities.Features.Clientes;
+using TechChallenge.Oficina.DB.Data.Context;
 
-namespace TechChallenge.Oficina.Infra.Data.Features.Clientes;
+namespace TechChallenge.Oficina.DB.Data.Features.Clientes;
 
 public sealed class ClienteRepository : IClienteRepository
 {

@@ -1,10 +1,10 @@
-using TechChallenge.Oficina.Application.Features.Clientes.Commands;
-using TechChallenge.Oficina.Application.Features.Clientes.Queries;
-using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Clientes.Commands;
+using TechChallenge.Oficina.UseCases.Features.Clientes.Queries;
+using TechChallenge.Oficina.UseCases.Features.Clientes.ViewModels;
 
-namespace TechChallenge.Oficina.Application.Features.Clientes.Services;
+namespace TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
 
-public interface IClienteService
+public interface IClienteUseCases
 {
     Task<ClienteViewModel> CriarAsync(CriarClienteCommand command, CancellationToken cancellationToken = default);
     Task<ClienteViewModel> AtualizarAsync(AtualizarClienteCommand command, CancellationToken cancellationToken = default);

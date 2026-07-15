@@ -1,10 +1,10 @@
-using TechChallenge.Oficina.Application.Features.Insumos.Commands;
-using TechChallenge.Oficina.Application.Features.Insumos.Queries;
-using TechChallenge.Oficina.Application.Features.Insumos.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Insumos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Insumos.Queries;
+using TechChallenge.Oficina.UseCases.Features.Insumos.ViewModels;
 
-namespace TechChallenge.Oficina.Application.Features.Insumos.Services;
+namespace TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
 
-public interface IInsumoService
+public interface IInsumoUseCases
 {
     Task<InsumoViewModel> CriarAsync(CriarInsumoCommand command, CancellationToken cancellationToken = default);
     Task<InsumoViewModel> AtualizarAsync(AtualizarInsumoCommand command, CancellationToken cancellationToken = default);

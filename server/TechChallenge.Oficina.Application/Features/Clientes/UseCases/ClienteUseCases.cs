@@ -1,19 +1,19 @@
 using AutoMapper;
-using TechChallenge.Oficina.Application.Features.Clientes.Commands;
-using TechChallenge.Oficina.Application.Features.Clientes.Queries;
-using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Clientes;
-using TechChallenge.Oficina.Domain.Features.Clientes.VOs;
+using TechChallenge.Oficina.UseCases.Features.Clientes.Commands;
+using TechChallenge.Oficina.UseCases.Features.Clientes.Queries;
+using TechChallenge.Oficina.UseCases.Features.Clientes.ViewModels;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Clientes;
+using TechChallenge.Oficina.Entities.Features.Clientes.VOs;
 
-namespace TechChallenge.Oficina.Application.Features.Clientes.Services;
+namespace TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
 
-public sealed class ClienteService : IClienteService
+public sealed class ClienteUseCases : IClienteUseCases
 {
     private readonly IMapper _mapper;
     private readonly IClienteRepository _clienteRepository;
 
-    public ClienteService(IMapper mapper, IClienteRepository clienteRepository)
+    public ClienteUseCases(IMapper mapper, IClienteRepository clienteRepository)
     {
         _mapper = mapper;
         _clienteRepository = clienteRepository;

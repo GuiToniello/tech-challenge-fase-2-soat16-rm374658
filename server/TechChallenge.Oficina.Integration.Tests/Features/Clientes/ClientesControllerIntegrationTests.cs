@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using TechChallenge.Oficina.API.Features.Clientes;
 using Xunit;
-using TechChallenge.Oficina.Application.Features.Clientes.Commands;
-using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Clientes.Commands;
+using TechChallenge.Oficina.UseCases.Features.Clientes.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.Clientes;
 using TechChallenge.Oficina.Integration.Tests.Infrastructure;
 

@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Application.Features.Servicos.Commands;
+namespace TechChallenge.Oficina.UseCases.Features.Servicos.Commands;
 
 public sealed class CriarServicoCommand
 {

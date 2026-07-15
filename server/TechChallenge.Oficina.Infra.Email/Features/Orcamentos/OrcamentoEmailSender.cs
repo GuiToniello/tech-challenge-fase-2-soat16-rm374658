@@ -1,13 +1,13 @@
 using System.Globalization;
 using System.Text;
 using Resend;
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Orcamentos;
-using TechChallenge.Oficina.Domain.Features.OrdensServico;
-using TechChallenge.Oficina.Domain.Features.OrdensServico.Enums;
-using TechChallenge.Oficina.Infra.Email.Configuration;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Orcamentos;
+using TechChallenge.Oficina.Entities.Features.OrdensServico;
+using TechChallenge.Oficina.Entities.Features.OrdensServico.Enums;
+using TechChallenge.Oficina.Email.Configuration;
 
-namespace TechChallenge.Oficina.Infra.Email.Features.Orcamentos;
+namespace TechChallenge.Oficina.Email.Features.Orcamentos;
 
 public sealed class OrcamentoEmailSender : IOrcamentoEmailSender
 {

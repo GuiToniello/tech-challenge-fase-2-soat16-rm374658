@@ -1,17 +1,17 @@
-using TechChallenge.Oficina.Application.Features.OrdensServico.Commands;
-using TechChallenge.Oficina.Application.Features.OrdensServico.Queries;
-using TechChallenge.Oficina.Application.Features.OrdensServico.Services;
-using TechChallenge.Oficina.Application.Features.OrdensServico.ViewModels;
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.Commands;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.Queries;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.ViewModels;
+using TechChallenge.Oficina.Entities.Exceptions;
 
 namespace TechChallenge.Oficina.Controllers.Features.OrdensServico
 {
     public class OrdensServicoController : IOrdensServicoController
     {
-        private readonly IOrdemServicoService _ordemServicoService;
+        private readonly IOrdemServicoUseCases _ordemServicoService;
         private readonly IOrdensServicoAdapter _ordensServicoAdapter;
 
-        public OrdensServicoController(IOrdemServicoService ordemServicoService, IOrdensServicoAdapter ordensServicoAdapter)
+        public OrdensServicoController(IOrdemServicoUseCases ordemServicoService, IOrdensServicoAdapter ordensServicoAdapter)
         {
             _ordemServicoService = ordemServicoService;
             _ordensServicoAdapter = ordensServicoAdapter;

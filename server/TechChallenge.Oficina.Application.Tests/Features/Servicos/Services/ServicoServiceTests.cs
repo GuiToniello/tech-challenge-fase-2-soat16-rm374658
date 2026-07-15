@@ -1,15 +1,15 @@
 using AutoMapper;
 using Moq;
-using TechChallenge.Oficina.Application.Features.Servicos.Commands;
-using TechChallenge.Oficina.Application.Features.Servicos.Queries;
-using TechChallenge.Oficina.Application.Features.Servicos.Services;
-using TechChallenge.Oficina.Application.Features.Servicos.ViewModels;
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Insumos;
-using TechChallenge.Oficina.Domain.Features.Servicos;
+using TechChallenge.Oficina.UseCases.Features.Servicos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Servicos.Queries;
+using TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Servicos.ViewModels;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Insumos;
+using TechChallenge.Oficina.Entities.Features.Servicos;
 using Xunit;
 
-namespace TechChallenge.Oficina.Application.Tests.Features.Servicos.Services;
+namespace TechChallenge.Oficina.UseCases.Tests.Features.Servicos.Services;
 
 public sealed class ServicoServiceTests
 {
@@ -17,7 +17,7 @@ public sealed class ServicoServiceTests
     private readonly Mock<IServicoRepository> _servicoRepositoryMock = new();
     private readonly Mock<IInsumoRepository> _insumoRepositoryMock = new();
 
-    private ServicoService CriarService() => new(_mapperMock.Object, _servicoRepositoryMock.Object, _insumoRepositoryMock.Object);
+    private ServicoUseCases CriarService() => new(_mapperMock.Object, _servicoRepositoryMock.Object, _insumoRepositoryMock.Object);
 
     private static Insumo CriarInsumo(string nome = "Filtro") => Insumo.Criar(nome, "Bosch", 10, 10m);
 

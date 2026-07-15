@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Application.Features.Servicos.ViewModels;
+namespace TechChallenge.Oficina.UseCases.Features.Servicos.ViewModels;
 
 public sealed class ServicoViewModel
 {

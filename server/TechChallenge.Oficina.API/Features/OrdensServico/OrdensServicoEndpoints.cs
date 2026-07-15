@@ -1,5 +1,5 @@
-using TechChallenge.Oficina.Application.Features.OrdensServico.Commands;
-using TechChallenge.Oficina.Application.Features.OrdensServico.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.Commands;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.OrdensServico;
 
 namespace TechChallenge.Oficina.API.Features.OrdensServico

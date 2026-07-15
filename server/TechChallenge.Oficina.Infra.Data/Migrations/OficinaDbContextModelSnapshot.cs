@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using TechChallenge.Oficina.Infra.Data.Context;
+using TechChallenge.Oficina.DB.Data.Context;
 
 #nullable disable
 
-namespace TechChallenge.Oficina.Infra.Data.Migrations
+namespace TechChallenge.Oficina.DB.Data.Migrations
 {
     [DbContext(typeof(OficinaDbContext))]
     partial class OficinaDbContextModelSnapshot : ModelSnapshot

@@ -1,6 +1,6 @@
-﻿using TechChallenge.Oficina.Application.Features.Indicadores.ViewModels;
+﻿using TechChallenge.Oficina.UseCases.Features.Indicadores.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.Indicadores;
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.Entities.Exceptions;
 
 namespace TechChallenge.Oficina.API.Features.Indicadores
 {

@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TechChallenge.Oficina.Domain.Features.Veiculos;
-using TechChallenge.Oficina.Domain.Features.Veiculos.VOs;
+using TechChallenge.Oficina.Entities.Features.Veiculos;
+using TechChallenge.Oficina.Entities.Features.Veiculos.VOs;
 
-namespace TechChallenge.Oficina.Infra.Data.Features.Veiculos;
+namespace TechChallenge.Oficina.DB.Data.Features.Veiculos;
 
 public sealed class VeiculoConfiguration : IEntityTypeConfiguration<Veiculo>
 {
@@ -47,7 +47,7 @@ public sealed class VeiculoConfiguration : IEntityTypeConfiguration<Veiculo>
             .HasColumnName("cliente_id")
             .IsRequired();
 
-        builder.HasOne<TechChallenge.Oficina.Domain.Features.Clientes.Cliente>()
+        builder.HasOne<TechChallenge.Oficina.Entities.Features.Clientes.Cliente>()
             .WithMany()
             .HasForeignKey(veiculo => veiculo.ClienteId)
             .OnDelete(DeleteBehavior.Restrict);

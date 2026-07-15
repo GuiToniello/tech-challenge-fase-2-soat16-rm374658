@@ -1,6 +1,6 @@
-using TechChallenge.Oficina.Application.Features.Veiculos.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.Veiculos;
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.Entities.Exceptions;
 
 namespace TechChallenge.Oficina.API.Features.Veiculos
 {

@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Domain.Exceptions;
+namespace TechChallenge.Oficina.Entities.Exceptions;
 
 public sealed class DomainException : Exception
 {

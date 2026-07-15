@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Application.Features.OrdensServico.Queries;
+namespace TechChallenge.Oficina.UseCases.Features.OrdensServico.Queries;
 
 public sealed class ObterOrdemServicoPorIdQuery
 {

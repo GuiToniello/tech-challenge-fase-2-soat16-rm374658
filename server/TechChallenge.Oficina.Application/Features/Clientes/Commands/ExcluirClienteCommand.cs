@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Application.Features.Clientes.Commands;
+namespace TechChallenge.Oficina.UseCases.Features.Clientes.Commands;
 
 public sealed class ExcluirClienteCommand
 {

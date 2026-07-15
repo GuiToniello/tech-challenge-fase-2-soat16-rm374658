@@ -1,8 +1,8 @@
 using AutoMapper;
-using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
-using TechChallenge.Oficina.Domain.Features.Clientes;
+using TechChallenge.Oficina.UseCases.Features.Clientes.ViewModels;
+using TechChallenge.Oficina.Entities.Features.Clientes;
 
-namespace TechChallenge.Oficina.Application.Features.Clientes.Mappings;
+namespace TechChallenge.Oficina.UseCases.Features.Clientes.Mappings;
 
 public sealed class ClienteProfile : Profile
 {

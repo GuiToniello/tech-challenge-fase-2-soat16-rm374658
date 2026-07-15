@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using TechChallenge.Oficina.Domain.Features.Clientes;
-using TechChallenge.Oficina.Domain.Features.Clientes.VOs;
-using TechChallenge.Oficina.Infra.Data.Context;
-using TechChallenge.Oficina.Infra.Data.Features.Clientes;
+using TechChallenge.Oficina.Entities.Features.Clientes;
+using TechChallenge.Oficina.Entities.Features.Clientes.VOs;
+using TechChallenge.Oficina.DB.Data.Context;
+using TechChallenge.Oficina.DB.Data.Features.Clientes;
 using Xunit;
 
-namespace TechChallenge.Oficina.Infra.Data.Tests.Features.Clientes;
+namespace TechChallenge.Oficina.DB.Data.Tests.Features.Clientes;
 
 public sealed class ClienteRepositoryTests
 {

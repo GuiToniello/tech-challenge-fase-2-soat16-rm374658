@@ -1,9 +1,9 @@
 using Moq;
 using TechChallenge.Oficina.API.Features.Veiculos;
-using TechChallenge.Oficina.Application.Features.Veiculos.Commands;
-using TechChallenge.Oficina.Application.Features.Veiculos.Queries;
-using TechChallenge.Oficina.Application.Features.Veiculos.Services;
-using TechChallenge.Oficina.Application.Features.Veiculos.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.Queries;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.Veiculos;
 using Xunit;
 
@@ -11,7 +11,7 @@ namespace TechChallenge.Oficina.API.Tests.Features.Veiculos;
 
 public sealed class VeiculoEndpointsTests
 {
-    private readonly Mock<IVeiculoService> _veiculoServiceMock = new();
+    private readonly Mock<IVeiculoUseCases> _veiculoServiceMock = new();
 
     [Fact]
     public async Task MapVeiculoEndpoints_Post_DeveInvocarServico_ComCommandCorreto()

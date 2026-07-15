@@ -1,5 +1,5 @@
 ﻿using System;
-using TechChallenge.Oficina.Application.Features.Indicadores.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Indicadores.ViewModels;
 
 namespace TechChallenge.Oficina.Controllers.Features.Indicadores
 {

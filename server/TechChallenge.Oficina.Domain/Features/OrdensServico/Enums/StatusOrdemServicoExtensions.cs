@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Domain.Features.OrdensServico.Enums;
+namespace TechChallenge.Oficina.Entities.Features.OrdensServico.Enums;
 
 public static class StatusOrdemServicoExtensions
 {

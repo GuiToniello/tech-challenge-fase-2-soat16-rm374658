@@ -1,4 +1,4 @@
-using TechChallenge.Oficina.Application.Features.Veiculos.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.ViewModels;
 
 namespace TechChallenge.Oficina.Controllers.Features.Veiculos
 {

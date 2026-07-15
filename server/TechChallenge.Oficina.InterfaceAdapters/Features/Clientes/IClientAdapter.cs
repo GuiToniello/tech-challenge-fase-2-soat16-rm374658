@@ -1,5 +1,5 @@
 ﻿using System;
-using TechChallenge.Oficina.Application.Features.Clientes.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Clientes.ViewModels;
 
 namespace TechChallenge.Oficina.Controllers.Features.Clientes
 {

@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Domain.Features.Clientes;
+namespace TechChallenge.Oficina.Entities.Features.Clientes;
 
 public interface IClienteRepository
 {

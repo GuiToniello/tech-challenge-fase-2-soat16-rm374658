@@ -1,10 +1,10 @@
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Clientes;
-using TechChallenge.Oficina.Domain.Features.Clientes.Enums;
-using TechChallenge.Oficina.Domain.Features.Clientes.VOs;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Clientes;
+using TechChallenge.Oficina.Entities.Features.Clientes.Enums;
+using TechChallenge.Oficina.Entities.Features.Clientes.VOs;
 using Xunit;
 
-namespace TechChallenge.Oficina.Domain.Tests.Features.Clientes;
+namespace TechChallenge.Oficina.Entities.Tests.Features.Clientes;
 
 public sealed class ClienteDomainTests
 {

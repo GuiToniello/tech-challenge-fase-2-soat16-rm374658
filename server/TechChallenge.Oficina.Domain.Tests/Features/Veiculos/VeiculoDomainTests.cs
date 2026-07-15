@@ -1,9 +1,9 @@
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Veiculos;
-using TechChallenge.Oficina.Domain.Features.Veiculos.VOs;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Veiculos;
+using TechChallenge.Oficina.Entities.Features.Veiculos.VOs;
 using Xunit;
 
-namespace TechChallenge.Oficina.Domain.Tests.Features.Veiculos;
+namespace TechChallenge.Oficina.Entities.Tests.Features.Veiculos;
 
 public sealed class VeiculoDomainTests
 {

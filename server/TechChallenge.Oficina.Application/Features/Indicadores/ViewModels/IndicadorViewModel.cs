@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Application.Features.Indicadores.ViewModels;
+namespace TechChallenge.Oficina.UseCases.Features.Indicadores.ViewModels;
 
 public sealed class IndicadorViewModel
 {

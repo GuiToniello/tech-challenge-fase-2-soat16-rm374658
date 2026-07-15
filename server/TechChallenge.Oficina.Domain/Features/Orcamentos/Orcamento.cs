@@ -1,7 +1,7 @@
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Servicos;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Servicos;
 
-namespace TechChallenge.Oficina.Domain.Features.Orcamentos;
+namespace TechChallenge.Oficina.Entities.Features.Orcamentos;
 
 public sealed class Orcamento
 {

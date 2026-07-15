@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Application.Features.OrdensServico.Commands;
+namespace TechChallenge.Oficina.UseCases.Features.OrdensServico.Commands;
 
 public sealed class ExcluirOrdemServicoCommand
 {

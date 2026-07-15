@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Domain.Features.Clientes.Enums;
+namespace TechChallenge.Oficina.Entities.Features.Clientes.Enums;
 
 public enum TipoIdentificacaoCliente
 {

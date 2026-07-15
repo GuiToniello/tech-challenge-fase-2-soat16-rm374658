@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TechChallenge.Oficina.Domain.Features.Servicos;
+using TechChallenge.Oficina.Entities.Features.Servicos;
 
-namespace TechChallenge.Oficina.Infra.Data.Features.Servicos;
+namespace TechChallenge.Oficina.DB.Data.Features.Servicos;
 
 public sealed class ItemServicoConfiguration : IEntityTypeConfiguration<ItemServico>
 {

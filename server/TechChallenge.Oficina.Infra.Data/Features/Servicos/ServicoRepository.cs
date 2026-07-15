@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using TechChallenge.Oficina.Domain.Features.Servicos;
-using TechChallenge.Oficina.Infra.Data.Context;
+using TechChallenge.Oficina.Entities.Features.Servicos;
+using TechChallenge.Oficina.DB.Data.Context;
 
-namespace TechChallenge.Oficina.Infra.Data.Features.Servicos;
+namespace TechChallenge.Oficina.DB.Data.Features.Servicos;
 
 public sealed class ServicoRepository : IServicoRepository
 {

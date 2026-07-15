@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Application.Features.Veiculos.Queries;
+namespace TechChallenge.Oficina.UseCases.Features.Veiculos.Queries;
 
 public sealed class ObterVeiculoPorIdQuery
 {

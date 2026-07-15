@@ -1,10 +1,10 @@
-using TechChallenge.Oficina.Application.Features.OrdensServico.Commands;
-using TechChallenge.Oficina.Application.Features.OrdensServico.Queries;
-using TechChallenge.Oficina.Application.Features.OrdensServico.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.Commands;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.Queries;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.ViewModels;
 
-namespace TechChallenge.Oficina.Application.Features.OrdensServico.Services;
+namespace TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
 
-public interface IOrdemServicoService
+public interface IOrdemServicoUseCases
 {
     Task<OrdemServicoViewModel> CriarAsync(CriarOrdemServicoCommand command, CancellationToken cancellationToken = default);
     Task<OrdemServicoViewModel> AtualizarAsync(AtualizarOrdemServicoCommand command, CancellationToken cancellationToken = default);

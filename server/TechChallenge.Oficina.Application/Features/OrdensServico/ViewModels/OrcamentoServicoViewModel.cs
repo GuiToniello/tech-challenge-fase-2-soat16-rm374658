@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Application.Features.OrdensServico.ViewModels;
+namespace TechChallenge.Oficina.UseCases.Features.OrdensServico.ViewModels;
 
 public sealed class OrcamentoServicoViewModel
 {

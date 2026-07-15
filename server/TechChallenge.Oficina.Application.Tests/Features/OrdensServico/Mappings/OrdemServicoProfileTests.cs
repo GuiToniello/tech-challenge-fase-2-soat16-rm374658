@@ -2,14 +2,14 @@ using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using TechChallenge.Oficina.Application.Features.OrdensServico.Mappings;
-using TechChallenge.Oficina.Application.Features.OrdensServico.ViewModels;
-using TechChallenge.Oficina.Domain.Features.Insumos;
-using TechChallenge.Oficina.Domain.Features.OrdensServico;
-using TechChallenge.Oficina.Domain.Features.Servicos;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.Mappings;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.ViewModels;
+using TechChallenge.Oficina.Entities.Features.Insumos;
+using TechChallenge.Oficina.Entities.Features.OrdensServico;
+using TechChallenge.Oficina.Entities.Features.Servicos;
 using Xunit;
 
-namespace TechChallenge.Oficina.Application.Tests.Features.OrdensServico.Mappings;
+namespace TechChallenge.Oficina.UseCases.Tests.Features.OrdensServico.Mappings;
 
 public sealed class OrdemServicoProfileTests
 {

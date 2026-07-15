@@ -1,14 +1,14 @@
 using Moq;
 using Resend;
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Insumos;
-using TechChallenge.Oficina.Domain.Features.OrdensServico;
-using TechChallenge.Oficina.Domain.Features.Servicos;
-using TechChallenge.Oficina.Infra.Email.Configuration;
-using TechChallenge.Oficina.Infra.Email.Features.Orcamentos;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Insumos;
+using TechChallenge.Oficina.Entities.Features.OrdensServico;
+using TechChallenge.Oficina.Entities.Features.Servicos;
+using TechChallenge.Oficina.Email.Configuration;
+using TechChallenge.Oficina.Email.Features.Orcamentos;
 using Xunit;
 
-namespace TechChallenge.Oficina.Infra.Email.Tests.Features.Orcamentos;
+namespace TechChallenge.Oficina.DB.Email.Tests.Features.Orcamentos;
 
 public sealed class OrcamentoEmailSenderTests
 {

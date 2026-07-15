@@ -1,9 +1,9 @@
 using Moq;
 using TechChallenge.Oficina.API.Features.Servicos;
-using TechChallenge.Oficina.Application.Features.Servicos.Commands;
-using TechChallenge.Oficina.Application.Features.Servicos.Queries;
-using TechChallenge.Oficina.Application.Features.Servicos.Services;
-using TechChallenge.Oficina.Application.Features.Servicos.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Servicos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Servicos.Queries;
+using TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Servicos.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.Servicos;
 using Xunit;
 
@@ -11,7 +11,7 @@ namespace TechChallenge.Oficina.API.Tests.Features.Servicos;
 
 public sealed class ServicoEndpointsTests
 {
-    private readonly Mock<IServicoService> _servicoServiceMock = new();
+    private readonly Mock<IServicoUseCases> _servicoServiceMock = new();
 
     [Fact]
     public async Task MapServicoEndpoints_Post_DeveInvocarServico_ComCommandCorreto()

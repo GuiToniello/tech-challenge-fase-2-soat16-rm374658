@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Application.Features.Servicos.Queries;
+namespace TechChallenge.Oficina.UseCases.Features.Servicos.Queries;
 
 public sealed class ListarServicosQuery
 {

@@ -1,6 +1,6 @@
-using TechChallenge.Oficina.Domain.Exceptions;
+using TechChallenge.Oficina.Entities.Exceptions;
 
-namespace TechChallenge.Oficina.Domain.Features.Clientes.VOs;
+namespace TechChallenge.Oficina.Entities.Features.Clientes.VOs;
 
 public readonly struct Cnpj : IEquatable<Cnpj>
 {

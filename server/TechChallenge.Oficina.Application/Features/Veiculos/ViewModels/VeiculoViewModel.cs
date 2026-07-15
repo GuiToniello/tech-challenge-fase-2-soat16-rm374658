@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Application.Features.Veiculos.ViewModels;
+namespace TechChallenge.Oficina.UseCases.Features.Veiculos.ViewModels;
 
 public sealed class VeiculoViewModel
 {

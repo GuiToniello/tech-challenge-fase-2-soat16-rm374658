@@ -1,8 +1,8 @@
-using TechChallenge.Oficina.Domain.Exceptions;
-using TechChallenge.Oficina.Domain.Features.Insumos;
+using TechChallenge.Oficina.Entities.Exceptions;
+using TechChallenge.Oficina.Entities.Features.Insumos;
 using Xunit;
 
-namespace TechChallenge.Oficina.Domain.Tests.Features.Insumos;
+namespace TechChallenge.Oficina.Entities.Tests.Features.Insumos;
 
 public sealed class InsumoDomainTests
 {

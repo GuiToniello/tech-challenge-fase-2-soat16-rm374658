@@ -1,4 +1,4 @@
-namespace TechChallenge.Oficina.Application.Features.Clientes.Queries;
+namespace TechChallenge.Oficina.UseCases.Features.Clientes.Queries;
 
 public sealed class ObterClientePorIdQuery
 {

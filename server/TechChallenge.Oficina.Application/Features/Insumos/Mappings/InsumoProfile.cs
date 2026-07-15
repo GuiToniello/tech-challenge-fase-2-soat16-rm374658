@@ -1,8 +1,8 @@
 using AutoMapper;
-using TechChallenge.Oficina.Application.Features.Insumos.ViewModels;
-using TechChallenge.Oficina.Domain.Features.Insumos;
+using TechChallenge.Oficina.UseCases.Features.Insumos.ViewModels;
+using TechChallenge.Oficina.Entities.Features.Insumos;
 
-namespace TechChallenge.Oficina.Application.Features.Insumos.Mappings;
+namespace TechChallenge.Oficina.UseCases.Features.Insumos.Mappings;
 
 public sealed class InsumoProfile : Profile
 {

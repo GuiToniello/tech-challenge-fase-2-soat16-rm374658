@@ -1,6 +1,6 @@
-using TechChallenge.Oficina.Domain.Features.OrdensServico.Enums;
+using TechChallenge.Oficina.Entities.Features.OrdensServico.Enums;
 
-namespace TechChallenge.Oficina.Application.Features.OrdensServico.ViewModels;
+namespace TechChallenge.Oficina.UseCases.Features.OrdensServico.ViewModels;
 
 public sealed class HistoricoStatusOrdemServicoViewModel
 {

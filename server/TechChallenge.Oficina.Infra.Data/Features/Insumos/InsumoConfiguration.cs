@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TechChallenge.Oficina.Domain.Features.Insumos;
+using TechChallenge.Oficina.Entities.Features.Insumos;
 
-namespace TechChallenge.Oficina.Infra.Data.Features.Insumos;
+namespace TechChallenge.Oficina.DB.Data.Features.Insumos;
 
 public sealed class InsumoConfiguration : IEntityTypeConfiguration<Insumo>
 {
