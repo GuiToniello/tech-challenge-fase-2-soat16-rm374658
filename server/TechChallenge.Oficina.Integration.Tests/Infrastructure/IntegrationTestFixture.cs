@@ -11,10 +11,14 @@ using TechChallenge.Oficina.Application.Features.Veiculos.Services;
 using TechChallenge.Oficina.API.Features.Clientes;
 using TechChallenge.Oficina.API.Features.Indicadores;
 using TechChallenge.Oficina.API.Features.Insumos;
-using TechChallenge.Oficina.Controllers.Features.Insumos;
 using TechChallenge.Oficina.API.Features.OrdensServico;
 using TechChallenge.Oficina.API.Features.Servicos;
 using TechChallenge.Oficina.API.Features.Veiculos;
+using TechChallenge.Oficina.Controllers.Features.Clientes;
+using TechChallenge.Oficina.Controllers.Features.Insumos;
+using TechChallenge.Oficina.Controllers.Features.OrdensServico;
+using TechChallenge.Oficina.Controllers.Features.Servicos;
+using TechChallenge.Oficina.Controllers.Features.Veiculos;
 using TechChallenge.Oficina.Domain.Features.Clientes;
 using TechChallenge.Oficina.Domain.Features.Indicadores;
 using TechChallenge.Oficina.Domain.Features.Insumos;
@@ -29,9 +33,6 @@ using TechChallenge.Oficina.Infra.Data.Features.Insumos;
 using TechChallenge.Oficina.Infra.Data.Features.OrdensServico;
 using TechChallenge.Oficina.Infra.Data.Features.Servicos;
 using TechChallenge.Oficina.Infra.Data.Features.Veiculos;
-using TechChallenge.Oficina.Controllers.Features.Clientes;
-using TechChallenge.Oficina.Controllers.Features.Servicos;
-using TechChallenge.Oficina.Controllers.Features.Veiculos;
 
 namespace TechChallenge.Oficina.Integration.Tests.Infrastructure;
 
@@ -75,12 +76,13 @@ public sealed class IntegrationTestFixture : IDisposable
         services.AddScoped<ClienteController>();
         services.AddScoped<IServicoAdapter, ServicoAdapter>();
         services.AddScoped<ServicoController>();
+        services.AddScoped<IOrdensServicoAdapter, OrdensServicoAdapter>();
+        services.AddScoped<OrdensServicoController>();
         services.AddScoped<IVeiculoAdapter, VeiculoAdapter>();
         services.AddScoped<VeiculoController>();
         services.AddScoped<IndicadoresEndpoints>();
         services.AddScoped<InsumoController>();
         services.AddScoped<IInsumoAdapter, InsumoAdapter>();
-        services.AddScoped<OrdensServicoEndpoints>();
 
         _serviceProvider = services.BuildServiceProvider();
         _scope = _serviceProvider.CreateScope();
@@ -101,8 +103,8 @@ public sealed class IntegrationTestFixture : IDisposable
     public ServicoController CriarServicosEndpoints()
         => Obter<ServicoController>();
 
-    public OrdensServicoEndpoints CriarOrdensServicoEndpoints()
-        => Obter<OrdensServicoEndpoints>();
+    public OrdensServicoController CriarOrdensServicoEndpoints()
+        => Obter<OrdensServicoController>();
 
     public IndicadoresEndpoints CriarIndicadoresEndpoints()
         => Obter<IndicadoresEndpoints>();

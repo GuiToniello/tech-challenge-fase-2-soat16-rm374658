@@ -85,9 +85,7 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
         var endpoints = _fixture.CriarOrdensServicoEndpoints();
         var command = new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] };
 
-        var resultado = await endpoints.Post(command, CancellationToken.None);
-
-        var created = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(resultado.Result);
+        var created = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(await endpoints.Post(command, CancellationToken.None));
         var viewModel = Assert.IsType<OrdemServicoViewModel>(created.Value);
         Assert.NotEqual(Guid.Empty, viewModel.Id);
         Assert.Equal(clienteId, viewModel.ClienteId);
@@ -101,9 +99,7 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
         var endpoints = _fixture.CriarOrdensServicoEndpoints();
         var command = new CriarOrdemServicoCommand { ClienteId = Guid.NewGuid(), VeiculoId = veiculoId, ServicoIds = [servicoId] };
 
-        var resultado = await endpoints.Post(command, CancellationToken.None);
-
-        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(await endpoints.Post(command, CancellationToken.None));
     }
 
     [Fact]
@@ -113,9 +109,7 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
         var endpoints = _fixture.CriarOrdensServicoEndpoints();
         var command = new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [] };
 
-        var resultado = await endpoints.Post(command, CancellationToken.None);
-
-        Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<BadRequest<Dictionary<string, string?>>>(await endpoints.Post(command, CancellationToken.None));
     }
 
     [Fact]
@@ -139,7 +133,7 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
         var veiculoDoCliente1 = veiculoResult.Value.Id;
 
         var insumoEndpoints = _fixture.CriarInsumosEndpoints();
-        var insumoResult = (CreatedAtRoute<InsumoViewModel>)(await insumoEndpoints.Post(
+        var insumoResult = Assert.IsType<CreatedAtRoute<InsumoViewModel>>(await insumoEndpoints.Post(
             new CriarInsumoCommand { Nome = "Pastilha de Freio", Fabricante = "Bosch", QuantidadeDisponivel = 10, ValorUnitario = 40m },
             CancellationToken.None));
         var insumoId = insumoResult.Value!.Id;
@@ -153,9 +147,7 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
         var endpoints = _fixture.CriarOrdensServicoEndpoints();
         var command = new CriarOrdemServicoCommand { ClienteId = clienteOrdem, VeiculoId = veiculoDoCliente1, ServicoIds = [servicoId] };
 
-        var resultado = await endpoints.Post(command, CancellationToken.None);
-
-        Assert.IsType<BadRequest<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<BadRequest<Dictionary<string, string?>>>(await endpoints.Post(command, CancellationToken.None));
     }
 
     [Fact]
@@ -163,14 +155,12 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     {
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
         var endpoints = _fixture.CriarOrdensServicoEndpoints();
-        var created = (CreatedAtRoute<OrdemServicoViewModel>)(await endpoints.Post(
+        var created = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(await endpoints.Post(
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
-            CancellationToken.None)).Result!;
+            CancellationToken.None));
         var id = created.Value.Id;
 
-        var resultado = await endpoints.GetById(id, CancellationToken.None);
-
-        var ok = Assert.IsType<Ok<OrdemServicoViewModel>>(resultado.Result);
+        var ok = Assert.IsType<Ok<OrdemServicoViewModel>>(await endpoints.GetById(id, CancellationToken.None));
         Assert.Equal(id, ok.Value.Id);
     }
 
@@ -179,9 +169,7 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     {
         var endpoints = _fixture.CriarOrdensServicoEndpoints();
 
-        var resultado = await endpoints.GetById(Guid.NewGuid(), CancellationToken.None);
-
-        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(await endpoints.GetById(Guid.NewGuid(), CancellationToken.None));
     }
 
     [Fact]
@@ -193,8 +181,7 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
             CancellationToken.None);
 
-        var resultado = await endpoints.Get(CancellationToken.None);
-
+        var resultado = Assert.IsType<Ok<IReadOnlyCollection<OrdemServicoViewModel>>>(await endpoints.Get(CancellationToken.None));
         var lista = Assert.IsAssignableFrom<IEnumerable<OrdemServicoViewModel>>(resultado.Value);
         Assert.NotEmpty(lista);
     }
@@ -204,14 +191,12 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     {
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
         var endpoints = _fixture.CriarOrdensServicoEndpoints();
-        var created = (CreatedAtRoute<OrdemServicoViewModel>)(await endpoints.Post(
+        var created = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(await endpoints.Post(
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
-            CancellationToken.None)).Result!;
+            CancellationToken.None));
         var id = created.Value.Id;
 
-        var resultado = await endpoints.GetAcompanhamento(id, CancellationToken.None);
-
-        Assert.IsType<Ok<AcompanhamentoOrdemServicoViewModel>>(resultado.Result);
+        Assert.IsType<Ok<AcompanhamentoOrdemServicoViewModel>>(await endpoints.GetAcompanhamento(id, CancellationToken.None));
     }
 
     [Fact]
@@ -223,9 +208,7 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
             CancellationToken.None);
 
-        var resultado = await endpoints.GetByCliente(clienteId, CancellationToken.None);
-
-        var ok = Assert.IsType<Ok<IReadOnlyCollection<AcompanhamentoOrdemServicoViewModel>>>(resultado.Result);
+        var ok = Assert.IsType<Ok<IReadOnlyCollection<AcompanhamentoOrdemServicoViewModel>>>(await endpoints.GetByCliente(clienteId, CancellationToken.None));
         Assert.NotEmpty(ok.Value);
     }
 
@@ -234,14 +217,12 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     {
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
         var endpoints = _fixture.CriarOrdensServicoEndpoints();
-        var created = (CreatedAtRoute<OrdemServicoViewModel>)(await endpoints.Post(
+        var created = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(await endpoints.Post(
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
-            CancellationToken.None)).Result!;
+            CancellationToken.None));
         var id = created.Value.Id;
 
-        var resultado = await endpoints.AlterarParaEmDiagnostico(id, CancellationToken.None);
-
-        var ok = Assert.IsType<Ok<OrdemServicoViewModel>>(resultado.Result);
+        var ok = Assert.IsType<Ok<OrdemServicoViewModel>>(await endpoints.AlterarParaEmDiagnostico(id, CancellationToken.None));
         Assert.Equal(2, ok.Value.Status);
     }
 
@@ -250,15 +231,13 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     {
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
         var endpoints = _fixture.CriarOrdensServicoEndpoints();
-        var created = (CreatedAtRoute<OrdemServicoViewModel>)(await endpoints.Post(
+        var created = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(await endpoints.Post(
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
-            CancellationToken.None)).Result!;
+            CancellationToken.None));
         var id = created.Value.Id;
 
         await endpoints.AlterarParaEmDiagnostico(id, CancellationToken.None);
-        var resultado = await endpoints.GerarOrcamento(id, CancellationToken.None);
-
-        var ok = Assert.IsType<Ok<OrdemServicoViewModel>>(resultado.Result);
+        var ok = Assert.IsType<Ok<OrdemServicoViewModel>>(await endpoints.GerarOrcamento(id, CancellationToken.None));
         Assert.NotNull(ok.Value.Orcamento);
     }
 
@@ -267,9 +246,9 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     {
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
         var endpoints = _fixture.CriarOrdensServicoEndpoints();
-        var created = (CreatedAtRoute<OrdemServicoViewModel>)(await endpoints.Post(
+        var created = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(await endpoints.Post(
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
-            CancellationToken.None)).Result!;
+            CancellationToken.None));
         var id = created.Value.Id;
 
         await endpoints.AlterarParaEmDiagnostico(id, CancellationToken.None);
@@ -277,9 +256,7 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
         await endpoints.AprovarOrcamento(id, CancellationToken.None);
         await endpoints.AlterarParaEmExecucao(id, CancellationToken.None);
         await endpoints.AlterarParaFinalizada(id, CancellationToken.None);
-        var entregue = await endpoints.AlterarParaEntregue(id, CancellationToken.None);
-
-        var ok = Assert.IsType<Ok<OrdemServicoViewModel>>(entregue.Result);
+        var ok = Assert.IsType<Ok<OrdemServicoViewModel>>(await endpoints.AlterarParaEntregue(id, CancellationToken.None));
         Assert.Equal(6, ok.Value.Status);
     }
 
@@ -288,14 +265,12 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     {
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
         var endpoints = _fixture.CriarOrdensServicoEndpoints();
-        var created = (CreatedAtRoute<OrdemServicoViewModel>)(await endpoints.Post(
+        var created = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(await endpoints.Post(
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
-            CancellationToken.None)).Result!;
+            CancellationToken.None));
         var id = created.Value.Id;
 
-        var resultado = await endpoints.Delete(id, CancellationToken.None);
-
-        Assert.IsType<NoContent>(resultado.Result);
+        Assert.IsType<NoContent>(await endpoints.Delete(id, CancellationToken.None));
     }
 
     [Fact]
@@ -303,9 +278,7 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     {
         var endpoints = _fixture.CriarOrdensServicoEndpoints();
 
-        var resultado = await endpoints.Delete(Guid.NewGuid(), CancellationToken.None);
-
-        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(await endpoints.Delete(Guid.NewGuid(), CancellationToken.None));
     }
 
     [Fact]
@@ -313,15 +286,13 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     {
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
         var endpoints = _fixture.CriarOrdensServicoEndpoints();
-        var created = (CreatedAtRoute<OrdemServicoViewModel>)(await endpoints.Post(
+        var created = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(await endpoints.Post(
             new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
-            CancellationToken.None)).Result!;
+            CancellationToken.None));
         var id = created.Value.Id;
         var command = new AtualizarOrdemServicoCommand { Id = id, ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] };
 
-        var resultado = await endpoints.Put(command, CancellationToken.None);
-
-        Assert.IsType<Ok<OrdemServicoViewModel>>(resultado.Result);
+        Assert.IsType<Ok<OrdemServicoViewModel>>(await endpoints.Put(command, CancellationToken.None));
     }
 
     [Fact]
@@ -331,8 +302,6 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
         var endpoints = _fixture.CriarOrdensServicoEndpoints();
         var command = new AtualizarOrdemServicoCommand { Id = Guid.NewGuid(), ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] };
 
-        var resultado = await endpoints.Put(command, CancellationToken.None);
-
-        Assert.IsType<NotFound<Dictionary<string, string?>>>(resultado.Result);
+        Assert.IsType<NotFound<Dictionary<string, string?>>>(await endpoints.Put(command, CancellationToken.None));
     }
 }
