@@ -5,11 +5,11 @@ using TechChallenge.Oficina.UseCases.Features.Indicadores.UseCases;
 
 namespace TechChallenge.Oficina.DB.Data.Features.Indicadores;
 
-public sealed class IndicadorRepository : IIndicadorRepository
+public sealed class IndicadorGateway : IIndicadorGateway
 {
     private readonly OficinaDbContext _context;
 
-    public IndicadorRepository(OficinaDbContext context)
+    public IndicadorGateway(OficinaDbContext context)
     {
         _context = context;
     }

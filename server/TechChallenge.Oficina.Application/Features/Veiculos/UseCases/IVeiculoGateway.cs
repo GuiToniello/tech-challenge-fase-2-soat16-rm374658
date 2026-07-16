@@ -2,7 +2,7 @@ using TechChallenge.Oficina.Entities.Features.Veiculos;
 
 namespace TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
 
-public interface IVeiculoRepository
+public interface IVeiculoGateway
 {
     Task AdicionarAsync(Veiculo veiculo, CancellationToken cancellationToken = default);
     Task AtualizarAsync(Veiculo veiculo, CancellationToken cancellationToken = default);

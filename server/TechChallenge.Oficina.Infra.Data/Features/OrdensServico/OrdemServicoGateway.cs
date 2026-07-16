@@ -6,11 +6,11 @@ using TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
 
 namespace TechChallenge.Oficina.DB.Data.Features.OrdensServico;
 
-public sealed class OrdemServicoRepository : IOrdemServicoRepository
+public sealed class OrdemServicoGateway : IOrdemServicoGateway
 {
     private readonly OficinaDbContext _context;
 
-    public OrdemServicoRepository(OficinaDbContext context)
+    public OrdemServicoGateway(OficinaDbContext context)
     {
         _context = context;
     }

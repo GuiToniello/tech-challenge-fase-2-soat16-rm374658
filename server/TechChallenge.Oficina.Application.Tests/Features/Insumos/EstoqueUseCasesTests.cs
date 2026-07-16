@@ -9,7 +9,7 @@ namespace TechChallenge.Oficina.UseCases.Tests.Features.Insumos;
 
 public sealed class EstoqueUseCasesTests
 {
-    private readonly Mock<IInsumoRepository> _insumoRepositoryMock = new();
+    private readonly Mock<IInsumoGateway> _insumoRepositoryMock = new();
 
     private EstoqueUseCases CriarService() => new(_insumoRepositoryMock.Object);
 

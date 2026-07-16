@@ -2,7 +2,7 @@ using TechChallenge.Oficina.Entities.Features.Servicos;
 
 namespace TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
 
-public interface IServicoRepository
+public interface IServicoGateway
 {
     Task AdicionarAsync(Servico servico, CancellationToken cancellationToken = default);
     Task AtualizarAsync(Servico servico, CancellationToken cancellationToken = default);

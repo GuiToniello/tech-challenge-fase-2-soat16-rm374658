@@ -8,14 +8,14 @@ using Xunit;
 
 namespace TechChallenge.Oficina.DB.Data.Tests.Features.Veiculos;
 
-public sealed class VeiculoRepositoryTests
+public sealed class VeiculoGatewayTests
 {
     [Fact]
     public async Task AdicionarAsync_DevePersistirVeiculo()
     {
         await using var context = CriarContexto();
         await AdicionarClienteAsync(context);
-        var repository = new VeiculoRepository(context);
+        var repository = new VeiculoGateway(context);
         var clienteId = context.Clientes.First().Id;
         var veiculo = CriarVeiculo("ABC1D23", clienteId);
 
@@ -29,7 +29,7 @@ public sealed class VeiculoRepositoryTests
     {
         await using var context = CriarContexto();
         await AdicionarClienteAsync(context);
-        var repository = new VeiculoRepository(context);
+        var repository = new VeiculoGateway(context);
         var clienteId = context.Clientes.First().Id;
         var veiculo = CriarVeiculo("ABC1D23", clienteId);
 
@@ -45,7 +45,7 @@ public sealed class VeiculoRepositoryTests
     public async Task ObterPorIdAsync_DeveRetornarNull_QuandoNaoExiste()
     {
         await using var context = CriarContexto();
-        var repository = new VeiculoRepository(context);
+        var repository = new VeiculoGateway(context);
 
         var veiculo = await repository.ObterPorIdAsync(Guid.NewGuid());
 
@@ -57,7 +57,7 @@ public sealed class VeiculoRepositoryTests
     {
         await using var context = CriarContexto();
         await AdicionarClienteAsync(context);
-        var repository = new VeiculoRepository(context);
+        var repository = new VeiculoGateway(context);
         var clienteId = context.Clientes.First().Id;
         var veiculo = CriarVeiculo("ABC1D23", clienteId);
 
@@ -74,7 +74,7 @@ public sealed class VeiculoRepositoryTests
     {
         await using var context = CriarContexto();
         await AdicionarClienteAsync(context);
-        var repository = new VeiculoRepository(context);
+        var repository = new VeiculoGateway(context);
         var clienteId = context.Clientes.First().Id;
 
         await repository.AdicionarAsync(CriarVeiculo("XYZ9A00", clienteId, "Toyota", "Corolla"));
@@ -89,7 +89,7 @@ public sealed class VeiculoRepositoryTests
     public async Task ListarAsync_DeveRetornarListaVazia_QuandoSemVeiculos()
     {
         await using var context = CriarContexto();
-        var repository = new VeiculoRepository(context);
+        var repository = new VeiculoGateway(context);
 
         var veiculos = await repository.ListarAsync();
 
@@ -102,7 +102,7 @@ public sealed class VeiculoRepositoryTests
         await using var context = CriarContexto();
         await AdicionarClienteAsync(context, "52998224725");
         await AdicionarClienteAsync(context, "04252011000110");
-        var repository = new VeiculoRepository(context);
+        var repository = new VeiculoGateway(context);
 
         var clientes = context.Clientes.ToList();
         var clienteA = clientes[0];
@@ -122,7 +122,7 @@ public sealed class VeiculoRepositoryTests
     {
         await using var context = CriarContexto();
         await AdicionarClienteAsync(context);
-        var repository = new VeiculoRepository(context);
+        var repository = new VeiculoGateway(context);
         var clienteId = context.Clientes.First().Id;
         var veiculo = CriarVeiculo("ABC1D23", clienteId);
 
@@ -137,7 +137,7 @@ public sealed class VeiculoRepositoryTests
     public async Task ExisteComPlacaAsync_DeveRetornarFalse_QuandoNaoExiste()
     {
         await using var context = CriarContexto();
-        var repository = new VeiculoRepository(context);
+        var repository = new VeiculoGateway(context);
 
         var existe = await repository.ExisteComPlacaAsync("ABC1D23");
 
@@ -149,7 +149,7 @@ public sealed class VeiculoRepositoryTests
     {
         await using var context = CriarContexto();
         await AdicionarClienteAsync(context);
-        var repository = new VeiculoRepository(context);
+        var repository = new VeiculoGateway(context);
         var clienteId = context.Clientes.First().Id;
         var veiculo = CriarVeiculo("ABC1D23", clienteId);
 
@@ -167,7 +167,7 @@ public sealed class VeiculoRepositoryTests
     {
         await using var context = CriarContexto();
         await AdicionarClienteAsync(context);
-        var repository = new VeiculoRepository(context);
+        var repository = new VeiculoGateway(context);
         var clienteId = context.Clientes.First().Id;
         var veiculo = CriarVeiculo("ABC1D23", clienteId);
 

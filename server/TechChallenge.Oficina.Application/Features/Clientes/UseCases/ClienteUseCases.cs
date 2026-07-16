@@ -11,12 +11,12 @@ namespace TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
 public sealed class ClienteUseCases : IClienteUseCases
 {
     private readonly IMapper _mapper;
-    private readonly IClienteRepository _clienteRepository;
+    private readonly IClienteGateway _clienteGateway;
 
-    public ClienteUseCases(IMapper mapper, IClienteRepository clienteRepository)
+    public ClienteUseCases(IMapper mapper, IClienteGateway clienteGateway)
     {
         _mapper = mapper;
-        _clienteRepository = clienteRepository;
+        _clienteGateway = clienteGateway;
     }
 
     public async Task<ClienteViewModel> CriarAsync(CriarClienteCommand command, CancellationToken cancellationToken = default)
@@ -27,7 +27,7 @@ public sealed class ClienteUseCases : IClienteUseCases
 
         var cliente = Cliente.Criar(command.NomeCompleto, identificacao, command.Email);
 
-        await _clienteRepository.AdicionarAsync(cliente, cancellationToken);
+        await _clienteGateway.AdicionarAsync(cliente, cancellationToken);
 
         return _mapper.Map<ClienteViewModel>(cliente);
     }
@@ -43,7 +43,7 @@ public sealed class ClienteUseCases : IClienteUseCases
         cliente.AtualizarIdentificacao(identificacao);
         cliente.AtualizarEmail(command.Email);
 
-        await _clienteRepository.AtualizarAsync(cliente, cancellationToken);
+        await _clienteGateway.AtualizarAsync(cliente, cancellationToken);
 
         return _mapper.Map<ClienteViewModel>(cliente);
     }
@@ -56,19 +56,19 @@ public sealed class ClienteUseCases : IClienteUseCases
 
     public async Task<IReadOnlyCollection<ClienteViewModel>> ListarAsync(ListarClientesQuery query, CancellationToken cancellationToken = default)
     {
-        var clientes = await _clienteRepository.ListarAsync(cancellationToken);
+        var clientes = await _clienteGateway.ListarAsync(cancellationToken);
         return _mapper.Map<IReadOnlyCollection<ClienteViewModel>>(clientes);
     }
 
     public async Task ExcluirAsync(ExcluirClienteCommand command, CancellationToken cancellationToken = default)
     {
         var cliente = await ObterClienteExistenteAsync(command.Id, cancellationToken);
-        await _clienteRepository.RemoverAsync(cliente, cancellationToken);
+        await _clienteGateway.RemoverAsync(cliente, cancellationToken);
     }
 
     private async Task<Cliente> ObterClienteExistenteAsync(Guid id, CancellationToken cancellationToken)
     {
-        var cliente = await _clienteRepository.ObterPorIdAsync(id, cancellationToken);
+        var cliente = await _clienteGateway.ObterPorIdAsync(id, cancellationToken);
 
         if (cliente is null)
         {
@@ -80,7 +80,7 @@ public sealed class ClienteUseCases : IClienteUseCases
 
     private async Task ValidarDuplicidadeAsync(string identificacao, Guid? clienteId, CancellationToken cancellationToken)
     {
-        if (await _clienteRepository.ExisteComIdentificacaoAsync(identificacao, clienteId, cancellationToken))
+        if (await _clienteGateway.ExisteComIdentificacaoAsync(identificacao, clienteId, cancellationToken))
         {
             throw new DomainException("Já existe um cliente cadastrado com a identificação informada.");
         }

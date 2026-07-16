@@ -5,11 +5,11 @@ using TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
 
 namespace TechChallenge.Oficina.DB.Data.Features.Servicos;
 
-public sealed class ServicoRepository : IServicoRepository
+public sealed class ServicoGateway : IServicoGateway
 {
     private readonly OficinaDbContext _context;
 
-    public ServicoRepository(OficinaDbContext context)
+    public ServicoGateway(OficinaDbContext context)
     {
         _context = context;
     }

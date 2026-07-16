@@ -5,11 +5,11 @@ using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
 
 namespace TechChallenge.Oficina.DB.Data.Features.Insumos;
 
-public sealed class InsumoRepository : IInsumoRepository
+public sealed class InsumoGateway : IInsumoGateway
 {
     private readonly OficinaDbContext _context;
 
-    public InsumoRepository(OficinaDbContext context)
+    public InsumoGateway(OficinaDbContext context)
     {
         _context = context;
     }

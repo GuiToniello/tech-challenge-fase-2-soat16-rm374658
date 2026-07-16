@@ -14,7 +14,7 @@ namespace TechChallenge.Oficina.UseCases.Tests.Features.Clientes;
 public sealed class ClienteUseCasesTests
 {
     private readonly Mock<IMapper> _mapperMock = new();
-    private readonly Mock<IClienteRepository> _repositoryMock = new();
+    private readonly Mock<IClienteGateway> _repositoryMock = new();
 
     [Fact]
     public async Task CriarAsync_DeveLancarDomainException_QuandoIdentificacaoDuplicada()

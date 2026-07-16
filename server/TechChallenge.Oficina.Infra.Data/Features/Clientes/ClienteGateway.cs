@@ -5,11 +5,11 @@ using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
 
 namespace TechChallenge.Oficina.DB.Data.Features.Clientes;
 
-public sealed class ClienteRepository : IClienteRepository
+public sealed class ClienteGateway : IClienteGateway
 {
     private readonly OficinaDbContext _context;
 
-    public ClienteRepository(OficinaDbContext context)
+    public ClienteGateway(OficinaDbContext context)
     {
         _context = context;
     }

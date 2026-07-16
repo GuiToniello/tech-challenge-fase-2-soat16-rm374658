@@ -27,12 +27,12 @@ public static class Extensions
     public static IServiceCollection AddInfraData(this IServiceCollection services, string connectionString)
     {
         services.AddDbContext<OficinaDbContext>(options => options.UseNpgsql(connectionString));
-        services.AddScoped<IClienteRepository, ClienteRepository>();
-        services.AddScoped<IInsumoRepository, InsumoRepository>();
-        services.AddScoped<IIndicadorRepository, IndicadorRepository>();
-        services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
-        services.AddScoped<IServicoRepository, ServicoRepository>();
-        services.AddScoped<IVeiculoRepository, VeiculoRepository>();
+        services.AddScoped<IClienteGateway, ClienteGateway>();
+        services.AddScoped<IInsumoGateway, InsumoGateway>();
+        services.AddScoped<IIndicadorGateway, IndicadorGateway>();
+        services.AddScoped<IOrdemServicoGateway, OrdemServicoGateway>();
+        services.AddScoped<IServicoGateway, ServicoGateway>();
+        services.AddScoped<IVeiculoGateway, VeiculoGateway>();
         return services;
     }
 

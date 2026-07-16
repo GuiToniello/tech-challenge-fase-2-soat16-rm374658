@@ -2,7 +2,7 @@ using TechChallenge.Oficina.Entities.Features.Clientes;
 
 namespace TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
 
-public interface IClienteRepository
+public interface IClienteGateway
 {
     Task AdicionarAsync(Cliente cliente, CancellationToken cancellationToken = default);
     Task AtualizarAsync(Cliente cliente, CancellationToken cancellationToken = default);

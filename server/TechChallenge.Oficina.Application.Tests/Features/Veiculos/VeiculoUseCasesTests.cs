@@ -16,8 +16,8 @@ namespace TechChallenge.Oficina.UseCases.Tests.Features.UseCases;
 public sealed class VeiculoUseCasesTests
 {
     private readonly Mock<IMapper> _mapperMock = new();
-    private readonly Mock<IVeiculoRepository> _veiculoRepositoryMock = new();
-    private readonly Mock<IClienteRepository> _clienteRepositoryMock = new();
+    private readonly Mock<IVeiculoGateway> _veiculoRepositoryMock = new();
+    private readonly Mock<IClienteGateway> _clienteRepositoryMock = new();
 
     private VeiculoUseCases CriarService() =>
         new(_mapperMock.Object, _veiculoRepositoryMock.Object, _clienteRepositoryMock.Object);

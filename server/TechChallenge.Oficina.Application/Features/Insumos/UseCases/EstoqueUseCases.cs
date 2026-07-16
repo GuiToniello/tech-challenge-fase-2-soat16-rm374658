@@ -5,11 +5,11 @@ namespace TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
 
 public sealed class EstoqueUseCases : IEstoqueUseCases
 {
-    private readonly IInsumoRepository _insumoRepository;
+    private readonly IInsumoGateway _insumoGateway;
 
-    public EstoqueUseCases(IInsumoRepository insumoRepository)
+    public EstoqueUseCases(IInsumoGateway insumoGateway)
     {
-        _insumoRepository = insumoRepository;
+        _insumoGateway = insumoGateway;
     }
 
     public async Task VerificarDisponibilidadeParaOrcamentoAsync(IReadOnlyCollection<Servico> servicos, CancellationToken cancellationToken = default)
@@ -18,7 +18,7 @@ public sealed class EstoqueUseCases : IEstoqueUseCases
 
         foreach (var (insumoId, quantidadeTotal) in insumosNecessarios)
         {
-            var insumo = await _insumoRepository.ObterPorIdAsync(insumoId, cancellationToken);
+            var insumo = await _insumoGateway.ObterPorIdAsync(insumoId, cancellationToken);
 
             if (insumo is null)
             {
@@ -35,7 +35,7 @@ public sealed class EstoqueUseCases : IEstoqueUseCases
 
         foreach (var (insumoId, quantidadeTotal) in insumosNecessarios)
         {
-            var insumo = await _insumoRepository.ObterPorIdAsync(insumoId, cancellationToken);
+            var insumo = await _insumoGateway.ObterPorIdAsync(insumoId, cancellationToken);
 
             if (insumo is null)
             {
@@ -43,7 +43,7 @@ public sealed class EstoqueUseCases : IEstoqueUseCases
             }
 
             insumo.DebitarEstoque(quantidadeTotal);
-            await _insumoRepository.AtualizarAsync(insumo, cancellationToken);
+            await _insumoGateway.AtualizarAsync(insumo, cancellationToken);
         }
     }
 

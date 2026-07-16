@@ -12,14 +12,14 @@ namespace TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
 public sealed class VeiculoUseCases : IVeiculoUseCases
 {
     private readonly IMapper _mapper;
-    private readonly IVeiculoRepository _veiculoRepository;
-    private readonly IClienteRepository _clienteRepository;
+    private readonly IVeiculoGateway _veiculoGateway;
+    private readonly IClienteGateway _clienteGateway;
 
-    public VeiculoUseCases(IMapper mapper, IVeiculoRepository veiculoRepository, IClienteRepository clienteRepository)
+    public VeiculoUseCases(IMapper mapper, IVeiculoGateway veiculoGateway, IClienteGateway clienteGateway)
     {
         _mapper = mapper;
-        _veiculoRepository = veiculoRepository;
-        _clienteRepository = clienteRepository;
+        _veiculoGateway = veiculoGateway;
+        _clienteGateway = clienteGateway;
     }
 
     public async Task<VeiculoViewModel> CriarAsync(CriarVeiculoCommand command, CancellationToken cancellationToken = default)
@@ -29,7 +29,7 @@ public sealed class VeiculoUseCases : IVeiculoUseCases
 
         var veiculo = Veiculo.Criar(command.Placa, command.Marca, command.Modelo, command.Ano, command.Renavam, command.ClienteId);
 
-        await _veiculoRepository.AdicionarAsync(veiculo, cancellationToken);
+        await _veiculoGateway.AdicionarAsync(veiculo, cancellationToken);
 
         return _mapper.Map<VeiculoViewModel>(veiculo);
     }
@@ -48,7 +48,7 @@ public sealed class VeiculoUseCases : IVeiculoUseCases
         veiculo.AtualizarRenavam(command.Renavam);
         veiculo.AtualizarClienteId(command.ClienteId);
 
-        await _veiculoRepository.AtualizarAsync(veiculo, cancellationToken);
+        await _veiculoGateway.AtualizarAsync(veiculo, cancellationToken);
 
         return _mapper.Map<VeiculoViewModel>(veiculo);
     }
@@ -65,11 +65,11 @@ public sealed class VeiculoUseCases : IVeiculoUseCases
 
         if (query.ClienteId.HasValue)
         {
-            veiculos = await _veiculoRepository.ListarPorClienteAsync(query.ClienteId.Value, cancellationToken);
+            veiculos = await _veiculoGateway.ListarPorClienteAsync(query.ClienteId.Value, cancellationToken);
         }
         else
         {
-            veiculos = await _veiculoRepository.ListarAsync(cancellationToken);
+            veiculos = await _veiculoGateway.ListarAsync(cancellationToken);
         }
 
         return _mapper.Map<IReadOnlyCollection<VeiculoViewModel>>(veiculos);
@@ -78,12 +78,12 @@ public sealed class VeiculoUseCases : IVeiculoUseCases
     public async Task ExcluirAsync(ExcluirVeiculoCommand command, CancellationToken cancellationToken = default)
     {
         var veiculo = await ObterVeiculoExistenteAsync(command.Id, cancellationToken);
-        await _veiculoRepository.RemoverAsync(veiculo, cancellationToken);
+        await _veiculoGateway.RemoverAsync(veiculo, cancellationToken);
     }
 
     private async Task<Veiculo> ObterVeiculoExistenteAsync(Guid id, CancellationToken cancellationToken)
     {
-        var veiculo = await _veiculoRepository.ObterPorIdAsync(id, cancellationToken);
+        var veiculo = await _veiculoGateway.ObterPorIdAsync(id, cancellationToken);
 
         if (veiculo is null)
         {
@@ -95,7 +95,7 @@ public sealed class VeiculoUseCases : IVeiculoUseCases
 
     private async Task ValidarClienteExistenteAsync(Guid clienteId, CancellationToken cancellationToken)
     {
-        var cliente = await _clienteRepository.ObterPorIdAsync(clienteId, cancellationToken);
+        var cliente = await _clienteGateway.ObterPorIdAsync(clienteId, cancellationToken);
 
         if (cliente is null)
         {
@@ -107,7 +107,7 @@ public sealed class VeiculoUseCases : IVeiculoUseCases
     {
         var placaNormalizada = PlacaMercosul.Criar(placa).Valor;
 
-        if (await _veiculoRepository.ExisteComPlacaAsync(placaNormalizada, veiculoId, cancellationToken))
+        if (await _veiculoGateway.ExisteComPlacaAsync(placaNormalizada, veiculoId, cancellationToken))
         {
             throw new DomainException("Já existe um veículo cadastrado com a placa informada.");
         }

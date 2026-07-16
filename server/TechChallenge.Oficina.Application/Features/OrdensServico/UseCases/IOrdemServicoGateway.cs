@@ -3,7 +3,7 @@ using TechChallenge.Oficina.Entities.Features.OrdensServico.Enums;
 
 namespace TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
 
-public interface IOrdemServicoRepository
+public interface IOrdemServicoGateway
 {
     Task AdicionarAsync(OrdemServico ordemServico, CancellationToken cancellationToken = default);
     Task AtualizarAsync(OrdemServico ordemServico, CancellationToken cancellationToken = default);

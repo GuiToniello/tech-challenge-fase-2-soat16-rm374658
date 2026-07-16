@@ -6,11 +6,11 @@ using TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
 
 namespace TechChallenge.Oficina.DB.Data.Features.Veiculos;
 
-public sealed class VeiculoRepository : IVeiculoRepository
+public sealed class VeiculoGateway : IVeiculoGateway
 {
     private readonly OficinaDbContext _context;
 
-    public VeiculoRepository(OficinaDbContext context)
+    public VeiculoGateway(OficinaDbContext context)
     {
         _context = context;
     }

@@ -12,7 +12,7 @@ using Xunit;
 
 namespace TechChallenge.Oficina.DB.Data.Tests.Features.OrdensServico;
 
-public sealed class OrdemServicoRepositoryTests
+public sealed class OrdemServicoGatewayTests
 {
     [Fact]
     public async Task AdicionarAsync_DevePersistirOrdemServicoComServicosEHistorico()
@@ -21,7 +21,7 @@ public sealed class OrdemServicoRepositoryTests
         var cliente = await AdicionarClienteAsync(context);
         var veiculo = await AdicionarVeiculoAsync(context, cliente.Id);
         var servico = await AdicionarServicoAsync(context, "Revisao");
-        var repository = new OrdemServicoRepository(context);
+        var repository = new OrdemServicoGateway(context);
         var ordemServico = OrdemServico.Criar(cliente.Id, veiculo.Id, [servico]);
 
         await repository.AdicionarAsync(ordemServico);
@@ -38,7 +38,7 @@ public sealed class OrdemServicoRepositoryTests
         var cliente = await AdicionarClienteAsync(context);
         var veiculo = await AdicionarVeiculoAsync(context, cliente.Id);
         var servico = await AdicionarServicoAsync(context, "Revisao");
-        var repository = new OrdemServicoRepository(context);
+        var repository = new OrdemServicoGateway(context);
         var ordemServico = OrdemServico.Criar(cliente.Id, veiculo.Id, [servico]);
         await repository.AdicionarAsync(ordemServico);
 
@@ -59,7 +59,7 @@ public sealed class OrdemServicoRepositoryTests
         var veiculoA = await AdicionarVeiculoAsync(context, clienteA.Id, "ABC1D23");
         var veiculoB = await AdicionarVeiculoAsync(context, clienteB.Id, "XYZ9A00");
         var servico = await AdicionarServicoAsync(context, "Revisao");
-        var repository = new OrdemServicoRepository(context);
+        var repository = new OrdemServicoGateway(context);
 
         await repository.AdicionarAsync(OrdemServico.Criar(clienteA.Id, veiculoA.Id, [servico]));
         await repository.AdicionarAsync(OrdemServico.Criar(clienteB.Id, veiculoB.Id, [servico]));
@@ -77,7 +77,7 @@ public sealed class OrdemServicoRepositoryTests
         var cliente = await AdicionarClienteAsync(context);
         var veiculo = await AdicionarVeiculoAsync(context, cliente.Id);
         var servico = await AdicionarServicoAsync(context, "Revisao");
-        var repository = new OrdemServicoRepository(context);
+        var repository = new OrdemServicoGateway(context);
         var ordemServico = OrdemServico.Criar(cliente.Id, veiculo.Id, [servico], new DateTime(2024, 01, 01, 8, 00, 00, DateTimeKind.Utc));
         ordemServico.AlterarParaEmDiagnostico(new DateTime(2024, 01, 01, 9, 00, 00, DateTimeKind.Utc));
         ordemServico.AlterarParaEmExecucao(new DateTime(2024, 01, 01, 10, 00, 00, DateTimeKind.Utc));
@@ -99,7 +99,7 @@ public sealed class OrdemServicoRepositoryTests
         var cliente = await AdicionarClienteAsync(context);
         var veiculo = await AdicionarVeiculoAsync(context, cliente.Id);
         var servico = await AdicionarServicoAsync(context, "Revisao");
-        var repository = new OrdemServicoRepository(context);
+        var repository = new OrdemServicoGateway(context);
         var ordemServico = OrdemServico.Criar(cliente.Id, veiculo.Id, [servico]);
         await repository.AdicionarAsync(ordemServico);
 
@@ -116,7 +116,7 @@ public sealed class OrdemServicoRepositoryTests
         var veiculo = await AdicionarVeiculoAsync(context, cliente.Id);
         var insumo = await AdicionarInsumoAsync(context, "Oleo", 25m);
         var servico = await AdicionarServicoComItemAsync(context, "Troca", insumo, 2);
-        var repository = new OrdemServicoRepository(context);
+        var repository = new OrdemServicoGateway(context);
         var ordemServico = OrdemServico.Criar(cliente.Id, veiculo.Id, [servico]);
 
         await repository.AdicionarAsync(ordemServico);

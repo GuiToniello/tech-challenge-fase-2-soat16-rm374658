@@ -25,10 +25,10 @@ namespace TechChallenge.Oficina.UseCases.Tests.Features.OrdensServico.UseCases;
 public sealed class OrdemServicoUseCasesTests
 {
     private readonly Mock<IMapper> _mapperMock = new();
-    private readonly Mock<IOrdemServicoRepository> _ordemServicoRepositoryMock = new();
-    private readonly Mock<IClienteRepository> _clienteRepositoryMock = new();
-    private readonly Mock<IVeiculoRepository> _veiculoRepositoryMock = new();
-    private readonly Mock<IServicoRepository> _servicoRepositoryMock = new();
+    private readonly Mock<IOrdemServicoGateway> _ordemServicoRepositoryMock = new();
+    private readonly Mock<IClienteGateway> _clienteRepositoryMock = new();
+    private readonly Mock<IVeiculoGateway> _veiculoRepositoryMock = new();
+    private readonly Mock<IServicoGateway> _servicoRepositoryMock = new();
     private readonly Mock<IEstoqueUseCases> _estoqueServiceMock = new();
     private readonly Mock<IIndicadorUseCases> _indicadorServiceMock = new();
     private readonly Mock<IOrcamentoEmailSender> _orcamentoEmailSenderMock = new();

@@ -6,13 +6,13 @@ using Xunit;
 
 namespace TechChallenge.Oficina.DB.Data.Tests.Features.Insumos;
 
-public sealed class InsumoRepositoryTests
+public sealed class InsumoGatewayTests
 {
     [Fact]
     public async Task AdicionarAsync_DevePersistirInsumo()
     {
         await using var context = CriarContexto();
-        var repository = new InsumoRepository(context);
+        var repository = new InsumoGateway(context);
         var insumo = CriarInsumo("Óleo", "Bosch", 10, 21.9m);
 
         await repository.AdicionarAsync(insumo);
@@ -24,7 +24,7 @@ public sealed class InsumoRepositoryTests
     public async Task AtualizarAsync_DeveAtualizarDadosDoInsumo()
     {
         await using var context = CriarContexto();
-        var repository = new InsumoRepository(context);
+        var repository = new InsumoGateway(context);
         var insumo = CriarInsumo("Óleo", "Bosch", 10, 21.9m);
 
         await repository.AdicionarAsync(insumo);
@@ -40,7 +40,7 @@ public sealed class InsumoRepositoryTests
     public async Task ObterPorIdAsync_DeveRetornarNull_QuandoNaoExiste()
     {
         await using var context = CriarContexto();
-        var repository = new InsumoRepository(context);
+        var repository = new InsumoGateway(context);
 
         var encontrado = await repository.ObterPorIdAsync(Guid.NewGuid());
 
@@ -51,7 +51,7 @@ public sealed class InsumoRepositoryTests
     public async Task ListarAsync_DeveRetornarOrdenadoPorNomeEFabricante()
     {
         await using var context = CriarContexto();
-        var repository = new InsumoRepository(context);
+        var repository = new InsumoGateway(context);
 
         await repository.AdicionarAsync(CriarInsumo("Óleo", "Y", 10, 21.9m));
         await repository.AdicionarAsync(CriarInsumo("Óleo", "A", 8, 25.9m));
@@ -65,7 +65,7 @@ public sealed class InsumoRepositoryTests
     public async Task RemoverAsync_DeveExcluirInsumo()
     {
         await using var context = CriarContexto();
-        var repository = new InsumoRepository(context);
+        var repository = new InsumoGateway(context);
         var insumo = CriarInsumo("Óleo", "Bosch", 10, 21.9m);
 
         await repository.AdicionarAsync(insumo);

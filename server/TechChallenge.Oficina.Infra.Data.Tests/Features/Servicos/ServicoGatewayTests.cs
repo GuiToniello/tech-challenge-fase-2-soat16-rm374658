@@ -7,13 +7,13 @@ using Xunit;
 
 namespace TechChallenge.Oficina.DB.Data.Tests.Features.Servicos;
 
-public sealed class ServicoRepositoryTests
+public sealed class ServicoGatewayTests
 {
     [Fact]
     public async Task AdicionarAsync_DevePersistirServicoComItensServico()
     {
         await using var context = CriarContexto();
-        var repository = new ServicoRepository(context);
+        var repository = new ServicoGateway(context);
         var insumo = await AdicionarInsumoAsync(context, "Filtro de Oleo");
         var servico = Servico.Criar("Troca de Oleo", "Troca completa", [ItemServico.Criar(insumo, 2)]);
 
@@ -32,7 +32,7 @@ public sealed class ServicoRepositoryTests
     public async Task AtualizarAsync_DeveAtualizarDadosDoServico()
     {
         await using var context = CriarContexto();
-        var repository = new ServicoRepository(context);
+        var repository = new ServicoGateway(context);
         var insumo = await AdicionarInsumoAsync(context, "Filtro de Oleo");
         var servico = Servico.Criar("Troca de Oleo", "Troca completa", [ItemServico.Criar(insumo, 1)]);
 
@@ -49,7 +49,7 @@ public sealed class ServicoRepositoryTests
     public async Task ObterPorIdAsync_DeveRetornarNull_QuandoNaoExiste()
     {
         await using var context = CriarContexto();
-        var repository = new ServicoRepository(context);
+        var repository = new ServicoGateway(context);
 
         var encontrado = await repository.ObterPorIdAsync(Guid.NewGuid());
 
@@ -60,7 +60,7 @@ public sealed class ServicoRepositoryTests
     public async Task ListarAsync_DeveRetornarOrdenadoPorNome()
     {
         await using var context = CriarContexto();
-        var repository = new ServicoRepository(context);
+        var repository = new ServicoGateway(context);
 
         await repository.AdicionarAsync(Servico.Criar("Troca", "Servico", []));
         await repository.AdicionarAsync(Servico.Criar("Alinhamento", "Servico", []));
@@ -74,7 +74,7 @@ public sealed class ServicoRepositoryTests
     public async Task RemoverAsync_DeveExcluirServico()
     {
         await using var context = CriarContexto();
-        var repository = new ServicoRepository(context);
+        var repository = new ServicoGateway(context);
         var servico = Servico.Criar("Troca", "Servico", []);
 
         await repository.AdicionarAsync(servico);

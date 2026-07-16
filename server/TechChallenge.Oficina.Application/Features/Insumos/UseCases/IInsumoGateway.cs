@@ -2,7 +2,7 @@ using TechChallenge.Oficina.Entities.Features.Insumos;
 
 namespace TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
 
-public interface IInsumoRepository
+public interface IInsumoGateway
 {
     Task AdicionarAsync(Insumo insumo, CancellationToken cancellationToken = default);
     Task AtualizarAsync(Insumo insumo, CancellationToken cancellationToken = default);

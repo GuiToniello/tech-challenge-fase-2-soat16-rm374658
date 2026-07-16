@@ -13,7 +13,7 @@ namespace TechChallenge.Oficina.UseCases.Tests.Features.Insumos;
 public sealed class InsumoUseCasesTests
 {
     private readonly Mock<IMapper> _mapperMock = new();
-    private readonly Mock<IInsumoRepository> _repositoryMock = new();
+    private readonly Mock<IInsumoGateway> _repositoryMock = new();
 
     private InsumoUseCases CriarService() => new(_mapperMock.Object, _repositoryMock.Object);
 

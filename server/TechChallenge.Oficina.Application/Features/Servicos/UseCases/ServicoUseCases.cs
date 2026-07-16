@@ -11,14 +11,14 @@ namespace TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
 public sealed class ServicoUseCases : IServicoUseCases
 {
     private readonly IMapper _mapper;
-    private readonly IServicoRepository _servicoRepository;
-    private readonly IInsumoRepository _insumoRepository;
+    private readonly IServicoGateway _servicoGateway;
+    private readonly IInsumoGateway _insumoGateway;
 
-    public ServicoUseCases(IMapper mapper, IServicoRepository servicoRepository, IInsumoRepository insumoRepository)
+    public ServicoUseCases(IMapper mapper, IServicoGateway servicoGateway, IInsumoGateway insumoGateway)
     {
         _mapper = mapper;
-        _servicoRepository = servicoRepository;
-        _insumoRepository = insumoRepository;
+        _servicoGateway = servicoGateway;
+        _insumoGateway = insumoGateway;
     }
 
     public async Task<ServicoViewModel> CriarAsync(CriarServicoCommand command, CancellationToken cancellationToken = default)
@@ -26,7 +26,7 @@ public sealed class ServicoUseCases : IServicoUseCases
         var itensServico = await ObterItensServicoAsync(command.ItensServico, cancellationToken);
         var servico = Servico.Criar(command.Nome, command.Descricao, itensServico);
 
-        await _servicoRepository.AdicionarAsync(servico, cancellationToken);
+        await _servicoGateway.AdicionarAsync(servico, cancellationToken);
 
         return _mapper.Map<ServicoViewModel>(servico);
     }
@@ -40,7 +40,7 @@ public sealed class ServicoUseCases : IServicoUseCases
         servico.AtualizarDescricao(command.Descricao);
         servico.DefinirItensServico(itensServico);
 
-        await _servicoRepository.AtualizarAsync(servico, cancellationToken);
+        await _servicoGateway.AtualizarAsync(servico, cancellationToken);
 
         return _mapper.Map<ServicoViewModel>(servico);
     }
@@ -53,19 +53,19 @@ public sealed class ServicoUseCases : IServicoUseCases
 
     public async Task<IReadOnlyCollection<ServicoViewModel>> ListarAsync(ListarServicosQuery query, CancellationToken cancellationToken = default)
     {
-        var servicos = await _servicoRepository.ListarAsync(cancellationToken);
+        var servicos = await _servicoGateway.ListarAsync(cancellationToken);
         return _mapper.Map<IReadOnlyCollection<ServicoViewModel>>(servicos);
     }
 
     public async Task ExcluirAsync(ExcluirServicoCommand command, CancellationToken cancellationToken = default)
     {
         var servico = await ObterServicoExistenteAsync(command.Id, cancellationToken);
-        await _servicoRepository.RemoverAsync(servico, cancellationToken);
+        await _servicoGateway.RemoverAsync(servico, cancellationToken);
     }
 
     private async Task<Servico> ObterServicoExistenteAsync(Guid id, CancellationToken cancellationToken)
     {
-        var servico = await _servicoRepository.ObterPorIdAsync(id, cancellationToken);
+        var servico = await _servicoGateway.ObterPorIdAsync(id, cancellationToken);
 
         if (servico is null)
         {
@@ -106,7 +106,7 @@ public sealed class ServicoUseCases : IServicoUseCases
 
         foreach (var item in itensAgrupados)
         {
-            var insumo = await _insumoRepository.ObterPorIdAsync(item.InsumoId, cancellationToken);
+            var insumo = await _insumoGateway.ObterPorIdAsync(item.InsumoId, cancellationToken);
 
             if (insumo is null)
             {

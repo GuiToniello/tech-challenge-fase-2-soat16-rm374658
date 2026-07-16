@@ -50,12 +50,12 @@ public sealed class IntegrationTestFixture : IDisposable
         services.AddDbContext<OficinaDbContext>(options =>
             options.UseInMemoryDatabase(dbName));
 
-        services.AddScoped<IClienteRepository, ClienteRepository>();
-        services.AddScoped<IInsumoRepository, InsumoRepository>();
-        services.AddScoped<IIndicadorRepository, IndicadorRepository>();
-        services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
-        services.AddScoped<IServicoRepository, ServicoRepository>();
-        services.AddScoped<IVeiculoRepository, VeiculoRepository>();
+        services.AddScoped<IClienteGateway, ClienteGateway>();
+        services.AddScoped<IInsumoGateway, InsumoGateway>();
+        services.AddScoped<IIndicadorGateway, IndicadorGateway>();
+        services.AddScoped<IOrdemServicoGateway, OrdemServicoGateway>();
+        services.AddScoped<IServicoGateway, ServicoGateway>();
+        services.AddScoped<IVeiculoGateway, VeiculoGateway>();
 
         var emailSenderMock = new Mock<IOrcamentoEmailSender>();
         emailSenderMock

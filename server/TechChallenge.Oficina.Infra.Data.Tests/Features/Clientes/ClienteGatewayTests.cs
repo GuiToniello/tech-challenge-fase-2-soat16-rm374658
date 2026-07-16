@@ -7,13 +7,13 @@ using Xunit;
 
 namespace TechChallenge.Oficina.DB.Data.Tests.Features.Clientes;
 
-public sealed class ClienteRepositoryTests
+public sealed class ClienteGatewayTests
 {
     [Fact]
     public async Task AdicionarAsync_DevePersistirCliente()
     {
         await using var context = CriarContexto();
-        var repository = new ClienteRepository(context);
+        var repository = new ClienteGateway(context);
         var cliente = CriarCliente("Cliente A", "52998224725");
 
         await repository.AdicionarAsync(cliente);
@@ -25,7 +25,7 @@ public sealed class ClienteRepositoryTests
     public async Task AtualizarAsync_DeveAtualizarDadosDoCliente()
     {
         await using var context = CriarContexto();
-        var repository = new ClienteRepository(context);
+        var repository = new ClienteGateway(context);
         var cliente = CriarCliente("Nome Antigo", "52998224725");
 
         await repository.AdicionarAsync(cliente);
@@ -41,7 +41,7 @@ public sealed class ClienteRepositoryTests
     public async Task ObterPorIdAsync_DeveRetornarNull_QuandoNaoExiste()
     {
         await using var context = CriarContexto();
-        var repository = new ClienteRepository(context);
+        var repository = new ClienteGateway(context);
 
         var cliente = await repository.ObterPorIdAsync(Guid.NewGuid());
 
@@ -52,7 +52,7 @@ public sealed class ClienteRepositoryTests
     public async Task ListarAsync_DeveRetornarOrdenadoPorNome()
     {
         await using var context = CriarContexto();
-        var repository = new ClienteRepository(context);
+        var repository = new ClienteGateway(context);
 
         await repository.AdicionarAsync(CriarCliente("Z Cliente", "04252011000110"));
         await repository.AdicionarAsync(CriarCliente("A Cliente", "52998224725"));
@@ -66,7 +66,7 @@ public sealed class ClienteRepositoryTests
     public async Task ExisteComIdentificacaoAsync_DeveRespeitarClienteIgnorado()
     {
         await using var context = CriarContexto();
-        var repository = new ClienteRepository(context);
+        var repository = new ClienteGateway(context);
         var cliente = CriarCliente("Cliente", "52998224725");
 
         await repository.AdicionarAsync(cliente);
@@ -82,7 +82,7 @@ public sealed class ClienteRepositoryTests
     public async Task RemoverAsync_DeveExcluirCliente()
     {
         await using var context = CriarContexto();
-        var repository = new ClienteRepository(context);
+        var repository = new ClienteGateway(context);
         var cliente = CriarCliente("Cliente", "52998224725");
 
         await repository.AdicionarAsync(cliente);
@@ -95,7 +95,7 @@ public sealed class ClienteRepositoryTests
     public async Task ObterPorIdAsync_DeveRetornarCliente_QuandoExiste()
     {
         await using var context = CriarContexto();
-        var repository = new ClienteRepository(context);
+        var repository = new ClienteGateway(context);
         var cliente = CriarCliente("Cliente A", "52998224725");
 
         await repository.AdicionarAsync(cliente);
@@ -111,7 +111,7 @@ public sealed class ClienteRepositoryTests
     public async Task ExisteComIdentificacaoAsync_DeveRetornarFalse_QuandoNaoExiste()
     {
         await using var context = CriarContexto();
-        var repository = new ClienteRepository(context);
+        var repository = new ClienteGateway(context);
 
         var existe = await repository.ExisteComIdentificacaoAsync("52998224725");
 
@@ -122,7 +122,7 @@ public sealed class ClienteRepositoryTests
     public async Task ListarAsync_DeveRetornarListaVazia_QuandoSemClientes()
     {
         await using var context = CriarContexto();
-        var repository = new ClienteRepository(context);
+        var repository = new ClienteGateway(context);
 
         var clientes = await repository.ListarAsync();
 
@@ -133,7 +133,7 @@ public sealed class ClienteRepositoryTests
     public async Task AdicionarAsync_DevePersistirMultiplosClientes()
     {
         await using var context = CriarContexto();
-        var repository = new ClienteRepository(context);
+        var repository = new ClienteGateway(context);
 
         await repository.AdicionarAsync(CriarCliente("Cliente B", "52998224725"));
         await repository.AdicionarAsync(CriarCliente("Cliente A", "04252011000110"));
@@ -145,7 +145,7 @@ public sealed class ClienteRepositoryTests
     public async Task AdicionarAsync_DevePersistirEmailQuandoInformado()
     {
         await using var context = CriarContexto();
-        var repository = new ClienteRepository(context);
+        var repository = new ClienteGateway(context);
         var cliente = Cliente.Criar("Cliente Email", IdentificacaoCliente.Criar("52998224725"), "cliente@teste.com");
 
         await repository.AdicionarAsync(cliente);
