@@ -8,10 +8,11 @@ using TechChallenge.Oficina.Entities.Exceptions;
 using TechChallenge.Oficina.Entities.Features.Insumos;
 using TechChallenge.Oficina.Entities.Features.Servicos;
 using Xunit;
+using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
 
-namespace TechChallenge.Oficina.UseCases.Tests.Features.Servicos.Services;
+namespace TechChallenge.Oficina.UseCases.Tests.Features.UseCases;
 
-public sealed class ServicoServiceTests
+public sealed class ServicoUseCasesTests
 {
     private readonly Mock<IMapper> _mapperMock = new();
     private readonly Mock<IServicoRepository> _servicoRepositoryMock = new();

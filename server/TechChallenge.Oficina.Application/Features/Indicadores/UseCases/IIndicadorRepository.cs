@@ -1,4 +1,6 @@
-namespace TechChallenge.Oficina.Entities.Features.Indicadores;
+using TechChallenge.Oficina.Entities.Features.Indicadores;
+
+namespace TechChallenge.Oficina.UseCases.Features.Indicadores.UseCases;
 
 public interface IIndicadorRepository
 {

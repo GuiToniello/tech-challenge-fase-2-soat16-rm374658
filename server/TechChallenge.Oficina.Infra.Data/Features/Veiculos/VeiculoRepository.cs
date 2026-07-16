@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using TechChallenge.Oficina.Entities.Features.Veiculos;
 using TechChallenge.Oficina.Entities.Features.Veiculos.VOs;
 using TechChallenge.Oficina.DB.Data.Context;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
 
 namespace TechChallenge.Oficina.DB.Data.Features.Veiculos;
 

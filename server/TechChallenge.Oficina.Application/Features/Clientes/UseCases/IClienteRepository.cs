@@ -1,4 +1,6 @@
-namespace TechChallenge.Oficina.Entities.Features.Clientes;
+using TechChallenge.Oficina.Entities.Features.Clientes;
+
+namespace TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
 
 public interface IClienteRepository
 {

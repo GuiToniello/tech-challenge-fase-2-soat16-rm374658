@@ -30,11 +30,11 @@
   <Folder Name="/Tests/">
     <File Path="../e2e/TechChallenge.Oficina.API.postman_collection.json" />
     <Project Path="TechChallenge.Oficina.API.Tests/TechChallenge.Oficina.API.Tests.csproj" />
-    <Project Path="TechChallenge.Oficina.Application.Tests/TechChallenge.Oficina.Application.Tests.csproj" />
+    <Project Path="TechChallenge.Oficina.Application.Tests/TechChallenge.Oficina.UseCases.Tests.csproj" />
     <Project Path="TechChallenge.Oficina.Controllers.Tests/TechChallenge.Oficina.Controllers.Tests.csproj" Id="62f6c073-70c9-4926-a4b3-f670efda32d0" />
-    <Project Path="TechChallenge.Oficina.Domain.Tests/TechChallenge.Oficina.Domain.Tests.csproj" />
-    <Project Path="TechChallenge.Oficina.Infra.Data.Tests/TechChallenge.Oficina.Infra.Data.Tests.csproj" />
-    <Project Path="TechChallenge.Oficina.Infra.Email.Tests/TechChallenge.Oficina.Infra.Email.Tests.csproj" />
+    <Project Path="TechChallenge.Oficina.Domain.Tests/TechChallenge.Oficina.Entities.Tests.csproj" />
+    <Project Path="TechChallenge.Oficina.Infra.Data.Tests/TechChallenge.Oficina.DB.Tests.csproj" />
+    <Project Path="TechChallenge.Oficina.Infra.Email.Tests/TechChallenge.Oficina.Email.Tests.csproj" />
     <Project Path="TechChallenge.Oficina.Integration.Tests/TechChallenge.Oficina.Integration.Tests.csproj" />
   </Folder>
 </Solution>

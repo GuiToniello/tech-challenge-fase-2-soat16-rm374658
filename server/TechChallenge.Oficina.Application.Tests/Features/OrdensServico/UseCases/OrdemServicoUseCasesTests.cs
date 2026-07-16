@@ -15,10 +15,14 @@ using TechChallenge.Oficina.Entities.Features.Servicos;
 using TechChallenge.Oficina.Entities.Features.Veiculos;
 using Xunit;
 using TechChallenge.Oficina.UseCases.Features.Indicadores.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
 
-namespace TechChallenge.Oficina.UseCases.Tests.Features.OrdensServico.Services;
+namespace TechChallenge.Oficina.UseCases.Tests.Features.OrdensServico.UseCases;
 
-public sealed class OrdemServicoServiceTests
+public sealed class OrdemServicoUseCasesTests
 {
     private readonly Mock<IMapper> _mapperMock = new();
     private readonly Mock<IOrdemServicoRepository> _ordemServicoRepositoryMock = new();

@@ -3,9 +3,9 @@ using TechChallenge.Oficina.UseCases.Features.Veiculos.Commands;
 using TechChallenge.Oficina.UseCases.Features.Veiculos.Queries;
 using TechChallenge.Oficina.UseCases.Features.Veiculos.ViewModels;
 using TechChallenge.Oficina.Entities.Exceptions;
-using TechChallenge.Oficina.Entities.Features.Clientes;
 using TechChallenge.Oficina.Entities.Features.Veiculos;
 using TechChallenge.Oficina.Entities.Features.Veiculos.VOs;
+using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
 
 namespace TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
 

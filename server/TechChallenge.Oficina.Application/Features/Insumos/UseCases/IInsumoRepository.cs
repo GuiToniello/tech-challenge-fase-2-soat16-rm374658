@@ -1,4 +1,6 @@
-namespace TechChallenge.Oficina.Entities.Features.Insumos;
+using TechChallenge.Oficina.Entities.Features.Insumos;
+
+namespace TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
 
 public interface IInsumoRepository
 {

@@ -9,10 +9,11 @@ using TechChallenge.Oficina.Entities.Features.Clientes;
 using TechChallenge.Oficina.Entities.Features.Clientes.VOs;
 using TechChallenge.Oficina.Entities.Features.Veiculos;
 using Xunit;
+using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
 
-namespace TechChallenge.Oficina.UseCases.Tests.Features.Veiculos.Services;
+namespace TechChallenge.Oficina.UseCases.Tests.Features.UseCases;
 
-public sealed class VeiculoServiceTests
+public sealed class VeiculoUseCasesTests
 {
     private readonly Mock<IMapper> _mapperMock = new();
     private readonly Mock<IVeiculoRepository> _veiculoRepositoryMock = new();

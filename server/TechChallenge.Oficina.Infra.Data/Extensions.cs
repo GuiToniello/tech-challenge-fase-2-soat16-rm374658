@@ -13,6 +13,12 @@ using TechChallenge.Oficina.DB.Data.Features.Indicadores;
 using TechChallenge.Oficina.DB.Data.Features.OrdensServico;
 using TechChallenge.Oficina.DB.Data.Features.Servicos;
 using TechChallenge.Oficina.DB.Data.Features.Veiculos;
+using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Indicadores.UseCases;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
 
 namespace TechChallenge.Oficina.DB.Data;
 

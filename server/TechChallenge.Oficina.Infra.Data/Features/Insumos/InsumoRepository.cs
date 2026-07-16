@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TechChallenge.Oficina.Entities.Features.Insumos;
 using TechChallenge.Oficina.DB.Data.Context;
+using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
 
 namespace TechChallenge.Oficina.DB.Data.Features.Insumos;
 

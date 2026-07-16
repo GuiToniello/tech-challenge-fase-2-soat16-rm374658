@@ -8,9 +8,9 @@ using TechChallenge.Oficina.Entities.Exceptions;
 using TechChallenge.Oficina.Entities.Features.Insumos;
 using Xunit;
 
-namespace TechChallenge.Oficina.UseCases.Tests.Features.Insumos.Services;
+namespace TechChallenge.Oficina.UseCases.Tests.Features.Insumos;
 
-public sealed class InsumoServiceTests
+public sealed class InsumoUseCasesTests
 {
     private readonly Mock<IMapper> _mapperMock = new();
     private readonly Mock<IInsumoRepository> _repositoryMock = new();

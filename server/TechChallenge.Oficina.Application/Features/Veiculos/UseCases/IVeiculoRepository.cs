@@ -1,4 +1,6 @@
-namespace TechChallenge.Oficina.Entities.Features.Veiculos;
+using TechChallenge.Oficina.Entities.Features.Veiculos;
+
+namespace TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
 
 public interface IVeiculoRepository
 {

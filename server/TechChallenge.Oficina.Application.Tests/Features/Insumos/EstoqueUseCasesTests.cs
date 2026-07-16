@@ -5,9 +5,9 @@ using TechChallenge.Oficina.Entities.Features.Insumos;
 using TechChallenge.Oficina.Entities.Features.Servicos;
 using Xunit;
 
-namespace TechChallenge.Oficina.UseCases.Tests.Features.Insumos.Services;
+namespace TechChallenge.Oficina.UseCases.Tests.Features.Insumos;
 
-public sealed class EstoqueServiceTests
+public sealed class EstoqueUseCasesTests
 {
     private readonly Mock<IInsumoRepository> _insumoRepositoryMock = new();
 

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace TechChallenge.Oficina.DB.Data.Migrations
+namespace TechChallenge.Oficina.Data.Migrations
 {
     /// <inheritdoc />
     public partial class AddClienteEmail : Migration

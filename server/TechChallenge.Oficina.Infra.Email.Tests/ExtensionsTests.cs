@@ -4,6 +4,7 @@ using TechChallenge.Oficina.Email;
 using TechChallenge.Oficina.Email.Configuration;
 using TechChallenge.Oficina.Email.Features.Orcamentos;
 using Xunit;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
 
 namespace TechChallenge.Oficina.DB.Email.Tests;
 

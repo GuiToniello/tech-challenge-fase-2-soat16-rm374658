@@ -3,10 +3,12 @@ using TechChallenge.Oficina.UseCases.Features.OrdensServico.Commands;
 using TechChallenge.Oficina.UseCases.Features.OrdensServico.Queries;
 using TechChallenge.Oficina.UseCases.Features.OrdensServico.ViewModels;
 using TechChallenge.Oficina.Entities.Exceptions;
-using TechChallenge.Oficina.Entities.Features.Clientes;
 using TechChallenge.Oficina.Entities.Features.OrdensServico;
 using TechChallenge.Oficina.Entities.Features.Servicos;
 using TechChallenge.Oficina.Entities.Features.Veiculos;
+using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
 
 namespace TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
 

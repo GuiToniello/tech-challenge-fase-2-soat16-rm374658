@@ -8,7 +8,7 @@ using TechChallenge.Oficina.DB.Data.Context;
 
 #nullable disable
 
-namespace TechChallenge.Oficina.DB.Data.Migrations
+namespace TechChallenge.Oficina.Data.Migrations
 {
     [DbContext(typeof(OficinaDbContext))]
     partial class OficinaDbContextModelSnapshot : ModelSnapshot

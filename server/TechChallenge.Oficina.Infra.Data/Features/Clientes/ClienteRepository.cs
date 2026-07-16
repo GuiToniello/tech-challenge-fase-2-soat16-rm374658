@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TechChallenge.Oficina.Entities.Features.Clientes;
 using TechChallenge.Oficina.DB.Data.Context;
+using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
 
 namespace TechChallenge.Oficina.DB.Data.Features.Clientes;
 

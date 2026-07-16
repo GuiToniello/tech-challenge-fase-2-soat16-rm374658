@@ -1,6 +1,5 @@
-using TechChallenge.Oficina.Entities.Features.Insumos;
-using TechChallenge.Oficina.Entities.Features.Orcamentos;
 using TechChallenge.Oficina.UseCases.Features.Indicadores.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
 
 namespace TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
 

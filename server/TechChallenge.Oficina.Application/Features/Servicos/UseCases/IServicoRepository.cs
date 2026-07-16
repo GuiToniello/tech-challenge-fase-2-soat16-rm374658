@@ -1,4 +1,6 @@
-namespace TechChallenge.Oficina.Entities.Features.Servicos;
+using TechChallenge.Oficina.Entities.Features.Servicos;
+
+namespace TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
 
 public interface IServicoRepository
 {

@@ -9,9 +9,9 @@ using TechChallenge.Oficina.Entities.Features.Clientes;
 using TechChallenge.Oficina.Entities.Features.Clientes.VOs;
 using Xunit;
 
-namespace TechChallenge.Oficina.UseCases.Tests.Features.Clientes.Services;
+namespace TechChallenge.Oficina.UseCases.Tests.Features.Clientes;
 
-public sealed class ClienteServiceTests
+public sealed class ClienteUseCasesTests
 {
     private readonly Mock<IMapper> _mapperMock = new();
     private readonly Mock<IClienteRepository> _repositoryMock = new();

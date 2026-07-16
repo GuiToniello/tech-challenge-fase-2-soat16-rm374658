@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using TechChallenge.Oficina.Entities.Features.OrdensServico;
 using TechChallenge.Oficina.Entities.Features.OrdensServico.Enums;
 using TechChallenge.Oficina.DB.Data.Context;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
 
 namespace TechChallenge.Oficina.DB.Data.Features.OrdensServico;
 

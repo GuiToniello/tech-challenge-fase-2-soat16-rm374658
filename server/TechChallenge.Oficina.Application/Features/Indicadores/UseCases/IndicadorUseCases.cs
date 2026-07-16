@@ -5,6 +5,7 @@ using TechChallenge.Oficina.Entities.Features.Indicadores;
 using TechChallenge.Oficina.Entities.Features.OrdensServico;
 using TechChallenge.Oficina.Entities.Features.OrdensServico.Enums;
 using TechChallenge.Oficina.UseCases.Features.Indicadores.UseCases;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
 
 namespace TechChallenge.Oficina.UseCases.Features.Indicadores.Services;
 

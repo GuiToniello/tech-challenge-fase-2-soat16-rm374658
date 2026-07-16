@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Moq;
 using TechChallenge.Oficina.UseCases;
 using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
@@ -20,13 +19,7 @@ using TechChallenge.Oficina.Controllers.Features.Insumos;
 using TechChallenge.Oficina.Controllers.Features.OrdensServico;
 using TechChallenge.Oficina.Controllers.Features.Servicos;
 using TechChallenge.Oficina.Controllers.Features.Veiculos;
-using TechChallenge.Oficina.Entities.Features.Clientes;
-using TechChallenge.Oficina.Entities.Features.Indicadores;
-using TechChallenge.Oficina.Entities.Features.Insumos;
-using TechChallenge.Oficina.Entities.Features.Orcamentos;
 using TechChallenge.Oficina.Entities.Features.OrdensServico;
-using TechChallenge.Oficina.Entities.Features.Servicos;
-using TechChallenge.Oficina.Entities.Features.Veiculos;
 using TechChallenge.Oficina.DB.Data.Context;
 using TechChallenge.Oficina.DB.Data.Features.Clientes;
 using TechChallenge.Oficina.DB.Data.Features.Indicadores;
@@ -34,6 +27,7 @@ using TechChallenge.Oficina.DB.Data.Features.Insumos;
 using TechChallenge.Oficina.DB.Data.Features.OrdensServico;
 using TechChallenge.Oficina.DB.Data.Features.Servicos;
 using TechChallenge.Oficina.DB.Data.Features.Veiculos;
+using TechChallenge.Oficina.UseCases.Features.Indicadores.UseCases;
 
 namespace TechChallenge.Oficina.Integration.Tests.Infrastructure;
 

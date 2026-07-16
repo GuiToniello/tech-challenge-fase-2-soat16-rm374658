@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using TechChallenge.Oficina.Entities.Features.Orcamentos;
 using TechChallenge.Oficina.Email.Configuration;
 using TechChallenge.Oficina.Email.Features.Orcamentos;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
 
 namespace TechChallenge.Oficina.Email;
 

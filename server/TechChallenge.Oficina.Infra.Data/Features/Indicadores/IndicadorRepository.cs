@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TechChallenge.Oficina.Entities.Features.Indicadores;
 using TechChallenge.Oficina.DB.Data.Context;
+using TechChallenge.Oficina.UseCases.Features.Indicadores.UseCases;
 
 namespace TechChallenge.Oficina.DB.Data.Features.Indicadores;
 

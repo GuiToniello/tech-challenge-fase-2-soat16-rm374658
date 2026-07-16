@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TechChallenge.Oficina.Application\TechChallenge.Oficina.UseCases.csproj" />
     <ProjectReference Include="..\TechChallenge.Oficina.Infra.Email\TechChallenge.Oficina.Email.csproj" />
     <ProjectReference Include="..\TechChallenge.Oficina.Domain\TechChallenge.Oficina.Entities.csproj" />
   </ItemGroup>

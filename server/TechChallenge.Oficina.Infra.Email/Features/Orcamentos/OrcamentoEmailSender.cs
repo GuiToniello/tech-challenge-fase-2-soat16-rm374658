@@ -2,10 +2,10 @@ using System.Globalization;
 using System.Text;
 using Resend;
 using TechChallenge.Oficina.Entities.Exceptions;
-using TechChallenge.Oficina.Entities.Features.Orcamentos;
 using TechChallenge.Oficina.Entities.Features.OrdensServico;
 using TechChallenge.Oficina.Entities.Features.OrdensServico.Enums;
 using TechChallenge.Oficina.Email.Configuration;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
 
 namespace TechChallenge.Oficina.Email.Features.Orcamentos;
 

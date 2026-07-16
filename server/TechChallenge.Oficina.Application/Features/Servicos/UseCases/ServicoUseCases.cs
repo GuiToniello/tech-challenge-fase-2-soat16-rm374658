@@ -3,8 +3,8 @@ using TechChallenge.Oficina.UseCases.Features.Servicos.Commands;
 using TechChallenge.Oficina.UseCases.Features.Servicos.Queries;
 using TechChallenge.Oficina.UseCases.Features.Servicos.ViewModels;
 using TechChallenge.Oficina.Entities.Exceptions;
-using TechChallenge.Oficina.Entities.Features.Insumos;
 using TechChallenge.Oficina.Entities.Features.Servicos;
+using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
 
 namespace TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
 

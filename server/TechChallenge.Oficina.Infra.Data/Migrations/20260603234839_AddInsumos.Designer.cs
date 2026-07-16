@@ -9,7 +9,7 @@ using TechChallenge.Oficina.DB.Data.Context;
 
 #nullable disable
 
-namespace TechChallenge.Oficina.DB.Data.Migrations
+namespace TechChallenge.Oficina.Data.Migrations
 {
     [DbContext(typeof(OficinaDbContext))]
     [Migration("20260603234839_AddInsumos")]
