@@ -8,12 +8,12 @@ namespace TechChallenge.Oficina.Controllers.Features.Servicos
 {
     public class ServicoController : IServicoController
     {
-        private readonly IServicoUseCases _servicoService;
+        private readonly IServicoUseCases _servicoUseCases;
         private readonly IServicoAdapter _servicoAdapter;
 
-        public ServicoController(IServicoUseCases servicoService, IServicoAdapter servicoAdapter)
+        public ServicoController(IServicoUseCases servicoUsecases, IServicoAdapter servicoAdapter)
         {
-            _servicoService = servicoService;
+            _servicoUseCases = servicoUsecases;
             _servicoAdapter = servicoAdapter;
         }
 
@@ -21,7 +21,7 @@ namespace TechChallenge.Oficina.Controllers.Features.Servicos
         {
             try
             {
-                var servico = await _servicoService.CriarAsync(command, cancellationToken);
+                var servico = await _servicoUseCases.CriarAsync(command, cancellationToken);
                 var result = ServicoResult.From(servico);
 
                 return _servicoAdapter.Adapt(result, true);
@@ -43,7 +43,7 @@ namespace TechChallenge.Oficina.Controllers.Features.Servicos
             try
             {
                 var query = new ObterServicoPorIdQuery { Id = id };
-                var servico = await _servicoService.ObterPorIdAsync(query, cancellationToken);
+                var servico = await _servicoUseCases.ObterPorIdAsync(query, cancellationToken);
                 var result = ServicoResult.From(servico);
 
                 return _servicoAdapter.Adapt(result);
@@ -57,7 +57,7 @@ namespace TechChallenge.Oficina.Controllers.Features.Servicos
 
         public async Task<object> Get(CancellationToken cancellationToken)
         {
-            var servicos = await _servicoService.ListarAsync(new ListarServicosQuery(), cancellationToken);
+            var servicos = await _servicoUseCases.ListarAsync(new ListarServicosQuery(), cancellationToken);
             var result = ServicoResult.From(servicos);
 
             return _servicoAdapter.Adapt(result);
@@ -67,7 +67,7 @@ namespace TechChallenge.Oficina.Controllers.Features.Servicos
         {
             try
             {
-                var servico = await _servicoService.AtualizarAsync(command, cancellationToken);
+                var servico = await _servicoUseCases.AtualizarAsync(command, cancellationToken);
                 var result = ServicoResult.From(servico);
 
                 return _servicoAdapter.Adapt(result);
@@ -89,7 +89,7 @@ namespace TechChallenge.Oficina.Controllers.Features.Servicos
             try
             {
                 var command = new ExcluirServicoCommand { Id = id };
-                await _servicoService.ExcluirAsync(command, cancellationToken);
+                await _servicoUseCases.ExcluirAsync(command, cancellationToken);
 
                 return _servicoAdapter.Empty();
             }

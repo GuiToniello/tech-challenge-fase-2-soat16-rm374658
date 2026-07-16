@@ -8,12 +8,12 @@ namespace TechChallenge.Oficina.Controllers.Features.Clientes
 {
     public class ClienteController : IClienteController
     {
-        private readonly IClienteUseCases _clienteService;
+        private readonly IClienteUseCases _clienteUsecases;
         private readonly IClienteAdapter _clientAdapter;
 
-        public ClienteController(IClienteUseCases clienteService, IClienteAdapter clientAdapter)
+        public ClienteController(IClienteUseCases clienteUsecases, IClienteAdapter clientAdapter)
         {
-            _clienteService = clienteService;
+            _clienteUsecases = clienteUsecases;
             _clientAdapter = clientAdapter;
         }
 
@@ -21,7 +21,7 @@ namespace TechChallenge.Oficina.Controllers.Features.Clientes
         {
             try
             {
-                var cliente = await _clienteService.CriarAsync(command, cancellationToken);
+                var cliente = await _clienteUsecases.CriarAsync(command, cancellationToken);
                 var result = ClienteResult.From(cliente);
 
                 return _clientAdapter.Adapt(result, true);
@@ -39,7 +39,7 @@ namespace TechChallenge.Oficina.Controllers.Features.Clientes
             try
             {
                 var query = new ObterClientePorIdQuery { Id = id };
-                var cliente = await _clienteService.ObterPorIdAsync(query, cancellationToken);
+                var cliente = await _clienteUsecases.ObterPorIdAsync(query, cancellationToken);
                 var result = ClienteResult.From(cliente);
 
                 return _clientAdapter.Adapt(result);
@@ -53,7 +53,7 @@ namespace TechChallenge.Oficina.Controllers.Features.Clientes
 
         public async Task<object> Get(CancellationToken cancellationToken)
         {
-            var clientes = await _clienteService.ListarAsync(new ListarClientesQuery(), cancellationToken);
+            var clientes = await _clienteUsecases.ListarAsync(new ListarClientesQuery(), cancellationToken);
             var result = ClienteResult.From(clientes);
 
             return _clientAdapter.Adapt(result);
@@ -63,7 +63,7 @@ namespace TechChallenge.Oficina.Controllers.Features.Clientes
         {
             try
             {
-                var cliente = await _clienteService.AtualizarAsync(command, cancellationToken);
+                var cliente = await _clienteUsecases.AtualizarAsync(command, cancellationToken);
                 var result = ClienteResult.From(cliente);
                 return _clientAdapter.Adapt(result);
             }
@@ -84,7 +84,7 @@ namespace TechChallenge.Oficina.Controllers.Features.Clientes
             try
             {
                 var command = new ExcluirClienteCommand { Id = id };
-                await _clienteService.ExcluirAsync(command, cancellationToken);
+                await _clienteUsecases.ExcluirAsync(command, cancellationToken);
 
                 return _clientAdapter.Empty();
             }

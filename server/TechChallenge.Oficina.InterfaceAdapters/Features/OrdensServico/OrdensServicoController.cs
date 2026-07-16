@@ -11,9 +11,9 @@ namespace TechChallenge.Oficina.Controllers.Features.OrdensServico
         private readonly IOrdemServicoUseCases _ordemServicoService;
         private readonly IOrdensServicoAdapter _ordensServicoAdapter;
 
-        public OrdensServicoController(IOrdemServicoUseCases ordemServicoService, IOrdensServicoAdapter ordensServicoAdapter)
+        public OrdensServicoController(IOrdemServicoUseCases ordemServicoUseCases, IOrdensServicoAdapter ordensServicoAdapter)
         {
-            _ordemServicoService = ordemServicoService;
+            _ordemServicoService = ordemServicoUseCases;
             _ordensServicoAdapter = ordensServicoAdapter;
         }
 

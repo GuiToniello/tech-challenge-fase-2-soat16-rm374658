@@ -8,12 +8,12 @@ namespace TechChallenge.Oficina.Controllers.Features.Insumos
 {
     public class InsumoController : IInsumoController
     {
-        private readonly IInsumoUseCases _insumoService;
+        private readonly IInsumoUseCases _insumoUsecases;
         private readonly IInsumoAdapter _insumoAdapter;
 
-        public InsumoController(IInsumoUseCases insumoService, IInsumoAdapter insumoAdapter)
+        public InsumoController(IInsumoUseCases insumoUsecases, IInsumoAdapter insumoAdapter)
         {
-            _insumoService = insumoService;
+            _insumoUsecases = insumoUsecases;
             _insumoAdapter = insumoAdapter;
         }
 
@@ -21,7 +21,7 @@ namespace TechChallenge.Oficina.Controllers.Features.Insumos
         {
             try
             {
-                var insumo = await _insumoService.CriarAsync(command, cancellationToken);
+                var insumo = await _insumoUsecases.CriarAsync(command, cancellationToken);
                 var result = InsumoResult.From(insumo);
 
                 return _insumoAdapter.Adapt(result, true);
@@ -39,7 +39,7 @@ namespace TechChallenge.Oficina.Controllers.Features.Insumos
             try
             {
                 var query = new ObterInsumoPorIdQuery { Id = id };
-                var insumo = await _insumoService.ObterPorIdAsync(query, cancellationToken);
+                var insumo = await _insumoUsecases.ObterPorIdAsync(query, cancellationToken);
                 var result = InsumoResult.From(insumo);
 
                 return _insumoAdapter.Adapt(result);
@@ -53,7 +53,7 @@ namespace TechChallenge.Oficina.Controllers.Features.Insumos
 
         public async Task<object> Get(CancellationToken cancellationToken)
         {
-            var insumos = await _insumoService.ListarAsync(new ListarInsumosQuery(), cancellationToken);
+            var insumos = await _insumoUsecases.ListarAsync(new ListarInsumosQuery(), cancellationToken);
             var result = InsumoResult.From(insumos);
 
             return _insumoAdapter.Adapt(result);
@@ -63,7 +63,7 @@ namespace TechChallenge.Oficina.Controllers.Features.Insumos
         {
             try
             {
-                var insumo = await _insumoService.AtualizarAsync(command, cancellationToken);
+                var insumo = await _insumoUsecases.AtualizarAsync(command, cancellationToken);
                 var result = InsumoResult.From(insumo);
                 return _insumoAdapter.Adapt(result);
             }
@@ -84,7 +84,7 @@ namespace TechChallenge.Oficina.Controllers.Features.Insumos
             try
             {
                 var command = new ExcluirInsumoCommand { Id = id };
-                await _insumoService.ExcluirAsync(command, cancellationToken);
+                await _insumoUsecases.ExcluirAsync(command, cancellationToken);
 
                 return _insumoAdapter.Empty();
             }
