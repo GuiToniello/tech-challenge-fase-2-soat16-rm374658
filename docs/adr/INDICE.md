@@ -2,10 +2,10 @@
 
 ## Índice
 
-1. [ADR-001: Arquitetura em Camadas (N-Layered) com Folder-by-Feature](ADR-001-Arquitetura-em-Camadas.md)
+1. [ADR-001: Clean Architecture com Folder-by-Feature](ADR-001-Clean-Architecture.md)
 2. [ADR-002: Domain-Driven Design e Entidades Ricas](ADR-002-DDD-e-Entidades-Ricas.md)
 3. [ADR-003: Value Objects para Validação de Identificação (CPF/CNPJ)](ADR-003-Value-Objects-Identificacao.md)
-4. [ADR-004: Repository Pattern e Persistência](ADR-004-Repository-Pattern-e-Persistencia.md)
+4. [ADR-004: Gateways e Persistência](ADR-004-Gateways-e-Persistencia.md)
 5. [ADR-005: Separação de Contratos em Commands/Queries/ViewModels](ADR-005-Separacao-Commands-Queries-ViewModels.md)
 6. [ADR-006: Mapeamento com AutoMapper na Camada Application](ADR-006-AutoMapper-na-Application.md)
 7. [ADR-007: Entity Framework Core com PostgreSQL](ADR-007-EFCore-com-PostgreSQL.md)
@@ -17,8 +17,8 @@
 ## Resumo de Contextos
 
 ### Contexto de Arquitetura
-- **ADR-001**: Estrutura em camadas (N-Layered + Folder-by-Feature)
-- **ADR-004**: Repository Pattern para persistência abstrata
+- **ADR-001**: Clean Architecture com folder-by-feature e regra de dependência
+- **ADR-004**: Gateways como portas de persistência na Application com implementação em Infra.Data
 
 ### Contexto de Domain-Driven Design
 - **ADR-002**: Entidades ricas com comportamento validador

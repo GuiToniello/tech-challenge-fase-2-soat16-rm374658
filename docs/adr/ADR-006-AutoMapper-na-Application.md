@@ -8,7 +8,7 @@ Necessidade de transformar entidades do domínio em DTOs de resposta, evitando q
 **Decisão**:
 - AutoMapper é registrado apenas na **Application** (não em Infra ou API).
 - Profiles de mapeamento ficam em `Application/Features/{Feature}/Mappings/`.
-- O `ClienteService` (Application) faz o mapeamento antes de retornar ao controller.
+- O `ClienteUseCases` (Application) faz o mapeamento antes de retornar ao controller.
 - Controllers nunca instanciam `IMapper`; sempre consomem ViewModels já mapeadas.
 - Mapeamento complexo (ex: `Identificacao.Valor` para flat property) é feito no Profile.
 

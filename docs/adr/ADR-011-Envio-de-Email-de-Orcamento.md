@@ -13,7 +13,7 @@ Atualmente o fluxo exige:
 
 **Decisão**:
 - O contrato de envio de orçamento por e-mail fica no **Domain** (`IOrcamentoEmailSender`).
-- O caso de uso na **Application** (`OrdemServicoService.EnviarOrcamentoPorEmailAsync`) orquestra regras de negócio e dispara o contrato de domínio:
+- O caso de uso na **Application** (`OrdemServicoUseCases.EnviarOrcamentoPorEmailAsync`) orquestra regras de negócio e dispara o contrato de domínio:
   - exige orçamento gerado;
   - exige cliente existente;
   - exige e-mail do cliente preenchido.

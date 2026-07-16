@@ -21,10 +21,10 @@ O sistema de oficina gerencia ordens de serviço que consomem insumos (peças, �
    - Não há reserva de insumos entre a geração do orçamento e a aprovação.
    - O controle é baseado em verificação pontual da quantidade disponível no momento da operação.
 
-4. **Serviço de Domínio**:
-   - Interface `IEstoqueService` no **Domain** (contrato de serviço de domínio).
-   - Implementação `EstoqueService` na **Application** (orquestração com repositório).
-   - Justificativa: a lógica cruza múltiplos insumos e requer acesso ao repositório, não cabendo em uma única entidade.
+4. **Caso de Uso de Estoque**:
+	- Interface `IEstoqueUseCases` na **Application** (contrato da orquestração de estoque).
+	- Implementação `EstoqueUseCases` na **Application**, consumida pelo fluxo de ordem de serviço via `IOrdemServicoUseCasesFacade`.
+	- Justificativa: a lógica cruza múltiplos insumos e requer acesso a gateways, não cabendo em uma única entidade.
 
 5. **Métodos na Entidade `Insumo`**:
    - `VerificarDisponibilidade(int quantidadeNecessaria)`: valida se há estoque >= quantidade, lança exceção se insuficiente.
@@ -54,10 +54,10 @@ public async Task<OrdemServicoViewModel> GerarOrcamentoAsync(AlterarStatusOrdemS
 	var ordemServico = await ObterOrdemServicoExistenteAsync(command.Id, cancellationToken);
 
 	// Verifica estoque (sem reservar)
-	await _estoqueService.VerificarDisponibilidadeParaOrcamentoAsync(ordemServico.Servicos, cancellationToken);
+	await _ordemServicoServicesFacade.EstoqueService.VerificarDisponibilidadeParaOrcamentoAsync(ordemServico.Servicos, cancellationToken);
 
 	ordemServico.GerarOrcamento();
-	await _ordemServicoRepository.AtualizarAsync(ordemServico, cancellationToken);
+	await _ordemServicoGateway.AtualizarAsync(ordemServico, cancellationToken);
 	return _mapper.Map<OrdemServicoViewModel>(ordemServico);
 }
 
@@ -67,13 +67,13 @@ public async Task<OrdemServicoViewModel> AprovarOrcamentoAsync(AlterarStatusOrde
 	var ordemServico = await ObterOrdemServicoExistenteAsync(command.Id, cancellationToken);
 
 	// Verifica novamente (estoque pode ter mudado)
-	await _estoqueService.VerificarDisponibilidadeParaOrcamentoAsync(ordemServico.Servicos, cancellationToken);
+	await _ordemServicoServicesFacade.EstoqueService.VerificarDisponibilidadeParaOrcamentoAsync(ordemServico.Servicos, cancellationToken);
 
 	// Debita do estoque
-	await _estoqueService.DebitarEstoqueParaOrdemServicoAsync(ordemServico.Servicos, cancellationToken);
+	await _ordemServicoServicesFacade.EstoqueService.DebitarEstoqueParaOrdemServicoAsync(ordemServico.Servicos, cancellationToken);
 
 	ordemServico.AprovarOrcamento();
-	await _ordemServicoRepository.AtualizarAsync(ordemServico, cancellationToken);
+	await _ordemServicoGateway.AtualizarAsync(ordemServico, cancellationToken);
 	return _mapper.Map<OrdemServicoViewModel>(ordemServico);
 }
 ```
@@ -111,5 +111,5 @@ public void DebitarEstoque(int quantidade)
 
 **Relação com Outras ADRs**:
 - **ADR-002**: Entidades ricas com lógica de negócio encapsulada.
-- **ADR-004**: Interface no Domain, implementação em Application/Infra.
-- **ADR-005**: Serviço de domínio orquestrado pela Application.
+- **ADR-004**: Gateways como portas de persistência na Application com implementação em Infra.Data.
+- **ADR-005**: Casos de uso e contratos segregados na Application.
