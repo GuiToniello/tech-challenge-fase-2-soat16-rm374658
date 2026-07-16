@@ -15,23 +15,23 @@ Adotar explicitamente **Clean Architecture** com os seguintes papéis:
 	Entidades, Value Objects, exceções e regras de negócio puras. Não depende de infraestrutura nem de frameworks.
 
 
-- **UseCases** (`TechChallenge.Oficina.UseCases.csproj`):
-	Casos de uso, contratos (commands/queries/viewmodels), orquestração de fluxo e interfaces (ports) para dependências externas. Depende apenas do domínio.
+- **Application (UseCases)** (`TechChallenge.Oficina.UseCases.csproj`):
+	Casos de uso, contratos (commands/queries/viewmodels), orquestração de fluxo e interfaces de portas de saída (Gateways) para dependências externas. Depende apenas do domínio.
 
 
 - **Controllers** (`TechChallenge.Oficina.Controllers.csproj`):
-	Adaptadores de entrada/saída, incluindo controllers e mapeamentos entre transporte (HTTP) e casos de uso.
+	Adaptadores de entrada/saída da Clean Architecture, incluindo controllers (internos da arquitetura) e mapeamentos entre transporte HTTP e casos de uso.
 
 
 - **Infraestrutura Técnica** (`TechChallenge.Oficina.Infra.csproj`, `TechChallenge.Oficina.DB.csproj`, `TechChallenge.Oficina.Email.csproj`):
 	Implementações concretas de persistência, e-mail, configuração e integrações com bibliotecas/frameworks externos.
 
 - **API (Composition Root)** (`TechChallenge.Oficina.API.csproj`):
-	Ponto de entrada da aplicação, responsável por configuração de middleware, DI, endpoints e composição dos módulos.
+	Ponto de entrada da aplicação, responsável por configuração de middleware, DI, endpoints (Minimal APIs) e composição dos módulos.
 
 **Regra de Dependência**:
 - Dependências apontam para dentro (camadas externas dependem das internas).
-- Regras de negócio (Entities/UseCases) não conhecem detalhes de infraestrutura.
+- Regras de negócio (Entities/Application) não conhecem detalhes de infraestrutura.
 - Implementações concretas são conectadas no composition root via injeção de dependência.
 
 **Organização**:

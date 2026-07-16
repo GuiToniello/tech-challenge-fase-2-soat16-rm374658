@@ -22,9 +22,9 @@ O sistema de oficina gerencia ordens de serviço que consomem insumos (peças, �
    - O controle é baseado em verificação pontual da quantidade disponível no momento da operação.
 
 4. **Caso de Uso de Estoque**:
-	- Interface `IEstoqueUseCases` no projeto **UseCases** (contrato da orquestração de estoque).
-	- Implementação `EstoqueUseCases` no projeto **UseCases**, consumida pelo fluxo de ordem de serviço via `IOrdemServicoUseCasesFacade`.
-	- Justificativa: a lógica cruza múltiplos insumos e requer acesso a gateways, não cabendo em uma única entidade.
+	- Interface `IEstoqueUseCases` no projeto **Application (UseCases)** (contrato da orquestração de estoque).
+	- Implementação `EstoqueUseCases` no projeto **Application (UseCases)**, consumida pelo fluxo de ordem de serviço via `IOrdemServicoUseCasesFacade`.
+	- Justificativa: a lógica cruza múltiplos insumos e requer acesso a portas de saída (Gateways), não cabendo em uma única entidade.
 
 5. **Métodos na Entidade `Insumo`**:
    - `VerificarDisponibilidade(int quantidadeNecessaria)`: valida se há estoque >= quantidade, lança exceção se insuficiente.
@@ -111,5 +111,5 @@ public void DebitarEstoque(int quantidade)
 
 **Relação com Outras ADRs**:
 - **ADR-002**: Entidades ricas com lógica de negócio encapsulada.
-- **ADR-004**: Gateways como portas de persistência no projeto UseCases com implementação no projeto DB.
-- **ADR-005**: Casos de uso e contratos segregados no projeto UseCases.
+- **ADR-004**: Portas de saída (Gateways) de persistência no projeto Application (UseCases) com implementação no projeto DB.
+- **ADR-005**: Casos de uso e contratos segregados no projeto Application (UseCases).

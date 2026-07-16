@@ -18,7 +18,7 @@ Necessidade de documentar endpoints de API automaticamente, permitindo testes in
       options.RoutePrefix = string.Empty; // Raiz
   });
   ```
-- ProducesResponseType decorados em controllers para documentação automática de códigos HTTP.
+- Metadados de resposta (`Produces`, `Produces<T>`) declarados nos endpoints Minimal APIs para documentação automática de códigos HTTP.
 
 **Consequências**:
 - ✅ Documentação auto-atualizada com código.

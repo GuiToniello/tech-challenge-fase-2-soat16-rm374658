@@ -8,7 +8,7 @@ Necessidade de manter lógica de negócio no domínio, evitando entidades anêmi
 **Decisão**:
 - Entidade `Cliente` encapsula comportamentos como `AtualizarNomeCompleto()` e `AtualizarIdentificacao()`.
 - Métodos construtores privados forçam uso de factory method `Cliente.Criar()`.
-- Validações de domínio ocorrem na entidade, não na camada de use cases nem nos controllers.
+- Validações de domínio ocorrem na entidade, não na camada de use cases nem nos adaptadores de interface (controllers da arquitetura).
 - Lançamento de `DomainException` para erros de negócio.
 
 **Consequências**:
