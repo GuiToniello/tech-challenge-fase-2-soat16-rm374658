@@ -7,7 +7,6 @@ using TechChallenge.Oficina.API.Features.Servicos;
 using TechChallenge.Oficina.API.Features.Veiculos;
 using TechChallenge.Oficina.API.Middleware;
 using TechChallenge.Oficina.API.Settings;
-using TechChallenge.Oficina.UseCases;
 using TechChallenge.Oficina.Controllers.Features.Clientes;
 using TechChallenge.Oficina.Controllers.Features.Indicadores;
 using TechChallenge.Oficina.Controllers.Features.Insumos;
@@ -17,6 +16,15 @@ using TechChallenge.Oficina.Controllers.Features.Veiculos;
 using TechChallenge.Oficina.DB.Data;
 using TechChallenge.Oficina.Email;
 using TechChallenge.Oficina.Email.Configuration;
+using TechChallenge.Oficina.UseCases.Features.Clientes.Mappings;
+using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Indicadores.Services;
+using TechChallenge.Oficina.UseCases.Features.Indicadores.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.Mappings;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +43,15 @@ if (string.IsNullOrWhiteSpace(databaseSettings.ConnectionString))
     throw new InvalidOperationException("A connection string do banco de dados é obrigatória.");
 }
 
-builder.Services.AddApplication();
+builder.Services.AddAutoMapper(_ => { }, typeof(ClienteProfile).Assembly, typeof(OrdemServicoProfile).Assembly);
+builder.Services.AddScoped<IClienteUseCases, ClienteUseCases>();
+builder.Services.AddScoped<IIndicadorUseCases, IndicadorUseCases>();
+builder.Services.AddScoped<IInsumoUseCases, InsumoUseCases>();
+builder.Services.AddScoped<IEstoqueUseCases, EstoqueUseCases>();
+builder.Services.AddScoped<IOrdemServicoUseCasesFacade, OrdemServicoUseCasesFacade>();
+builder.Services.AddScoped<IOrdemServicoUseCases, OrdemServicoUseCases>();
+builder.Services.AddScoped<IServicoUseCases, ServicoUseCases>();
+builder.Services.AddScoped<IVeiculoUseCases, VeiculoUseCases>();
 builder.Services.AddInfraData(databaseSettings.ConnectionString);
 
 var resendSettings = builder.Configuration

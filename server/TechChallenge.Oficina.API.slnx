@@ -8,7 +8,7 @@
     <Project Path="TechChallenge.Oficina.InterfaceAdapters/TechChallenge.Oficina.Controllers.csproj" Id="bb799465-98f2-48ae-9a0a-74f7a928946a" />
   </Folder>
   <Folder Name="/3 - Application Business Rules/">
-    <Project Path="TechChallenge.Oficina.Application/TechChallenge.Oficina.UseCases.csproj" Id="2b019e97-650e-4000-8045-53c2f28db89f" />
+    <Project Path="TechChallenge.Oficina.UseCases/TechChallenge.Oficina.UseCases.csproj" Id="2b019e97-650e-4000-8045-53c2f28db89f" />
   </Folder>
   <Folder Name="/4 - Enterprise Business Rules/">
     <Project Path="TechChallenge.Oficina.Domain/TechChallenge.Oficina.Entities.csproj" Id="6b121b56-1305-4206-b1a0-3512618ea6c0" />
@@ -30,7 +30,7 @@
   <Folder Name="/Tests/">
     <File Path="../e2e/TechChallenge.Oficina.API.postman_collection.json" />
     <Project Path="TechChallenge.Oficina.API.Tests/TechChallenge.Oficina.API.Tests.csproj" />
-    <Project Path="TechChallenge.Oficina.Application.Tests/TechChallenge.Oficina.UseCases.Tests.csproj" />
+    <Project Path="TechChallenge.Oficina.UseCases.Tests/TechChallenge.Oficina.UseCases.Tests.csproj" />
     <Project Path="TechChallenge.Oficina.Controllers.Tests/TechChallenge.Oficina.Controllers.Tests.csproj" Id="62f6c073-70c9-4926-a4b3-f670efda32d0" />
     <Project Path="TechChallenge.Oficina.Domain.Tests/TechChallenge.Oficina.Entities.Tests.csproj" />
     <Project Path="TechChallenge.Oficina.Infra.Data.Tests/TechChallenge.Oficina.DB.Tests.csproj" />
@@ -38,3 +38,4 @@
     <Project Path="TechChallenge.Oficina.Integration.Tests/TechChallenge.Oficina.Integration.Tests.csproj" />
   </Folder>
 </Solution>
+

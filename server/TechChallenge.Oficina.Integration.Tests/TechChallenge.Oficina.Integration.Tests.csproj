@@ -25,7 +25,7 @@
 
   <ItemGroup>
 	<ProjectReference Include="..\TechChallenge.Oficina.API\TechChallenge.Oficina.API.csproj" />
-	<ProjectReference Include="..\TechChallenge.Oficina.Application\TechChallenge.Oficina.UseCases.csproj" />
+	<ProjectReference Include="..\TechChallenge.Oficina.UseCases\TechChallenge.Oficina.UseCases.csproj" />
 	<ProjectReference Include="..\TechChallenge.Oficina.Domain\TechChallenge.Oficina.Entities.csproj" />
 	<ProjectReference Include="..\TechChallenge.Oficina.Infra.Data\TechChallenge.Oficina.DB.csproj" />
   </ItemGroup>

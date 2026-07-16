@@ -1,12 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using TechChallenge.Oficina.UseCases;
-using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
-using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
-using TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
-using TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
-using TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
 using TechChallenge.Oficina.API.Features.Clientes;
 using TechChallenge.Oficina.API.Features.Indicadores;
 using TechChallenge.Oficina.API.Features.Insumos;
@@ -19,7 +13,6 @@ using TechChallenge.Oficina.Controllers.Features.Insumos;
 using TechChallenge.Oficina.Controllers.Features.OrdensServico;
 using TechChallenge.Oficina.Controllers.Features.Servicos;
 using TechChallenge.Oficina.Controllers.Features.Veiculos;
-using TechChallenge.Oficina.Entities.Features.OrdensServico;
 using TechChallenge.Oficina.DB.Data.Context;
 using TechChallenge.Oficina.DB.Data.Features.Clientes;
 using TechChallenge.Oficina.DB.Data.Features.Indicadores;
@@ -27,7 +20,16 @@ using TechChallenge.Oficina.DB.Data.Features.Insumos;
 using TechChallenge.Oficina.DB.Data.Features.OrdensServico;
 using TechChallenge.Oficina.DB.Data.Features.Servicos;
 using TechChallenge.Oficina.DB.Data.Features.Veiculos;
+using TechChallenge.Oficina.Entities.Features.OrdensServico;
+using TechChallenge.Oficina.UseCases.Features.Clientes.Mappings;
+using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Indicadores.Services;
 using TechChallenge.Oficina.UseCases.Features.Indicadores.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.Mappings;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
 
 namespace TechChallenge.Oficina.Integration.Tests.Infrastructure;
 
@@ -66,7 +68,15 @@ public sealed class IntegrationTestFixture : IDisposable
             .Returns(Task.CompletedTask);
         services.AddSingleton(emailSenderMock.Object);
 
-        services.AddApplication();
+        services.AddAutoMapper(_ => { }, typeof(ClienteProfile).Assembly, typeof(OrdemServicoProfile).Assembly);
+        services.AddScoped<IClienteUseCases, ClienteUseCases>();
+        services.AddScoped<IIndicadorUseCases, IndicadorUseCases>();
+        services.AddScoped<IInsumoUseCases, InsumoUseCases>();
+        services.AddScoped<IEstoqueUseCases, EstoqueUseCases>();
+        services.AddScoped<IOrdemServicoUseCasesFacade, OrdemServicoUseCasesFacade>();
+        services.AddScoped<IOrdemServicoUseCases, OrdemServicoUseCases>();
+        services.AddScoped<IServicoUseCases, ServicoUseCases>();
+        services.AddScoped<IVeiculoUseCases, VeiculoUseCases>();
         services.AddScoped<IClienteAdapter, ClienteAdapter>();
         services.AddScoped<ClienteController>();
         services.AddScoped<IIndicadoresAdapter, IndicadoresAdapter>();
