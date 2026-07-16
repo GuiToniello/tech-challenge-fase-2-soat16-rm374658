@@ -10,24 +10,28 @@ Com a evolução do projeto, a separação de responsabilidades passou a ser gui
 **Decisão**:
 Adotar explicitamente **Clean Architecture** com os seguintes papéis:
 
-- **Domain** (`TechChallenge.Oficina.Domain` / `TechChallenge.Oficina.Entities`):
+
+- **Entities** (`TechChallenge.Oficina.Entities.csproj`):
 	Entidades, Value Objects, exceções e regras de negócio puras. Não depende de infraestrutura nem de frameworks.
 
-- **Application** (`TechChallenge.Oficina.Application` / `TechChallenge.Oficina.UseCases`):
+
+- **UseCases** (`TechChallenge.Oficina.UseCases.csproj`):
 	Casos de uso, contratos (commands/queries/viewmodels), orquestração de fluxo e interfaces (ports) para dependências externas. Depende apenas do domínio.
 
-- **Interface Adapters** (`TechChallenge.Oficina.InterfaceAdapters` / `TechChallenge.Oficina.Controllers`):
+
+- **Controllers** (`TechChallenge.Oficina.Controllers.csproj`):
 	Adaptadores de entrada/saída, incluindo controllers e mapeamentos entre transporte (HTTP) e casos de uso.
 
-- **Infrastructure** (`TechChallenge.Oficina.Infra`, `TechChallenge.Oficina.Infra.Data`, `TechChallenge.Oficina.Infra.Email`):
+
+- **Infraestrutura Técnica** (`TechChallenge.Oficina.Infra.csproj`, `TechChallenge.Oficina.DB.csproj`, `TechChallenge.Oficina.Email.csproj`):
 	Implementações concretas de persistência, e-mail, configuração e integrações com bibliotecas/frameworks externos.
 
-- **API (Composition Root)** (`TechChallenge.Oficina.API`):
+- **API (Composition Root)** (`TechChallenge.Oficina.API.csproj`):
 	Ponto de entrada da aplicação, responsável por configuração de middleware, DI, endpoints e composição dos módulos.
 
 **Regra de Dependência**:
 - Dependências apontam para dentro (camadas externas dependem das internas).
-- Regras de negócio (Domain/Application) não conhecem detalhes de infraestrutura.
+- Regras de negócio (Entities/UseCases) não conhecem detalhes de infraestrutura.
 - Implementações concretas são conectadas no composition root via injeção de dependência.
 
 **Organização**:

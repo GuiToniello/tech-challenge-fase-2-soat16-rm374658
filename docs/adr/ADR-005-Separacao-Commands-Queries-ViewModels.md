@@ -6,21 +6,21 @@
 Necessidade de separar modelos de entrada (commands/queries) de saída (viewmodels), evitando acoplamento entre camadas e permitindo evolução independente dos contratos.
 
 **Decisão**:
-- **Commands**: DTOs que representam ações (criar, atualizar, deletar). Ficam na **Application**.
-- **Queries**: DTOs que representam buscas (listar, obter por ID). Ficam na **Application**.
-- **ViewModels**: DTOs que representam resposta ao cliente. Ficam na **Application**.
+- **Commands**: DTOs que representam ações (criar, atualizar, deletar). Ficam no projeto **UseCases**.
+- **Queries**: DTOs que representam buscas (listar, obter por ID). Ficam no projeto **UseCases**.
+- **ViewModels**: DTOs que representam resposta ao cliente. Ficam no projeto **UseCases**.
 - API consome esses contratos, não cria seus próprios.
 - Não há duplicação ou alias de contratos na API.
 
 **Consequências**:
-- ✅ Contrato estável entre API e Application.
+- ✅ Contrato estável entre API e UseCases.
 - ✅ Mudanças internas do domínio não quebram API.
 - ✅ Possibilita validação de entrada no command.
 - ⚠ Adiciona classes DTOs (mais linhas de código).
 
 **Estrutura**:
 ```
-Application/
+UseCases/
 ├── Features/Clientes/
 │   ├── Commands/
 │   │   ├── CriarClienteCommand.cs

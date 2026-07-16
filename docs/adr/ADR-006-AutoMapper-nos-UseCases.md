@@ -1,4 +1,4 @@
-# ADR-006: Mapeamento com AutoMapper na Camada Application
+# ADR-006: Mapeamento com AutoMapper nos UseCases
 
 **Status**: Aceita
 
@@ -6,9 +6,9 @@
 Necessidade de transformar entidades do domínio em DTOs de resposta, evitando que controllers façam mapeamento manual e mantendo lógica centralizada.
 
 **Decisão**:
-- AutoMapper é registrado apenas na **Application** (não em Infra ou API).
-- Profiles de mapeamento ficam em `Application/Features/{Feature}/Mappings/`.
-- O `ClienteUseCases` (Application) faz o mapeamento antes de retornar ao controller.
+- AutoMapper é registrado apenas no projeto **UseCases** (não em Infra ou API).
+- Profiles de mapeamento ficam em `UseCases/Features/{Feature}/Mappings/`.
+- O `ClienteUseCases` (UseCases) faz o mapeamento antes de retornar ao controller.
 - Controllers nunca instanciam `IMapper`; sempre consomem ViewModels já mapeadas.
 - Mapeamento complexo (ex: `Identificacao.Valor` para flat property) é feito no Profile.
 
@@ -20,7 +20,7 @@ Necessidade de transformar entidades do domínio em DTOs de resposta, evitando q
 
 **Exemplo**:
 ```csharp
-// ClienteProfile.cs (Application)
+// ClienteProfile.cs (UseCases)
 CreateMap<Cliente, ClienteViewModel>()
     .ForMember(destino => destino.Identificacao, 
                origem => origem.MapFrom(cliente => cliente.Identificacao.Valor))

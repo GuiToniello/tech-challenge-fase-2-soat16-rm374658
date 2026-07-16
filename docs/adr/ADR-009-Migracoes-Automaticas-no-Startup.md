@@ -6,8 +6,8 @@
 Necessidade de garantir schema do banco atualizado ao iniciar a aplicação, sem intervenção manual.
 
 **Decisão**:
-- Método de extensão `ApplyMigrations()` em `Infra.Data.Extensions`.
-- Chamado no `Program.cs` antes de iniciar o application pipeline:
+- Método de extensão `ApplyMigrations()` no projeto `TechChallenge.Oficina.DB` (arquivo `Extensions.cs`).
+- Chamado no `Program.cs` antes de iniciar o pipeline da API:
   ```csharp
   var app = builder.Build();
   app.Services.ApplyMigrations(); // Executa migrations pendentes

@@ -7,7 +7,7 @@
 3. [ADR-003: Value Objects para Validação de Identificação (CPF/CNPJ)](ADR-003-Value-Objects-Identificacao.md)
 4. [ADR-004: Gateways e Persistência](ADR-004-Gateways-e-Persistencia.md)
 5. [ADR-005: Separação de Contratos em Commands/Queries/ViewModels](ADR-005-Separacao-Commands-Queries-ViewModels.md)
-6. [ADR-006: Mapeamento com AutoMapper na Camada Application](ADR-006-AutoMapper-na-Application.md)
+6. [ADR-006: Mapeamento com AutoMapper nos UseCases](ADR-006-AutoMapper-nos-UseCases.md)
 7. [ADR-007: Entity Framework Core com PostgreSQL](ADR-007-EFCore-com-PostgreSQL.md)
 8. [ADR-008: Swagger para Documentação de API](ADR-008-Swagger-para-API.md)
 9. [ADR-009: Migrações Automáticas no Startup](ADR-009-Migracoes-Automaticas-no-Startup.md)
@@ -18,7 +18,7 @@
 
 ### Contexto de Arquitetura
 - **ADR-001**: Clean Architecture com folder-by-feature e regra de dependência
-- **ADR-004**: Gateways como portas de persistência na Application com implementação em Infra.Data
+- **ADR-004**: Gateways como portas de persistência no projeto UseCases com implementação no projeto DB
 
 ### Contexto de Domain-Driven Design
 - **ADR-002**: Entidades ricas com comportamento validador
@@ -26,7 +26,7 @@
 
 ### Contexto de Separação de Responsabilidades
 - **ADR-005**: Contratos segregados (Commands/Queries/ViewModels)
-- **ADR-006**: AutoMapper centralizado na Application
+- **ADR-006**: AutoMapper centralizado no projeto UseCases
 
 ### Contexto de Infraestrutura de Dados
 - **ADR-007**: EF Core + PostgreSQL com migrations versionadas
