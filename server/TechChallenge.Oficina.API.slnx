@@ -14,18 +14,19 @@
     <Project Path="4 - Enterprise Business Rules/TechChallenge.Oficina.Entities/TechChallenge.Oficina.Entities.csproj" Id="6b121b56-1305-4206-b1a0-3512618ea6c0" />
   </Folder>
   <Folder Name="/ADR/">
-    <File Path="../adr/ADR-001-Arquitetura-em-Camadas.md" />
-    <File Path="../adr/ADR-002-DDD-e-Entidades-Ricas.md" />
-    <File Path="../adr/ADR-003-Value-Objects-Identificacao.md" />
-    <File Path="../adr/ADR-004-Repository-Pattern-e-Persistencia.md" />
-    <File Path="../adr/ADR-005-Separacao-Commands-Queries-ViewModels.md" />
-    <File Path="../adr/ADR-006-AutoMapper-na-Application.md" />
-    <File Path="../adr/ADR-007-EFCore-com-PostgreSQL.md" />
-    <File Path="../adr/ADR-008-Swagger-para-API.md" />
-    <File Path="../adr/ADR-009-Migracoes-Automaticas-no-Startup.md" />
-    <File Path="../adr/ADR-010-Inferencia-Generics-IClienteService.md" />
-    <File Path="../adr/ESTRUTURA.md" />
-    <File Path="../adr/INDICE.md" />
+    <File Path="../docs/adr/ADR-001-Clean-Architecture.md" />
+    <File Path="../docs/adr/ADR-002-DDD-e-Entidades-Ricas.md" />
+    <File Path="../docs/adr/ADR-003-Value-Objects-Identificacao.md" />
+    <File Path="../docs/adr/ADR-004-Gateways-e-Persistencia.md" />
+    <File Path="../docs/adr/ADR-005-Separacao-Commands-Queries-ViewModels.md" />
+    <File Path="../docs/adr/ADR-006-AutoMapper-nos-UseCases.md" />
+    <File Path="../docs/adr/ADR-007-EFCore-com-PostgreSQL.md" />
+    <File Path="../docs/adr/ADR-008-Swagger-para-API.md" />
+    <File Path="../docs/adr/ADR-009-Migracoes-Automaticas-no-Startup.md" />
+    <File Path="../docs/adr/ADR-011-Envio-de-Email-de-Orcamento.md" />
+    <File Path="../docs/adr/ADR-012-Controle-de-Estoque-de-Insumos.md" />
+    <File Path="../docs/adr/ADR-013-Estrategia-de-Tratamento-de-Erros-em-Duas-Camadas.md" />
+    <File Path="../docs/adr/INDICE.md" />
   </Folder>
   <Folder Name="/Tests/">
     <File Path="../e2e/TechChallenge.Oficina.API.postman_collection.json" />
