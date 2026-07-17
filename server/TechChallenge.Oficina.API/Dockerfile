@@ -7,7 +7,7 @@ WORKDIR /src
 # Se só o código mudar, essa etapa tende a ser reaproveitada.
 COPY ["TechChallenge.Oficina.API/TechChallenge.Oficina.API.csproj", "TechChallenge.Oficina.API/"]
 COPY ["TechChallenge.Oficina.Application/TechChallenge.Oficina.Application.csproj", "TechChallenge.Oficina.Application/"]
-COPY ["TechChallenge.Oficina.Infra.Data/TechChallenge.Oficina.Infra.Data.csproj", "TechChallenge.Oficina.Infra.Data/"]
+COPY ["TechChallenge.Oficina.DB/TechChallenge.Oficina.DB.csproj", "TechChallenge.Oficina.DB/"]
 COPY ["TechChallenge.Oficina.Infra/TechChallenge.Oficina.Infra.csproj", "TechChallenge.Oficina.Infra/"]
 COPY ["TechChallenge.Oficina.Domain/TechChallenge.Oficina.Domain.csproj", "TechChallenge.Oficina.Domain/"]
 
@@ -17,7 +17,7 @@ RUN dotnet restore "TechChallenge.Oficina.API/TechChallenge.Oficina.API.csproj"
 # Isso evita trazer arquivos extras do contexto de build para a imagem.
 COPY ["TechChallenge.Oficina.API/", "TechChallenge.Oficina.API/"]
 COPY ["TechChallenge.Oficina.Application/", "TechChallenge.Oficina.Application/"]
-COPY ["TechChallenge.Oficina.Infra.Data/", "TechChallenge.Oficina.Infra.Data/"]
+COPY ["TechChallenge.Oficina.DB/", "TechChallenge.Oficina.DB/"]
 COPY ["TechChallenge.Oficina.Infra/", "TechChallenge.Oficina.Infra/"]
 COPY ["TechChallenge.Oficina.Domain/", "TechChallenge.Oficina.Domain/"]
 WORKDIR /src/TechChallenge.Oficina.API

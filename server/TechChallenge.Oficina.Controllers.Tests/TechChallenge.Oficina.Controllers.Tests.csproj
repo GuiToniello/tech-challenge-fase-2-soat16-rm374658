@@ -23,7 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\TechChallenge.Oficina.InterfaceAdapters\TechChallenge.Oficina.Controllers.csproj" />
+		<ProjectReference Include="..\TechChallenge.Oficina.Controllers\TechChallenge.Oficina.Controllers.csproj" />
 	</ItemGroup>
 
 </Project>
