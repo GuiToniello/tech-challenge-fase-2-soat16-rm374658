@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TechChallenge.Oficina.UseCases\TechChallenge.Oficina.UseCases.csproj" />
-    <ProjectReference Include="..\TechChallenge.Oficina.Domain\TechChallenge.Oficina.Entities.csproj" />
+    <ProjectReference Include="..\TechChallenge.Oficina.Entities\TechChallenge.Oficina.Entities.csproj" />
   </ItemGroup>
 
   <ItemGroup>

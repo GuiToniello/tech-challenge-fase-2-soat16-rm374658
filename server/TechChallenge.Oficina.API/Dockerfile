@@ -9,7 +9,7 @@ COPY ["TechChallenge.Oficina.API/TechChallenge.Oficina.API.csproj", "TechChallen
 COPY ["TechChallenge.Oficina.Application/TechChallenge.Oficina.Application.csproj", "TechChallenge.Oficina.Application/"]
 COPY ["TechChallenge.Oficina.DB/TechChallenge.Oficina.DB.csproj", "TechChallenge.Oficina.DB/"]
 COPY ["TechChallenge.Oficina.Infra/TechChallenge.Oficina.Infra.csproj", "TechChallenge.Oficina.Infra/"]
-COPY ["TechChallenge.Oficina.Domain/TechChallenge.Oficina.Domain.csproj", "TechChallenge.Oficina.Domain/"]
+COPY ["TechChallenge.Oficina.Entities/TechChallenge.Oficina.Entities.csproj", "TechChallenge.Oficina.Entities/"]
 
 RUN dotnet restore "TechChallenge.Oficina.API/TechChallenge.Oficina.API.csproj"
 
@@ -19,7 +19,7 @@ COPY ["TechChallenge.Oficina.API/", "TechChallenge.Oficina.API/"]
 COPY ["TechChallenge.Oficina.Application/", "TechChallenge.Oficina.Application/"]
 COPY ["TechChallenge.Oficina.DB/", "TechChallenge.Oficina.DB/"]
 COPY ["TechChallenge.Oficina.Infra/", "TechChallenge.Oficina.Infra/"]
-COPY ["TechChallenge.Oficina.Domain/", "TechChallenge.Oficina.Domain/"]
+COPY ["TechChallenge.Oficina.Entities/", "TechChallenge.Oficina.Entities/"]
 WORKDIR /src/TechChallenge.Oficina.API
 RUN dotnet publish "TechChallenge.Oficina.API.csproj" -c Release -o /app/publish --no-restore
 
