@@ -123,6 +123,10 @@
             "value": ""
         },
         {
+            "key": "ordens_completa_id",
+            "value": ""
+        },
+        {
             "key": "ordens_orcamento_id",
             "value": ""
         },
@@ -2608,6 +2612,90 @@
                                     "pm.test(\u0027Retorna id\u0027, function () { pm.expect(pm.response.json().id).to.be.a(\u0027string\u0027).and.not.empty; });",
                                     "pm.test(\u0027Retorna status recebida\u0027, function () { pm.expect(pm.response.json().status).to.eql(1); });",
                                     "pm.collectionVariables.set(\u0027ordens_id\u0027, pm.response.json().id);"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "04A - Criar Ordem Completa (201)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/ordens-servico/completa",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "ordens-servico",
+                                "completa"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"cliente\": {\n    \"nomeCompleto\": \"Cliente Ordem Completa {{ordens_completa_stamp}}\",\n    \"identificacao\": \"{{ordens_completa_identificacao}}\",\n    \"email\": \"{{ordens_completa_email}}\"\n  },\n  \"veiculo\": {\n    \"placa\": \"{{ordens_completa_placa}}\",\n    \"marca\": \"Honda\",\n    \"modelo\": \"Civic\",\n    \"ano\": 2022,\n    \"renavam\": \"{{ordens_completa_renavam}}\"\n  },\n  \"servicos\": [\n    {\n      \"nome\": \"{{ordens_servico_nome}} Completo\",\n      \"descricao\": \"{{ordens_servico_descricao}} Completo\",\n      \"itensServico\": [\n        {\n          \"insumo\": {\n            \"nome\": \"Insumo Ordem Completa {{ordens_completa_stamp}}\",\n            \"fabricante\": \"Fornecedor Completa\",\n            \"quantidadeDisponivel\": 20,\n            \"valorUnitario\": 49.9\n          },\n          \"quantidade\": 2\n        }\n      ]\n    }\n  ]\n}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "function gerarCpfValido() {",
+                                    "  const base = [];",
+                                    "  for (let i = 0; i < 9; i++) base.push(Math.floor(Math.random() * 10));",
+                                    "  let soma = 0;",
+                                    "  for (let i = 0; i < 9; i++) soma += base[i] * (10 - i);",
+                                    "  let resto = soma % 11;",
+                                    "  const d1 = resto < 2 ? 0 : 11 - resto;",
+                                    "  soma = 0;",
+                                    "  for (let i = 0; i < 9; i++) soma += base[i] * (11 - i);",
+                                    "  soma += d1 * 2;",
+                                    "  resto = soma % 11;",
+                                    "  const d2 = resto < 2 ? 0 : 11 - resto;",
+                                    "  return [...base, d1, d2].join('');",
+                                    "}",
+                                    "function gerarPlacaMercosul() {",
+                                    "  const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';",
+                                    "  const digitos = '0123456789';",
+                                    "  return letras[Math.floor(Math.random() * 26)] +",
+                                    "         letras[Math.floor(Math.random() * 26)] +",
+                                    "         letras[Math.floor(Math.random() * 26)] +",
+                                    "         digitos[Math.floor(Math.random() * 10)] +",
+                                    "         letras[Math.floor(Math.random() * 26)] +",
+                                    "         digitos[Math.floor(Math.random() * 10)] +",
+                                    "         digitos[Math.floor(Math.random() * 10)];",
+                                    "}",
+                                    "function gerarDigitos(tamanho) {",
+                                    "  let valor = '';",
+                                    "  for (let i = 0; i < tamanho; i++) valor += Math.floor(Math.random() * 10);",
+                                    "  return valor;",
+                                    "}",
+                                    "const stamp = Date.now().toString().slice(-8);",
+                                    "pm.collectionVariables.set('ordens_completa_stamp', stamp);",
+                                    "pm.collectionVariables.set('ordens_completa_identificacao', gerarCpfValido());",
+                                    "pm.collectionVariables.set('ordens_completa_placa', gerarPlacaMercosul());",
+                                    "pm.collectionVariables.set('ordens_completa_renavam', gerarDigitos(11));",
+                                    "pm.collectionVariables.set('ordens_completa_email', 'ordem.completa.' + stamp + '@oficina.com');"
+                                ]
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test('Status 201', function () { pm.response.to.have.status(201); });",
+                                    "pm.test('Retorna ordemServicoId', function () { pm.expect(pm.response.json().ordemServicoId).to.be.a('string').and.not.empty; });",
+                                    "pm.collectionVariables.set('ordens_completa_id', pm.response.json().ordemServicoId);"
                                 ]
                             }
                         }

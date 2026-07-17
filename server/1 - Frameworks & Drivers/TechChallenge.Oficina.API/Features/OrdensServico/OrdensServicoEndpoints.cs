@@ -23,6 +23,17 @@ namespace TechChallenge.Oficina.API.Features.OrdensServico
                 .Produces(StatusCodes.Status400BadRequest)
                 .Produces(StatusCodes.Status404NotFound);
 
+            group.MapPost(
+                "/completa",
+                (
+                    IOrdensServicoController ordensServicoController,
+                    AbrirOrdemServicoCompletaCommand command,
+                    CancellationToken cancellationToken
+                ) => ordensServicoController.PostCompleta(command, cancellationToken))
+                .Produces<AberturaOrdemServicoViewModel>(StatusCodes.Status201Created)
+                .Produces(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status404NotFound);
+
             group.MapGet(
                 "/{id:guid}",
                 (

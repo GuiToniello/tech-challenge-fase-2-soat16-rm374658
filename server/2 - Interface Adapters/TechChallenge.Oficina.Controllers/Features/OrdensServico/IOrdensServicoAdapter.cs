@@ -6,6 +6,8 @@ namespace TechChallenge.Oficina.Controllers.Features.OrdensServico
     {
         object Adapt(OrdensServicoResult<OrdemServicoViewModel, Exception> result, bool created = false);
 
+        object Adapt(OrdensServicoResult<AberturaOrdemServicoViewModel, Exception> result, bool created = false);
+
         object Adapt(OrdensServicoResult<IReadOnlyCollection<OrdemServicoViewModel>, Exception> result);
 
         object Adapt(OrdensServicoResult<AcompanhamentoOrdemServicoViewModel, Exception> result);

@@ -25,6 +25,18 @@ public sealed class OrdensServicoAdapterTests
     }
 
     [Fact]
+    public void Adapt_DeveRetornarCreatedAtRoute_QuandoAberturaOrdemServicoViewModelSucesso()
+    {
+        var abertura = new AberturaOrdemServicoViewModel { OrdemServicoId = Guid.NewGuid() };
+        var result = new OrdensServicoResult<AberturaOrdemServicoViewModel, Exception>(abertura);
+
+        var adaptado = _adapter.Adapt(result, true);
+
+        var createdAtRoute = Assert.IsType<CreatedAtRoute<AberturaOrdemServicoViewModel>>(adaptado);
+        Assert.Equal(abertura, createdAtRoute.Value);
+    }
+
+    [Fact]
     public void Adapt_DeveRetornarBadRequest_QuandoDomainException()
     {
         var exception = new DomainException("erro");

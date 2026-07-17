@@ -1,18 +1,41 @@
+using TechChallenge.Oficina.UseCases.Features.Clientes.Commands;
+using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Insumos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
 using TechChallenge.Oficina.UseCases.Features.OrdensServico.Commands;
 using TechChallenge.Oficina.UseCases.Features.OrdensServico.Queries;
 using TechChallenge.Oficina.UseCases.Features.OrdensServico.UseCases;
 using TechChallenge.Oficina.UseCases.Features.OrdensServico.ViewModels;
+using TechChallenge.Oficina.UseCases.Features.Servicos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.Commands;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
 using TechChallenge.Oficina.Entities.Exceptions;
 
 namespace TechChallenge.Oficina.Controllers.Features.OrdensServico
 {
+    // Esta classe atua como facade de entrada para orquestrar a abertura completa da ordem de servico em um unico fluxo.
     public class OrdensServicoController : IOrdensServicoController
     {
+        private readonly IClienteUseCases _clienteUseCases;
+        private readonly IVeiculoUseCases _veiculoUseCases;
+        private readonly IInsumoUseCases _insumoUseCases;
+        private readonly IServicoUseCases _servicoUseCases;
         private readonly IOrdemServicoUseCases _ordemServicoService;
         private readonly IOrdensServicoAdapter _ordensServicoAdapter;
 
-        public OrdensServicoController(IOrdemServicoUseCases ordemServicoUseCases, IOrdensServicoAdapter ordensServicoAdapter)
+        public OrdensServicoController(
+            IClienteUseCases clienteUseCases,
+            IVeiculoUseCases veiculoUseCases,
+            IInsumoUseCases insumoUseCases,
+            IServicoUseCases servicoUseCases,
+            IOrdemServicoUseCases ordemServicoUseCases,
+            IOrdensServicoAdapter ordensServicoAdapter)
         {
+            _clienteUseCases = clienteUseCases;
+            _veiculoUseCases = veiculoUseCases;
+            _insumoUseCases = insumoUseCases;
+            _servicoUseCases = servicoUseCases;
             _ordemServicoService = ordemServicoUseCases;
             _ordensServicoAdapter = ordensServicoAdapter;
         }
@@ -35,6 +58,99 @@ namespace TechChallenge.Oficina.Controllers.Features.OrdensServico
             catch (KeyNotFoundException exception)
             {
                 var result = OrdensServicoResult.FromError<OrdemServicoViewModel>(exception);
+
+                return _ordensServicoAdapter.Adapt(result);
+            }
+        }
+
+        public async Task<object> PostCompleta(AbrirOrdemServicoCompletaCommand command, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var cliente = await _clienteUseCases.CriarAsync(
+                    new CriarClienteCommand
+                    {
+                        NomeCompleto = command.Cliente.NomeCompleto,
+                        Identificacao = command.Cliente.Identificacao,
+                        Email = command.Cliente.Email
+                    },
+                    cancellationToken);
+
+                var veiculo = await _veiculoUseCases.CriarAsync(
+                    new CriarVeiculoCommand
+                    {
+                        Placa = command.Veiculo.Placa,
+                        Marca = command.Veiculo.Marca,
+                        Modelo = command.Veiculo.Modelo,
+                        Ano = command.Veiculo.Ano,
+                        Renavam = command.Veiculo.Renavam,
+                        ClienteId = cliente.Id
+                    },
+                    cancellationToken);
+
+                var servicoIds = new List<Guid>(command.Servicos.Count);
+
+                foreach (var servicoCommand in command.Servicos)
+                {
+                    var itensServico = new List<ItemServicoCommand>(servicoCommand.ItensServico.Count);
+
+                    foreach (var itemCommand in servicoCommand.ItensServico)
+                    {
+                        var insumo = await _insumoUseCases.CriarAsync(
+                            new CriarInsumoCommand
+                            {
+                                Nome = itemCommand.Insumo.Nome,
+                                Fabricante = itemCommand.Insumo.Fabricante,
+                                QuantidadeDisponivel = itemCommand.Insumo.QuantidadeDisponivel,
+                                ValorUnitario = itemCommand.Insumo.ValorUnitario
+                            },
+                            cancellationToken);
+
+                        itensServico.Add(new ItemServicoCommand
+                        {
+                            InsumoId = insumo.Id,
+                            Quantidade = itemCommand.Quantidade
+                        });
+                    }
+
+                    var servico = await _servicoUseCases.CriarAsync(
+                        new CriarServicoCommand
+                        {
+                            Nome = servicoCommand.Nome,
+                            Descricao = servicoCommand.Descricao,
+                            ItensServico = itensServico
+                        },
+                        cancellationToken);
+
+                    servicoIds.Add(servico.Id);
+                }
+
+                var ordemServico = await _ordemServicoService.CriarAsync(
+                    new CriarOrdemServicoCommand
+                    {
+                        ClienteId = cliente.Id,
+                        VeiculoId = veiculo.Id,
+                        ServicoIds = servicoIds
+                    },
+                    cancellationToken);
+
+                var abertura = new AberturaOrdemServicoViewModel
+                {
+                    OrdemServicoId = ordemServico.Id
+                };
+                var result = OrdensServicoResult.From(abertura);
+
+                return _ordensServicoAdapter.Adapt(result, true);
+            }
+            catch (DomainException exception)
+            {
+                var result = OrdensServicoResult.FromError<AberturaOrdemServicoViewModel>(exception);
+
+                return _ordensServicoAdapter.Adapt(result);
+            }
+            catch (KeyNotFoundException exception)
+            {
+                var result = OrdensServicoResult.FromError<AberturaOrdemServicoViewModel>(exception);
 
                 return _ordensServicoAdapter.Adapt(result);
             }

@@ -6,6 +6,8 @@ namespace TechChallenge.Oficina.Controllers.Features.OrdensServico
     {
         Task<object> Post(CriarOrdemServicoCommand command, CancellationToken cancellationToken);
 
+        Task<object> PostCompleta(AbrirOrdemServicoCompletaCommand command, CancellationToken cancellationToken);
+
         Task<object> GetById(Guid id, CancellationToken cancellationToken);
 
         Task<object> Get(CancellationToken cancellationToken);

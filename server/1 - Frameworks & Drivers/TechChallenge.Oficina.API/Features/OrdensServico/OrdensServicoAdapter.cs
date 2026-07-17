@@ -21,6 +21,21 @@ namespace TechChallenge.Oficina.API.Features.OrdensServico
             return CriaErro(result.Error!);
         }
 
+        public object Adapt(OrdensServicoResult<AberturaOrdemServicoViewModel, Exception> result, bool created = false)
+        {
+            if (result.Value != null)
+            {
+                if (created)
+                {
+                    return TypedResults.CreatedAtRoute(result.Value, "GetOrdemServicoById", new { id = result.Value.OrdemServicoId });
+                }
+
+                return TypedResults.Ok(result.Value);
+            }
+
+            return CriaErro(result.Error!);
+        }
+
         public object Adapt(OrdensServicoResult<IReadOnlyCollection<OrdemServicoViewModel>, Exception> result)
         {
             if (result.Value != null)

@@ -93,6 +93,60 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     }
 
     [Fact]
+    public async Task PostCompleta_DadosValidos_DeveRetornar201ComIdentificacaoDaOs()
+    {
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
+        var command = new AbrirOrdemServicoCompletaCommand
+        {
+            Cliente = new ClienteAberturaOrdemServicoCommand
+            {
+                NomeCompleto = "Cliente Abertura Completa",
+                Identificacao = "529.982.247-25",
+                Email = "abertura@oficina.com"
+            },
+            Veiculo = new VeiculoAberturaOrdemServicoCommand
+            {
+                Placa = "AAA1A11",
+                Marca = "Chevrolet",
+                Modelo = "Onix",
+                Ano = 2023,
+                Renavam = "12345678912"
+            },
+            Servicos =
+            [
+                new ServicoAberturaOrdemServicoCommand
+                {
+                    Nome = "Troca de Oleo",
+                    Descricao = "Troca de oleo e filtro",
+                    ItensServico =
+                    [
+                        new ItemServicoAberturaOrdemServicoCommand
+                        {
+                            Insumo = new InsumoAberturaOrdemServicoCommand
+                            {
+                                Nome = "Oleo 5W30",
+                                Fabricante = "Mobil",
+                                QuantidadeDisponivel = 20,
+                                ValorUnitario = 35m
+                            },
+                            Quantidade = 4
+                        }
+                    ]
+                }
+            ]
+        };
+
+        var created = Assert.IsType<CreatedAtRoute<AberturaOrdemServicoViewModel>>(await endpoints.PostCompleta(command, CancellationToken.None));
+        Assert.NotEqual(Guid.Empty, created.Value!.OrdemServicoId);
+
+        var ordemCriada = Assert.IsType<Ok<OrdemServicoViewModel>>(await endpoints.GetById(created.Value.OrdemServicoId, CancellationToken.None));
+        Assert.Equal(created.Value.OrdemServicoId, ordemCriada.Value.Id);
+        Assert.NotEqual(Guid.Empty, ordemCriada.Value.ClienteId);
+        Assert.NotEqual(Guid.Empty, ordemCriada.Value.VeiculoId);
+        Assert.NotEmpty(ordemCriada.Value.Servicos);
+    }
+
+    [Fact]
     public async Task Post_ClienteInexistente_DeveRetornar404()
     {
         var (_, veiculoId, servicoId) = await CriarContextoCompletoAsync();
