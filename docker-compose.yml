@@ -20,7 +20,7 @@ services:
   api:
     build:
       context: ./server
-      dockerfile: TechChallenge.Oficina.API/Dockerfile
+      dockerfile: 1 - Frameworks & Drivers/TechChallenge.Oficina.API/Dockerfile
     container_name: oficina-api
     depends_on:
       postgres:

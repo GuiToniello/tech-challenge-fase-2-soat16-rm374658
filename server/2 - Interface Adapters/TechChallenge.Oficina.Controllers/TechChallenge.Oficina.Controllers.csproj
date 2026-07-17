@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TechChallenge.Oficina.UseCases\TechChallenge.Oficina.UseCases.csproj" />
+    <ProjectReference Include="..\..\3 - Application Business Rules\TechChallenge.Oficina.UseCases\TechChallenge.Oficina.UseCases.csproj" />
   </ItemGroup>
 
 </Project>

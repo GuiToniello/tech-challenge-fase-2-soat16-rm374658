@@ -24,10 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
-	<ProjectReference Include="..\TechChallenge.Oficina.API\TechChallenge.Oficina.API.csproj" />
-	<ProjectReference Include="..\TechChallenge.Oficina.UseCases\TechChallenge.Oficina.UseCases.csproj" />
-	<ProjectReference Include="..\TechChallenge.Oficina.Entities\TechChallenge.Oficina.Entities.csproj" />
-	<ProjectReference Include="..\TechChallenge.Oficina.DB\TechChallenge.Oficina.DB.csproj" />
+	<ProjectReference Include="..\..\1 - Frameworks &amp; Drivers\TechChallenge.Oficina.API\TechChallenge.Oficina.API.csproj" />
+	<ProjectReference Include="..\..\3 - Application Business Rules\TechChallenge.Oficina.UseCases\TechChallenge.Oficina.UseCases.csproj" />
+	<ProjectReference Include="..\..\4 - Enterprise Business Rules\TechChallenge.Oficina.Entities\TechChallenge.Oficina.Entities.csproj" />
+	<ProjectReference Include="..\..\1 - Frameworks &amp; Drivers\TechChallenge.Oficina.DB\TechChallenge.Oficina.DB.csproj" />
   </ItemGroup>
 
 </Project>
