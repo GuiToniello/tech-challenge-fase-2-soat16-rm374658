@@ -54,6 +54,14 @@ namespace TechChallenge.Oficina.API.Features.OrdensServico
                 .Produces<IReadOnlyCollection<OrdemServicoViewModel>>(StatusCodes.Status200OK);
 
             group.MapGet(
+                "/ordenadas",
+                (
+                    IOrdensServicoController ordensServicoController,
+                    CancellationToken cancellationToken
+                ) => ordensServicoController.GetOrdenadas(cancellationToken))
+                .Produces<IReadOnlyCollection<OrdemServicoOrdenadasViewModel>>(StatusCodes.Status200OK);
+
+            group.MapGet(
                 "/{id:guid}/acompanhamento",
                 (
                     IOrdensServicoController ordensServicoController,

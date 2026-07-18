@@ -10,6 +10,8 @@ namespace TechChallenge.Oficina.Controllers.Features.OrdensServico
 
         object Adapt(OrdensServicoResult<IReadOnlyCollection<OrdemServicoViewModel>, Exception> result);
 
+        object Adapt(OrdensServicoResult<IReadOnlyCollection<OrdemServicoOrdenadasViewModel>, Exception> result);
+
         object Adapt(OrdensServicoResult<AcompanhamentoOrdemServicoViewModel, Exception> result);
 
         object Adapt(OrdensServicoResult<IReadOnlyCollection<AcompanhamentoOrdemServicoViewModel>, Exception> result);

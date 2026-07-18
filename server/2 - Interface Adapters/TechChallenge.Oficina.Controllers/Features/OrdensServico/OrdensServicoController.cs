@@ -181,6 +181,14 @@ namespace TechChallenge.Oficina.Controllers.Features.OrdensServico
             return _ordensServicoAdapter.Adapt(result);
         }
 
+        public async Task<object> GetOrdenadas(CancellationToken cancellationToken)
+        {
+            var ordensServico = await _ordemServicoService.ListarOrdenadasAsync(new ListarOrdensServicoOrdenadasQuery(), cancellationToken);
+            var result = OrdensServicoResult.From(ordensServico);
+
+            return _ordensServicoAdapter.Adapt(result);
+        }
+
         public async Task<object> GetAcompanhamento(Guid id, CancellationToken cancellationToken)
         {
             try

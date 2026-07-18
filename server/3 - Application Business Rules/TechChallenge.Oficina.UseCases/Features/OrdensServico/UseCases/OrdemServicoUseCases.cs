@@ -75,6 +75,12 @@ public sealed class OrdemServicoUseCases : IOrdemServicoUseCases
         return _mapper.Map<IReadOnlyCollection<OrdemServicoViewModel>>(ordensServico);
     }
 
+    public async Task<IReadOnlyCollection<OrdemServicoOrdenadasViewModel>> ListarOrdenadasAsync(ListarOrdensServicoOrdenadasQuery query, CancellationToken cancellationToken = default)
+    {
+        var ordensServico = await _ordemServicoGateway.ListarOrdenadasAsync(cancellationToken);
+        return _mapper.Map<IReadOnlyCollection<OrdemServicoOrdenadasViewModel>>(ordensServico);
+    }
+
     public async Task ExcluirAsync(ExcluirOrdemServicoCommand command, CancellationToken cancellationToken = default)
     {
         var ordemServico = await ObterOrdemServicoExistenteAsync(command.Id, cancellationToken);

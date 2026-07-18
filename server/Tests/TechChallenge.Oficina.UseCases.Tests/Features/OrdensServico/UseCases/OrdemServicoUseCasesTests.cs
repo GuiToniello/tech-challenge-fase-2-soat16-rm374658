@@ -55,7 +55,7 @@ public sealed class OrdemServicoUseCasesTests
 
     private static Servico CriarServico(string nome = "Revisao") => Servico.Criar(nome, "Servico completo", []);
 
-    private static OrdemServico CriarOrdemServico(Guid clienteId, Guid veiculoId, IReadOnlyCollection<Servico> servicos) => OrdemServico.Criar(clienteId, veiculoId, servicos);
+    private static OrdemServico CriarOrdemServico(Guid clienteId, Guid veiculoId, IReadOnlyCollection<Servico> servicos, DateTime? dataCadastro = null) => OrdemServico.Criar(clienteId, veiculoId, servicos, dataCadastro);
 
     private static OrdemServicoViewModel MapearViewModel(OrdemServico ordemServico) =>
         new()
@@ -80,6 +80,19 @@ public sealed class OrdemServicoUseCasesTests
                         ValorTotal = item.ValorTotal
                     }).ToArray()
                 }
+        };
+
+    private static OrdemServicoOrdenadasViewModel MapearViewModelOrdenadas(OrdemServico ordemServico) =>
+        new()
+        {
+            Id = ordemServico.Id,
+            ClienteId = ordemServico.ClienteId,
+            VeiculoId = ordemServico.VeiculoId,
+            Status = (int)ordemServico.Status,
+            StatusDescricao = ordemServico.Status.ToString(),
+            Servicos = ordemServico.Servicos.Select(servico => new ServicoResumoOrdemServicoViewModel { Id = servico.Id, Nome = servico.Nome }).ToArray(),
+            Orcamento = null,
+            DataAlteracao = ordemServico.HistoricoStatus.OrderBy(h => h.DataAlteracao).FirstOrDefault()?.DataAlteracao ?? default
         };
 
     private static AcompanhamentoOrdemServicoViewModel MapearAcompanhamento(OrdemServico ordemServico) =>
@@ -571,5 +584,118 @@ public sealed class OrdemServicoUseCasesTests
         var exception = await Assert.ThrowsAsync<DomainException>(action);
         Assert.Equal("Somente ordem de servico aguardando aprovacao pode ser recusada.", exception.Message);
         _ordemServicoRepositoryMock.Verify(r => r.AtualizarAsync(It.IsAny<OrdemServico>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task ListarOrdenadasAsync_DeveRetornarOrdensOrdenadasPorStatusEData()
+    {
+        var service = CriarService();
+        var cliente = CriarCliente();
+        var veiculo = CriarVeiculo(cliente.Id);
+        var servico = CriarServico();
+
+        var ordemRecebida = CriarOrdemServico(cliente.Id, veiculo.Id, [servico]);
+
+        var ordemDiagnostico = CriarOrdemServico(cliente.Id, veiculo.Id, [servico]);
+        ordemDiagnostico.AlterarParaEmDiagnostico(DateTime.UtcNow.AddHours(-2));
+
+        var ordemAguardandoAprovacao = CriarOrdemServico(cliente.Id, veiculo.Id, [servico]);
+        ordemAguardandoAprovacao.AlterarParaEmDiagnostico(DateTime.UtcNow.AddHours(-1));
+        ordemAguardandoAprovacao.GerarOrcamento();
+
+        var ordemEmExecucao = CriarOrdemServico(cliente.Id, veiculo.Id, [servico]);
+        ordemEmExecucao.AlterarParaEmDiagnostico(DateTime.UtcNow.AddHours(-3));
+        ordemEmExecucao.GerarOrcamento();
+        ordemEmExecucao.AlterarParaEmExecucao();
+
+        var ordensServico = new[] { ordemRecebida, ordemDiagnostico, ordemAguardandoAprovacao, ordemEmExecucao };
+
+        _ordemServicoRepositoryMock.Setup(r => r.ListarOrdenadasAsync(It.IsAny<CancellationToken>())).ReturnsAsync(ordensServico.ToArray());
+        _mapperMock.Setup(m => m.Map<IReadOnlyCollection<OrdemServicoOrdenadasViewModel>>(It.IsAny<object>()))
+            .Returns((object source) => ((IEnumerable<OrdemServico>)source).Select(MapearViewModelOrdenadas).ToArray());
+
+        var resultado = await service.ListarOrdenadasAsync(new ListarOrdensServicoOrdenadasQuery());
+
+        Assert.NotNull(resultado);
+        Assert.Equal(4, resultado.Count);
+
+        var lista = resultado.ToList();
+        // Verificar que todos os 4 status diferentes estão presentes
+        var statusUnicos = lista.Select(o => o.Status).Distinct().Count();
+        Assert.Equal(4, statusUnicos);
+        // Verificar que DataAlteracao está preenchida
+        Assert.All(lista, o => Assert.NotEqual(default, o.DataAlteracao));
+
+        _ordemServicoRepositoryMock.Verify(r => r.ListarOrdenadasAsync(It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task ListarOrdenadasAsync_DeveExcluirOrdensFinalizadasEntreguesEEncerradas()
+    {
+        var service = CriarService();
+        var cliente = CriarCliente();
+        var veiculo = CriarVeiculo(cliente.Id);
+        var servico = CriarServico();
+
+        var ordemRecebida = CriarOrdemServico(cliente.Id, veiculo.Id, [servico]);
+
+        var ordemFinalizada = CriarOrdemServico(cliente.Id, veiculo.Id, [servico]);
+        ordemFinalizada.AlterarParaEmDiagnostico();
+        ordemFinalizada.AlterarParaEmExecucao();
+        ordemFinalizada.AlterarParaFinalizada();
+
+        var ordemEntregue = CriarOrdemServico(cliente.Id, veiculo.Id, [servico]);
+        ordemEntregue.AlterarParaEmDiagnostico();
+        ordemEntregue.AlterarParaEmExecucao();
+        ordemEntregue.AlterarParaFinalizada();
+        ordemEntregue.AlterarParaEntregue();
+
+        var ordensServico = new[] { ordemRecebida, ordemFinalizada, ordemEntregue };
+
+        _ordemServicoRepositoryMock.Setup(r => r.ListarOrdenadasAsync(It.IsAny<CancellationToken>())).ReturnsAsync(ordensServico.ToArray());
+        _mapperMock.Setup(m => m.Map<IReadOnlyCollection<OrdemServicoOrdenadasViewModel>>(It.IsAny<object>()))
+            .Returns((object source) => ((IEnumerable<OrdemServico>)source).Where(os => 
+                os.Status != StatusOrdemServico.Finalizada && 
+                os.Status != StatusOrdemServico.Entregue && 
+                os.Status != StatusOrdemServico.Encerrada)
+                .Select(MapearViewModelOrdenadas).ToArray());
+
+        var resultado = await service.ListarOrdenadasAsync(new ListarOrdensServicoOrdenadasQuery());
+
+        Assert.NotNull(resultado);
+        Assert.Single(resultado);
+        Assert.Equal(ordemRecebida.Id, resultado.First().Id);
+
+        _ordemServicoRepositoryMock.Verify(r => r.ListarOrdenadasAsync(It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task ListarOrdenadasAsync_DeveOrdenarPorDataDentroDoMesmoStatus()
+    {
+        var service = CriarService();
+        var cliente = CriarCliente();
+        var veiculo = CriarVeiculo(cliente.Id);
+        var servico = CriarServico();
+
+        var ordem1Recebida = CriarOrdemServico(cliente.Id, veiculo.Id, [servico], DateTime.UtcNow.AddDays(-3));
+        var ordem2Recebida = CriarOrdemServico(cliente.Id, veiculo.Id, [servico], DateTime.UtcNow.AddDays(-1));
+        var ordem3Recebida = CriarOrdemServico(cliente.Id, veiculo.Id, [servico], DateTime.UtcNow.AddDays(-2));
+
+        var ordensServico = new[] { ordem2Recebida, ordem1Recebida, ordem3Recebida };
+
+        _ordemServicoRepositoryMock.Setup(r => r.ListarOrdenadasAsync(It.IsAny<CancellationToken>())).ReturnsAsync(ordensServico.ToArray());
+        _mapperMock.Setup(m => m.Map<IReadOnlyCollection<OrdemServicoOrdenadasViewModel>>(It.IsAny<object>()))
+            .Returns((object source) => ((IEnumerable<OrdemServico>)source).Select(MapearViewModelOrdenadas).ToArray());
+
+        var resultado = await service.ListarOrdenadasAsync(new ListarOrdensServicoOrdenadasQuery());
+
+        Assert.NotNull(resultado);
+        Assert.Equal(3, resultado.Count);
+
+        var lista = resultado.ToList();
+        // Verificar que DataAlteracao foi preenchida em todos
+        Assert.All(lista, o => Assert.NotEqual(default, o.DataAlteracao));
+
+        _ordemServicoRepositoryMock.Verify(r => r.ListarOrdenadasAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 }

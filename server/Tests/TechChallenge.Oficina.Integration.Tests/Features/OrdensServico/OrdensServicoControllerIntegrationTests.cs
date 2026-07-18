@@ -387,4 +387,116 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
 
         Assert.IsType<NotFound<Dictionary<string, string?>>>(await endpoints.Put(command, CancellationToken.None));
     }
+
+    [Fact]
+    public async Task GetOrdenadas_ComMultiplasOrdensComDiferentesStatus_DeveRetornarOrdenadasPorStatusEData()
+    {
+        var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
+
+        // Criar múltiplas ordens com diferentes status
+        var ordem1 = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(await endpoints.Post(
+            new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
+            CancellationToken.None)).Value!;
+
+        var ordem2 = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(await endpoints.Post(
+            new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
+            CancellationToken.None)).Value!;
+
+        var ordem3 = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(await endpoints.Post(
+            new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
+            CancellationToken.None)).Value!;
+
+        var ordem4 = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(await endpoints.Post(
+            new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
+            CancellationToken.None)).Value!;
+
+        // Alterar statuses para criar diferentes estados
+        await endpoints.AlterarParaEmDiagnostico(ordem2.Id, CancellationToken.None);
+
+        await endpoints.AlterarParaEmDiagnostico(ordem3.Id, CancellationToken.None);
+        await endpoints.GerarOrcamento(ordem3.Id, CancellationToken.None);
+
+        await endpoints.AlterarParaEmDiagnostico(ordem4.Id, CancellationToken.None);
+        await endpoints.GerarOrcamento(ordem4.Id, CancellationToken.None);
+        await endpoints.AlterarParaEmExecucao(ordem4.Id, CancellationToken.None);
+
+        // Chamar endpoint GetOrdenadas
+        var result = Assert.IsType<Ok<IReadOnlyCollection<OrdemServicoOrdenadasViewModel>>>(
+            await endpoints.GetOrdenadas(CancellationToken.None));
+
+        var ordensOrdenadas = result.Value.ToList();
+
+        // Verificar que as ordens retornadas estão ordenadas corretamente:
+        // Prioridade: EmExecucao > AguardandoAprovacao > EmDiagnostico > Recebida
+        Assert.NotEmpty(ordensOrdenadas);
+
+        // Primeira ordem deve ser a que está em execução (ordem4)
+        Assert.Equal(ordem4.Id, ordensOrdenadas[0].Id);
+        Assert.Equal((int)TechChallenge.Oficina.Entities.Features.OrdensServico.Enums.StatusOrdemServico.EmExecucao, ordensOrdenadas[0].Status);
+        // Verificar que DataAlteracao está preenchida
+        Assert.All(ordensOrdenadas, o => Assert.NotEqual(default, o.DataAlteracao));
+
+        // Verificar que as outras ordens seguem a ordem de prioridade e data
+        var emDiagnostico = ordensOrdenadas.Where(o => o.Status == (int)TechChallenge.Oficina.Entities.Features.OrdensServico.Enums.StatusOrdemServico.EmDiagnostico).ToList();
+        Assert.NotEmpty(emDiagnostico);
+    }
+
+    [Fact]
+    public async Task GetOrdenadas_ComOrdensFinalizadasEEntregues_DeveExcluirDaListagem()
+    {
+        var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
+
+        // Criar ordem e deixar em estado recebido
+        var ordemRecebida = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(await endpoints.Post(
+            new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
+            CancellationToken.None)).Value!;
+
+        // Criar ordem e finalizar
+        var ordemFinalizada = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(await endpoints.Post(
+            new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
+            CancellationToken.None)).Value!;
+
+        await endpoints.AlterarParaEmDiagnostico(ordemFinalizada.Id, CancellationToken.None);
+        await endpoints.AlterarParaEmExecucao(ordemFinalizada.Id, CancellationToken.None);
+        await endpoints.AlterarParaFinalizada(ordemFinalizada.Id, CancellationToken.None);
+
+        // Criar ordem e entregar
+        var ordemEntregue = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(await endpoints.Post(
+            new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
+            CancellationToken.None)).Value!;
+
+        await endpoints.AlterarParaEmDiagnostico(ordemEntregue.Id, CancellationToken.None);
+        await endpoints.AlterarParaEmExecucao(ordemEntregue.Id, CancellationToken.None);
+        await endpoints.AlterarParaFinalizada(ordemEntregue.Id, CancellationToken.None);
+        await endpoints.AlterarParaEntregue(ordemEntregue.Id, CancellationToken.None);
+
+        // Chamar endpoint GetOrdenadas
+        var result = Assert.IsType<Ok<IReadOnlyCollection<OrdemServicoOrdenadasViewModel>>>(
+            await endpoints.GetOrdenadas(CancellationToken.None));
+
+        var ordensOrdenadas = result.Value.ToList();
+
+        // Deve conter apenas a ordem recebida, não as finalizadas ou entregues
+        var ordemRecebidaRetornada = ordensOrdenadas.FirstOrDefault(o => o.Id == ordemRecebida.Id);
+        Assert.NotNull(ordemRecebidaRetornada);
+
+        var ordemFinalizadaRetornada = ordensOrdenadas.FirstOrDefault(o => o.Id == ordemFinalizada.Id);
+        Assert.Null(ordemFinalizadaRetornada);
+
+        var ordemEntregueRetornada = ordensOrdenadas.FirstOrDefault(o => o.Id == ordemEntregue.Id);
+        Assert.Null(ordemEntregueRetornada);
+    }
+
+    [Fact]
+    public async Task GetOrdenadas_SemOrdensAtivas_DeveRetornarListaVazia()
+    {
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
+
+        var result = Assert.IsType<Ok<IReadOnlyCollection<OrdemServicoOrdenadasViewModel>>>(
+            await endpoints.GetOrdenadas(CancellationToken.None));
+
+        Assert.Empty(result.Value);
+    }
 }

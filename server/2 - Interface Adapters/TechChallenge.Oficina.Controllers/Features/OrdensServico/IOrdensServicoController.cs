@@ -12,6 +12,8 @@ namespace TechChallenge.Oficina.Controllers.Features.OrdensServico
 
         Task<object> Get(CancellationToken cancellationToken);
 
+        Task<object> GetOrdenadas(CancellationToken cancellationToken);
+
         Task<object> GetAcompanhamento(Guid id, CancellationToken cancellationToken);
 
         Task<object> GetByCliente(Guid clienteId, CancellationToken cancellationToken);

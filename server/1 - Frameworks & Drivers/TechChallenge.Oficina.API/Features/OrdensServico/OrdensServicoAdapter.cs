@@ -46,6 +46,16 @@ namespace TechChallenge.Oficina.API.Features.OrdensServico
             return CriaErro(result.Error!);
         }
 
+        public object Adapt(OrdensServicoResult<IReadOnlyCollection<OrdemServicoOrdenadasViewModel>, Exception> result)
+        {
+            if (result.Value != null)
+            {
+                return TypedResults.Ok(result.Value);
+            }
+
+            return CriaErro(result.Error!);
+        }
+
         public object Adapt(OrdensServicoResult<AcompanhamentoOrdemServicoViewModel, Exception> result)
         {
             if (result.Value != null)

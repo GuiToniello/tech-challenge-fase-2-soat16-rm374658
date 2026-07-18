@@ -40,6 +40,35 @@ public sealed class OrdemServicoGateway : IOrdemServicoGateway
             .ToArrayAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyCollection<OrdemServico>> ListarOrdenadasAsync(CancellationToken cancellationToken = default)
+    {
+        var ordensServico = await CriarConsultaCompleta()
+            .ToArrayAsync(cancellationToken);
+
+        // Filtrar ordens que não estão finalizadas, entregues ou encerradas
+        var ordensAtivasOuAguardando = ordensServico
+            .Where(os => os.Status != StatusOrdemServico.Finalizada && 
+                         os.Status != StatusOrdemServico.Entregue && 
+                         os.Status != StatusOrdemServico.Encerrada)
+            .ToArray();
+
+        // Ordenar por prioridade de status e depois por data de criação (primeira entrada do histórico)
+        var prioridadeStatus = new Dictionary<StatusOrdemServico, int>
+        {
+            { StatusOrdemServico.EmExecucao, 1 },
+            { StatusOrdemServico.AguardandoAprovacao, 2 },
+            { StatusOrdemServico.EmDiagnostico, 3 },
+            { StatusOrdemServico.Recebida, 4 }
+        };
+
+        var ordensOrdenadas = ordensAtivasOuAguardando
+            .OrderBy(os => prioridadeStatus.TryGetValue(os.Status, out var prioridade) ? prioridade : int.MaxValue)
+            .ThenBy(os => os.HistoricoStatus.FirstOrDefault()?.DataAlteracao ?? DateTime.MaxValue)
+            .ToArray();
+
+        return ordensOrdenadas;
+    }
+
     public async Task<IReadOnlyCollection<OrdemServico>> ListarPorClienteAsync(Guid clienteId, CancellationToken cancellationToken = default)
     {
         return await CriarConsultaCompleta()

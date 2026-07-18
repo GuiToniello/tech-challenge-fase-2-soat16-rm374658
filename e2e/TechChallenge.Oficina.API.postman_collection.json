@@ -3354,6 +3354,51 @@
                     ]
                 },
                 {
+                    "name": "23A - Listar Ordens de Servico Ordenadas (200)",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/ordens-servico/ordenadas",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "ordens-servico",
+                                "ordenadas"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\u0027Status 200\u0027, function () { pm.response.to.have.status(200); });",
+                                    "pm.test(\u0027Retorna array ordenado\u0027, function () { pm.expect(pm.response.json()).to.be.an(\u0027array\u0027).and.not.empty; });",
+                                    "pm.test(\u0027Ordena por prioridade de status\u0027, function () {",
+                                    "  var ordens = pm.response.json();",
+                                    "  var prioridades = { 4: 1, 3: 2, 2: 3, 1: 4 };",
+                                    "  for (var i = 0; i < ordens.length - 1; i++) {",
+                                    "    var atual = prioridades[ordens[i].status] || 99;",
+                                    "    var proxima = prioridades[ordens[i + 1].status] || 99;",
+                                    "    pm.expect(atual).to.be.at.most(proxima);",
+                                    "  }",
+                                    "  var ordemAtual = ordens.find(function (ordem) { return ordem.id === pm.collectionVariables.get(\u0027ordens_id\u0027); });",
+                                    "  pm.expect(ordemAtual).to.exist;",
+                                    "  pm.expect(ordemAtual.status).to.eql(4);",
+                                    "});",
+                                    "pm.test(\u0027Nao retorna ordens finalizadas ou entregues\u0027, function () {",
+                                    "  var ordens = pm.response.json();",
+                                    "  pm.expect(ordens.some(function (ordem) { return ordem.status === 5 || ordem.status === 6; })).to.eql(false);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
                     "name": "24 - Alterar Status para Finalizada (200)",
                     "request": {
                         "method": "POST",

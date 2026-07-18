@@ -25,5 +25,13 @@ public sealed class OrdemServicoProfile : Profile
         CreateMap<OrdemServico, OrdemServicoViewModel>()
             .ForMember(destino => destino.Status, configuracao => configuracao.MapFrom(origem => (int)origem.Status))
             .ForMember(destino => destino.StatusDescricao, configuracao => configuracao.MapFrom(origem => origem.Status.ObterDescricao()));
+
+        CreateMap<OrdemServico, OrdemServicoOrdenadasViewModel>()
+            .ForMember(destino => destino.Status, configuracao => configuracao.MapFrom(origem => (int)origem.Status))
+            .ForMember(destino => destino.StatusDescricao, configuracao => configuracao.MapFrom(origem => origem.Status.ObterDescricao()))
+            .ForMember(destino => destino.DataAlteracao, configuracao => configuracao.MapFrom(origem =>
+                origem.HistoricoStatus.FirstOrDefault() != null
+                    ? origem.HistoricoStatus.OrderBy(h => h.DataAlteracao).First().DataAlteracao
+                    : default(DateTime)));
     }
 }
