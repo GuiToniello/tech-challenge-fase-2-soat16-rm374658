@@ -2,7 +2,7 @@
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GuiToniello_tech-challenge-fase-1-soat16-rm374658&metric=alert_status&token=ea0031cd24511d30496ed0d47a909e4881b37946)](https://sonarcloud.io/summary/new_code?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658) [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=GuiToniello_tech-challenge-fase-1-soat16-rm374658&token=ea0031cd24511d30496ed0d47a909e4881b37946)](https://sonarcloud.io/summary/new_code?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658) [![SonarQube Cloud](https://sonarcloud.io/images/project_badges/sonarcloud-light.svg)](https://sonarcloud.io/summary/new_code?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658)
 
-## 1. Identificacao
+## 1. Identificação
 
 Software de gestão para uma oficina mecânica.
 
@@ -11,19 +11,19 @@ Tech Challenge da Fase 2 do curso SOAT16 da FIAP.
 Grupo:
 -  Guilherme Toniello Vieira -  SOAT16 - rm374658
 
-### 1.2 Links Uteis
+### 1.2 Links Úteis
 
 Acesse o blueprint no Miro: https://miro.com/app/board/uXjVHVfHuvI=/?share_link_id=633470424823
 
-O link do sonar: https://sonarcloud.io/summary/overall?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658
+O link do SonarCloud: https://sonarcloud.io/summary/overall?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658
 
-Você pode acessar o relatório completo [aqui](./reports/relatorio-completo.pdf).
+Você pode acessar o relatório completo [aqui](./docs/reports/relatorio-completo.pdf).
 
 ## 2. Arquitetura
 
 Nessa seção, será descrita a arquitetura em alto nível e organização da solução.
 
-### 2.1. Visao Geral
+### 2.1. Visão Geral
 
 As decisões arquiteturais estão documentadas individualmente como ADRs (Architecture Decision Records) em `docs/adr/`:
 
@@ -42,9 +42,9 @@ As decisões arquiteturais estão documentadas individualmente como ADRs (Archit
 | ADR-012 — Controle de Estoque de Insumos | Verifica estoque ao gerar orçamento (sem reserva) e debita automaticamente ao aprovar. Lança `DomainException` se houver estoque insuficiente em qualquer etapa. | [ver](./docs/adr/ADR-012-Controle-de-Estoque-de-Insumos.md) |
 | ADR-013 — Tratamento de Erros em Duas Camadas | Erros de negócio esperados são tratados nos controllers com resposta HTTP semântica (4xx). Erros inesperados são capturados pelo middleware global, evitando vazamento de stack trace. | [ver](./docs/adr/ADR-013-Estrategia-de-Tratamento-de-Erros-em-Duas-Camadas.md) |
 
-### 2.2. Autenticacao
+### 2.2. Autenticação
 
-O projeto usa autenticação via JWT emitido pelo `Auth0` (https://auth0.com/) como Identity Provider.
+O projeto usa autenticação via JWT emitido pelo `Auth0` (https://auth0.com/) como provedor de identidade.
 
 **Como funciona na prática:**
 
@@ -61,7 +61,7 @@ O `Authority` aponta para o domínio Auth0, que expõe o endpoint `/.well-known/
 
 Todos os endpoints exigem autenticação por padrão (política de fallback `RequireAuthenticatedUser`). O único endpoint público é `/health`.
 
-**Você não precisa criar uma conta no Auth0.** A collection do Postman em `/e2e` já possui um request configurado com as credenciais de demonstração para obter o token de acesso via Client Credentials Flow.
+**Você não precisa criar uma conta no Auth0.** A Collection do Postman em `/e2e` já possui um request configurado com as credenciais de demonstração para obter o token de acesso via Client Credentials Flow.
 
 ### 2.3. CQRS (CQS)
 
@@ -76,27 +76,27 @@ A separação acontece na **camada de UseCases** (`3 - Application Business Rule
 
 O benefício é tornar a **intenção explícita no contrato**: ao receber um `Command`, sabe-se que haverá efeito colateral; ao receber uma `Query`, sabe-se que é apenas leitura. Não há mediator (ex: MediatR), o roteamento é feito diretamente via injeção de dependência.
 
-## 3. Referencias Bibliograficas
+## 3. Referências Bibliográficas
 
-### 3.1. Padroes de Arquitetura
+### 3.1. Padrões de Arquitetura
 
 Esse projeto foi construído usando os padrões descritos abaixo.
 
-- Clean Architecture (4 aneis e regra de dependencia)
+- Clean Architecture (4 anéis e regra de dependência)
   - ADR: [ADR-001](./docs/adr/ADR-001-Clean-Architecture.md)
   - Codigo: [server/](./server/)
 - Domain-Driven Design (DDD)
   - ADR: [ADR-002](./docs/adr/ADR-002-DDD-e-Entidades-Ricas.md)
   - Codigo: [Entidades de dominio](./server/4%20-%20Enterprise%20Business%20Rules/TechChallenge.Oficina.Entities/)
-- CQS (separacao entre Commands e Queries)
+- CQS (separação entre Commands e Queries)
   - ADR: [ADR-005](./docs/adr/ADR-005-Separacao-Commands-Queries-ViewModels.md)
   - Codigo: [UseCases](./server/3%20-%20Application%20Business%20Rules/TechChallenge.Oficina.UseCases/)
 
-### 3.2. Padroes Estruturais
+### 3.2. Padrões Estruturais
 
 - Folder-by-Feature
   - ADR: [ADR-001](./docs/adr/ADR-001-Clean-Architecture.md)
-- Gateway/Repository para persistencia
+- Gateway/Repository para persistência
   - ADR: [ADR-004](./docs/adr/ADR-004-Gateways-e-Persistencia.md)
   - Codigo: [Gateways DB](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.DB/)
 - Mapper/Adapter (AutoMapper nos UseCases)
@@ -107,11 +107,11 @@ Esse projeto foi construído usando os padrões descritos abaixo.
 - Service Layer (aplicada na camada de UseCases)
   - Codigo: [UseCases](./server/3%20-%20Application%20Business%20Rules/TechChallenge.Oficina.UseCases/)
 
-### 3.3. Padroes de Design
+### 3.3. Padrões de Design
 
-- Factory Method (entidades ricas com metodos de criacao)
+- Factory Method (entidades ricas com métodos de criação)
   - ADR: [ADR-002](./docs/adr/ADR-002-DDD-e-Entidades-Ricas.md)
-- Value Object (CPF/CNPJ e identificacao)
+- Value Object (CPF/CNPJ e identificação)
   - ADR: [ADR-003](./docs/adr/ADR-003-Value-Objects-Identificacao.md)
 - DTO/ViewModel Pattern
   - ADR: [ADR-005](./docs/adr/ADR-005-Separacao-Commands-Queries-ViewModels.md)
@@ -119,16 +119,16 @@ Esse projeto foi construído usando os padrões descritos abaixo.
   - ADR: [ADR-013](./docs/adr/ADR-013-Estrategia-de-Tratamento-de-Erros-em-Duas-Camadas.md)
   - Codigo: [Middleware](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.API/Middleware/) e [Controllers](./server/2%20-%20Interface%20Adapters/TechChallenge.Oficina.Controllers/)
 
-### 3.4. Padroes Comportamentais
+### 3.4. Padrões Comportamentais
 
 - CQS (Command Query Separation)
   - ADR: [ADR-005](./docs/adr/ADR-005-Separacao-Commands-Queries-ViewModels.md)
   - Implementacao: Commands (escrita), Queries (leitura), ViewModels (resposta)
-- Domain Exceptions para regras de negocio e invariantes
+- Domain Exceptions para regras de negócio e invariantes
   - ADR: [ADR-002](./docs/adr/ADR-002-DDD-e-Entidades-Ricas.md)
   - Codigo: [Exceptions](./server/4%20-%20Enterprise%20Business%20Rules/TechChallenge.Oficina.Entities/Exceptions/)
 
-### 3.5. Referencias
+### 3.5. Referências
 
 #### 3.5.1. Livros e Artigos
 
@@ -156,14 +156,14 @@ Para executar o projeto, temos 3 alternativas descritas nas subseções `4.2`, `
 
 Siga apenas 1 delas.
 
-### 4.1. Pre-requisito
+### 4.1. Pré-requisito
 
 Se você for rodar sem container, vai precisar:
 
 - dotnet 10.x
 https://dotnet.microsoft.com/pt-br/download/dotnet/thank-you/sdk-10.0.301-windows-x64-installer
 
-- Postgres instalado e com instancia ativa: https://www.postgresql.org/
+- Postgres instalado e com instância ativa: https://www.postgresql.org/
 
 Para containers, precisa do docker (https://www.docker.com/) ou Podman (https://podman.io/) instalado.
 
@@ -171,21 +171,37 @@ Já temos docker-compose pronto com todas as configurações.
 
 > Recomenda-se o uso de containers
 
+### 4.1.1. Configuração por .env (recomendado para container)
+
+Existe um arquivo de exemplo na raiz do projeto: `.env.example`.
+
+Passo 1 - gere o arquivo `.env` a partir do exemplo.
+
+- Linux/macOS: `cp .env.example .env`
+- Windows PowerShell: `Copy-Item .env.example .env`
+
+Passo 2 - ajuste as variáveis conforme necessário, principalmente:
+
+- `POSTGRES_PORT`
+- `API_PORT`
+- `DATABASE_CONNECTION_STRING`
+- `RESEND_API_KEY` (opcional)
+
 ### 4.2. Alternativa A - Containers (docker, podman, ...)
 
-Passo 1 - Com o console apontado para o root do repositório, execute `docker-compose up -d -b`
+Passo 1 - Com o console apontado para o root do repositório, execute `docker compose up -d --build`
 
 Se estiver usando o podman, use `podman compose up -d --build`
 
 E pronto!
 
-o banco de dados `postgres` e a `api` estarão disponíveis.
+O banco de dados `postgres` e a `api` estarão disponíveis.
 
 Passo 2 - Use `http://localhost:8080/index.html` para acessar o swagger.
 
 ### 4.3. Alternativa B - Local com dotnet cli
 
-Passo 1 - rode o `postgres` - pode ser uma instancia local ou via container `docker-compose run postgres -d`.
+Passo 1 - rode o `postgres` - pode ser uma instância local ou via container `docker compose up -d postgres`.
 
 Passo 2 - aponte o console para a pasta `server/1 - Frameworks & Drivers/TechChallenge.Oficina.API/` e então execute `dotnet run`
 
@@ -195,26 +211,47 @@ Vai subir a API usando https com um certificado autoassinado do dotnet.
 
 Passo 3 - Use `https://localhost:7194/index.html` para acessar o Swagger.
 
-### 4.4. Alternativa C - Local com visual studio 2026 ou vs code
+### 4.4. Alternativa C - Local com Visual Studio 2026 ou VS Code
 
-Passo 1 - rode o `postgres` - pode ser uma instancia local ou via container `docker-compose run postgres -d`.
+Passo 1 - rode o `postgres` - pode ser uma instância local ou via container `docker compose up -d postgres`.
 
 Passo 2 - abra o arquivo `.slnx` em `/server`
 
-Passo 3 - no visual studio, rode usando o perfil `https`.
+Passo 3 - no Visual Studio, rode usando o perfil `https`.
 
 Passo 4 - Use `https://localhost:7194/index.html` para acessar o Swagger.
 
 
 ### 4.5  Banco de dados
 
-Para popular o banco de dados, use a collection do postman na pasta `/e2e`.
+Para popular o banco de dados, use a Collection do Postman na pasta `/e2e`.
 
 Não temos scripts SQL ou endpoint, apenas use a collection que ela irá popular o banco e executar demais operações de demonstração.
 
 Se você estiver rodando em container, não é preciso configurar mais nada, apenas rodar, a connection string já está certa.
 
-Se você está rodando o postgres localmente, com instancia nao-container, precisa configurar a connection string em `server/1 - Frameworks & Drivers/TechChallenge.Oficina.API/appsettings.json`, na chave `DatabaseSettings:ConnectionString`.
+Se você está rodando o Postgres localmente, com instância não containerizada, precisa configurar a connection string em `server/1 - Frameworks & Drivers/TechChallenge.Oficina.API/appsettings.json`, na chave `DatabaseSettings:ConnectionString`.
+
+### 4.6. Rodando os testes
+
+Os testes automatizados estão organizados em `server/Tests/` por camada da arquitetura.
+
+Para executar todos os testes da solução, use:
+
+`dotnet test ./server/TechChallenge.Oficina.API.slnx`
+
+Se quiser executar apenas um projeto de teste específico, use o `.csproj` correspondente em `server/Tests/`.
+
+### 4.7. Problemas comuns (troubleshooting)
+
+1. Porta 5432 em uso
+Se o Postgres não subir na porta padrão, altere `POSTGRES_PORT` no arquivo `.env` (por exemplo, `5433`) e ajuste também `DATABASE_CONNECTION_STRING` para usar a mesma porta.
+
+2. Erro de autenticação JWT (401)
+Verifique se `AuthSettings:Authority` e `AuthSettings:Audience` no `appsettings.json` correspondem exatamente ao token usado pela collection.
+
+3. E-mail não está sendo enviado
+Sem `RESEND_API_KEY` (container) ou `ApiKey` no `appsettings.json` (execução local), a API continua funcionando, mas o envio de e-mail fica desabilitado por configuração.
 
 ## 5. Requisitos Implementados
 
@@ -226,11 +263,11 @@ Se você está rodando o postgres localmente, com instancia nao-container, preci
 | Listagem de OS por prioridade + antiguidade, excluindo finalizadas/entregues | Sim | Escopo acordado: endpoint ordenado /ordenadas. | [Gateway OS](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.DB/Features/OrdensServico/OrdemServicoGateway.cs) · [Query Ordenada](./server/3%20-%20Application%20Business%20Rules/TechChallenge.Oficina.UseCases/Features/OrdensServico/Queries/ListarOrdensServicoOrdenadasQuery.cs) |
 | Atualização de status da OS com notificação ao cliente | Sim | Escopo acordado: mudanças de status da OS; orçamento separado em /enviar-orçamento. | [UseCases OS](./server/3%20-%20Application%20Business%20Rules/TechChallenge.Oficina.UseCases/Features/OrdensServico/UseCases/OrdemServicoUseCases.cs) · [Sender Status](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.Email/Features/OrdensServico/OrdemServicoStatusEmailSender.cs) |
 
-## 6. Finalizacao
+## 6. Finalização
 
-- Para fazer requisições, use a `collection` do `postman` na pasta `/e2e`
-- Para o envio de emails, é preciso configurar `ApiKey` no appsettings.json ou `ResendSettings__ApiKey` para container
+- Para fazer requisições, use a Collection do Postman na pasta `/e2e`
+- Para o envio de e-mails, é preciso configurar `ApiKey` no appsettings.json ou `ResendSettings__ApiKey` para container
 
-Você pode logar um github em https://resend.com/, criar sua conta e gerar a apiKey.
+Você pode criar uma conta em https://resend.com/ e gerar a ApiKey.
 
-Sem a apiKey, a API funciona normal, só nao envia os emails.
+Sem a ApiKey, a API funciona normalmente, só não envia os e-mails.
