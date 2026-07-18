@@ -131,6 +131,10 @@
             "value": ""
         },
         {
+            "key": "ordens_orcamento_recusa_id",
+            "value": ""
+        },
+        {
             "key": "ordens_cliente_outro_id",
             "value": ""
         },
@@ -4253,6 +4257,104 @@
                                     "  var message = (pm.response.json().message || '').toLowerCase();",
                                     "  pm.expect(message).to.include('estoque insuficiente');",
                                     "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "52 - Criar Ordem para Recusar Orcamento (201)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/ordens-servico",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "ordens-servico"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"clienteId\": \"{{ordens_cliente_id}}\",\n  \"veiculoId\": \"{{ordens_veiculo_id}}\",\n  \"servicoIds\": [\n    \"{{ordens_servico_id}}\"\n  ]\n}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\u0027Status 201\u0027, function () { pm.response.to.have.status(201); });",
+                                    "pm.collectionVariables.set(\u0027ordens_orcamento_recusa_id\u0027, pm.response.json().id);"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "53 - Gerar Orcamento para Recusa (200)",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/ordens-servico/{{ordens_orcamento_recusa_id}}/gerar-orcamento",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "ordens-servico",
+                                "{{ordens_orcamento_recusa_id}}",
+                                "gerar-orcamento"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\u0027Status 200\u0027, function () { pm.response.to.have.status(200); });",
+                                    "pm.test(\u0027Status aguardando aprovacao\u0027, function () { pm.expect(pm.response.json().status).to.eql(3); });"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "54 - Recusar Orcamento (200)",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/ordens-servico/{{ordens_orcamento_recusa_id}}/recusar-orcamento",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "ordens-servico",
+                                "{{ordens_orcamento_recusa_id}}",
+                                "recusar-orcamento"
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\u0027Status 200\u0027, function () { pm.response.to.have.status(200); });",
+                                    "pm.test(\u0027Status finalizada\u0027, function () { pm.expect(pm.response.json().status).to.eql(5); });"
                                 ]
                             }
                         }

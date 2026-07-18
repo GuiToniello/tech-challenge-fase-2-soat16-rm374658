@@ -135,6 +135,16 @@ public class OrdemServico
         DefinirStatus(StatusOrdemServico.EmExecucao, dataAprovacao ?? DateTime.UtcNow);
     }
 
+    public void RecusarOrcamento(DateTime? dataRecusa = null)
+    {
+        if (Status != StatusOrdemServico.AguardandoAprovacao)
+        {
+            throw new DomainException("Somente ordem de servico aguardando aprovacao pode ser recusada.");
+        }
+
+        DefinirStatus(StatusOrdemServico.Finalizada, dataRecusa ?? DateTime.UtcNow);
+    }
+
     public TimeSpan ObterTempoExecucao()
     {
         var inicio = ObterDataHistoricoObrigatoria(StatusOrdemServico.EmExecucao);

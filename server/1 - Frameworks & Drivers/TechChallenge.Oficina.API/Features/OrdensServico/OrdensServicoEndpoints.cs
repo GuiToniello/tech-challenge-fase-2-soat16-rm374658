@@ -171,6 +171,17 @@ namespace TechChallenge.Oficina.API.Features.OrdensServico
                 .Produces(StatusCodes.Status400BadRequest)
                 .Produces(StatusCodes.Status404NotFound);
 
+            group.MapPost(
+                "/{id:guid}/recusar-orcamento",
+                (
+                    IOrdensServicoController ordensServicoController,
+                    Guid id,
+                    CancellationToken cancellationToken
+                ) => ordensServicoController.RecusarOrcamento(id, cancellationToken))
+                .Produces<OrdemServicoViewModel>(StatusCodes.Status200OK)
+                .Produces(StatusCodes.Status400BadRequest)
+                .Produces(StatusCodes.Status404NotFound);
+
             return group;
         }
 

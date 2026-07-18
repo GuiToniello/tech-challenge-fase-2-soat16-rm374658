@@ -142,6 +142,14 @@ public sealed class OrdemServicoUseCases : IOrdemServicoUseCases
         return _mapper.Map<OrdemServicoViewModel>(ordemServico);
     }
 
+    public async Task<OrdemServicoViewModel> RecusarOrcamentoAsync(AlterarStatusOrdemServicoCommand command, CancellationToken cancellationToken = default)
+    {
+        var ordemServico = await ObterOrdemServicoExistenteAsync(command.Id, cancellationToken);
+        ordemServico.RecusarOrcamento();
+        await _ordemServicoGateway.AtualizarAsync(ordemServico, cancellationToken);
+        return _mapper.Map<OrdemServicoViewModel>(ordemServico);
+    }
+
     public async Task<OrdemServicoViewModel> AlterarStatusParaEmExecucaoAsync(AlterarStatusOrdemServicoCommand command, CancellationToken cancellationToken = default)
     {
         var ordemServico = await ObterOrdemServicoExistenteAsync(command.Id, cancellationToken);

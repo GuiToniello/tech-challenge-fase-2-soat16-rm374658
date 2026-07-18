@@ -315,6 +315,35 @@ public sealed class OrdensServicoControllerIntegrationTests : IDisposable
     }
 
     [Fact]
+    public async Task RecusarOrcamento_OrdemAguardandoAprovacao_DeveRetornar200ComStatusFinalizada()
+    {
+        var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
+        var created = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(await endpoints.Post(
+            new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
+            CancellationToken.None));
+        var id = created.Value.Id;
+
+        await endpoints.AlterarParaEmDiagnostico(id, CancellationToken.None);
+        await endpoints.GerarOrcamento(id, CancellationToken.None);
+        var ok = Assert.IsType<Ok<OrdemServicoViewModel>>(await endpoints.RecusarOrcamento(id, CancellationToken.None));
+
+        Assert.Equal(5, ok.Value.Status);
+    }
+
+    [Fact]
+    public async Task RecusarOrcamento_OrdemSemOrcamento_DeveRetornar400()
+    {
+        var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();
+        var endpoints = _fixture.CriarOrdensServicoEndpoints();
+        var created = Assert.IsType<CreatedAtRoute<OrdemServicoViewModel>>(await endpoints.Post(
+            new CriarOrdemServicoCommand { ClienteId = clienteId, VeiculoId = veiculoId, ServicoIds = [servicoId] },
+            CancellationToken.None));
+
+        Assert.IsType<BadRequest<Dictionary<string, string?>>>(await endpoints.RecusarOrcamento(created.Value.Id, CancellationToken.None));
+    }
+
+    [Fact]
     public async Task Delete_OrdemExistente_DeveRetornar204()
     {
         var (clienteId, veiculoId, servicoId) = await CriarContextoCompletoAsync();

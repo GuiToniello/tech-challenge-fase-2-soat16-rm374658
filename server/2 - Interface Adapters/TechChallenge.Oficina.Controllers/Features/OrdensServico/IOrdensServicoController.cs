@@ -33,5 +33,7 @@ namespace TechChallenge.Oficina.Controllers.Features.OrdensServico
         Task<object> EnviarOrcamento(Guid id, CancellationToken cancellationToken);
 
         Task<object> AprovarOrcamento(Guid id, CancellationToken cancellationToken);
+
+        Task<object> RecusarOrcamento(Guid id, CancellationToken cancellationToken);
     }
 }

@@ -537,4 +537,39 @@ public sealed class OrdemServicoUseCasesTests
         _estoqueServiceMock.Verify(s => s.DebitarEstoqueParaOrdemServicoAsync(It.IsAny<IReadOnlyCollection<Servico>>(), It.IsAny<CancellationToken>()), Times.Never);
         _ordemServicoRepositoryMock.Verify(r => r.AtualizarAsync(It.IsAny<OrdemServico>(), It.IsAny<CancellationToken>()), Times.Never);
     }
+
+    [Fact]
+    public async Task RecusarOrcamentoAsync_DeveAlterarStatusParaFinalizada()
+    {
+        var service = CriarService();
+        var cliente = CriarCliente();
+        var veiculo = CriarVeiculo(cliente.Id);
+        var ordemServico = CriarOrdemServico(cliente.Id, veiculo.Id, [CriarServico()]);
+        ordemServico.GerarOrcamento();
+
+        _ordemServicoRepositoryMock.Setup(r => r.ObterPorIdAsync(ordemServico.Id, It.IsAny<CancellationToken>())).ReturnsAsync(ordemServico);
+        _mapperMock.Setup(m => m.Map<OrdemServicoViewModel>(It.IsAny<object>())).Returns((object source) => MapearViewModel((OrdemServico)source));
+
+        var resultado = await service.RecusarOrcamentoAsync(new AlterarStatusOrdemServicoCommand { Id = ordemServico.Id });
+
+        Assert.Equal((int)StatusOrdemServico.Finalizada, resultado.Status);
+        _ordemServicoRepositoryMock.Verify(r => r.AtualizarAsync(ordemServico, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task RecusarOrcamentoAsync_DeveLancarDomainException_QuandoStatusInvalido()
+    {
+        var service = CriarService();
+        var cliente = CriarCliente();
+        var veiculo = CriarVeiculo(cliente.Id);
+        var ordemServico = CriarOrdemServico(cliente.Id, veiculo.Id, [CriarServico()]);
+
+        _ordemServicoRepositoryMock.Setup(r => r.ObterPorIdAsync(ordemServico.Id, It.IsAny<CancellationToken>())).ReturnsAsync(ordemServico);
+
+        var action = async () => await service.RecusarOrcamentoAsync(new AlterarStatusOrdemServicoCommand { Id = ordemServico.Id });
+
+        var exception = await Assert.ThrowsAsync<DomainException>(action);
+        Assert.Equal("Somente ordem de servico aguardando aprovacao pode ser recusada.", exception.Message);
+        _ordemServicoRepositoryMock.Verify(r => r.AtualizarAsync(It.IsAny<OrdemServico>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
 }

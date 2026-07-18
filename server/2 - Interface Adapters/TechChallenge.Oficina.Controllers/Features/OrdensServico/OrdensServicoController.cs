@@ -397,5 +397,26 @@ namespace TechChallenge.Oficina.Controllers.Features.OrdensServico
                 return _ordensServicoAdapter.Adapt(result);
             }
         }
+
+        public async Task<object> RecusarOrcamento(Guid id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var ordemServico = await _ordemServicoService.RecusarOrcamentoAsync(new AlterarStatusOrdemServicoCommand { Id = id }, cancellationToken);
+                var result = OrdensServicoResult.From(ordemServico);
+
+                return _ordensServicoAdapter.Adapt(result);
+            }
+            catch (DomainException exception)
+            {
+                var result = OrdensServicoResult.FromError<OrdemServicoViewModel>(exception);
+                return _ordensServicoAdapter.Adapt(result);
+            }
+            catch (KeyNotFoundException exception)
+            {
+                var result = OrdensServicoResult.FromError<OrdemServicoViewModel>(exception);
+                return _ordensServicoAdapter.Adapt(result);
+            }
+        }
     }
 }
