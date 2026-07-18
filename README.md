@@ -21,9 +21,9 @@ Você pode acessar o relatório completo [aqui](./reports/relatorio-completo.pdf
 
 ## 2. Arquitetura
 
-### 2.1. Visao Geral
+Nessa seção, será descrita a arquitetura em alto nível e organização da solução.
 
-Arquitetura descrita em alto nível para organização da solução.
+### 2.1. Visao Geral
 
 As decisões arquiteturais estão documentadas individualmente como ADRs (Architecture Decision Records) em `docs/adr/`:
 
