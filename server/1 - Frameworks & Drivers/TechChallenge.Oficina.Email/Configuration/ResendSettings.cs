@@ -6,4 +6,5 @@ public sealed class ResendSettings
 
     public string ApiKey { get; set; } = string.Empty;
     public string FromEmail { get; set; } = string.Empty;
+    public bool SendEmailOnStatusChange { get; set; } = false;
 }

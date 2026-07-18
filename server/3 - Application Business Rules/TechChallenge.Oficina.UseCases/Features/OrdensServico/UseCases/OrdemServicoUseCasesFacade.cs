@@ -11,11 +11,13 @@ public sealed class OrdemServicoUseCasesFacade : IOrdemServicoUseCasesFacade
     public OrdemServicoUseCasesFacade(
         IEstoqueUseCases estoqueService,
         IIndicadorUseCases indicadorService,
-        IOrcamentoEmailSender orcamentoEmailSender)
+        IOrcamentoEmailSender orcamentoEmailSender,
+        IOrdemServicoStatusEmailSender ordemServicoStatusEmailSender)
     {
         EstoqueService = estoqueService;
         IndicadorService = indicadorService;
         OrcamentoEmailSender = orcamentoEmailSender;
+        OrdemServicoStatusEmailSender = ordemServicoStatusEmailSender;
     }
 
     public IEstoqueUseCases EstoqueService { get; }
@@ -23,4 +25,6 @@ public sealed class OrdemServicoUseCasesFacade : IOrdemServicoUseCasesFacade
     public IIndicadorUseCases IndicadorService { get; }
 
     public IOrcamentoEmailSender OrcamentoEmailSender { get; }
+
+    public IOrdemServicoStatusEmailSender OrdemServicoStatusEmailSender { get; }
 }

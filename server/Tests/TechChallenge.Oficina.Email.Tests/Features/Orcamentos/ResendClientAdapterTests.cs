@@ -1,6 +1,6 @@
 using Moq;
 using Resend;
-using TechChallenge.Oficina.Email.Features.Orcamentos;
+using TechChallenge.Oficina.Email.Features;
 using Xunit;
 
 namespace TechChallenge.Oficina.Email.Tests.Features.Orcamentos;

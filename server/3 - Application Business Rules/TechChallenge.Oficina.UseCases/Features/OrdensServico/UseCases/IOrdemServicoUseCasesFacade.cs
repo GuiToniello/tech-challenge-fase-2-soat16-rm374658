@@ -8,4 +8,5 @@ public interface IOrdemServicoUseCasesFacade
     IEstoqueUseCases EstoqueService { get; }
     IIndicadorUseCases IndicadorService { get; }
     IOrcamentoEmailSender OrcamentoEmailSender { get; }
+    IOrdemServicoStatusEmailSender OrdemServicoStatusEmailSender { get; }
 }

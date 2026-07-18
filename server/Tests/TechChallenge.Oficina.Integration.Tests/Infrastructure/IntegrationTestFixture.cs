@@ -21,6 +21,7 @@ using TechChallenge.Oficina.DB.Data.Features.OrdensServico;
 using TechChallenge.Oficina.DB.Data.Features.Servicos;
 using TechChallenge.Oficina.DB.Data.Features.Veiculos;
 using TechChallenge.Oficina.Entities.Features.OrdensServico;
+using TechChallenge.Oficina.Entities.Features.OrdensServico.Enums;
 using TechChallenge.Oficina.UseCases.Features.Clientes.Mappings;
 using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
 using TechChallenge.Oficina.UseCases.Features.Indicadores.Services;
@@ -67,6 +68,16 @@ public sealed class IntegrationTestFixture : IDisposable
                 It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
         services.AddSingleton(emailSenderMock.Object);
+
+        var statusEmailSenderMock = new Mock<IOrdemServicoStatusEmailSender>();
+        statusEmailSenderMock
+            .Setup(s => s.EnviarStatusAlteradoAsync(
+                It.IsAny<OrdemServico>(),
+                It.IsAny<string>(),
+                It.IsAny<Entities.Features.OrdensServico.Enums.StatusOrdemServico>(),
+                It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        services.AddSingleton(statusEmailSenderMock.Object);
 
         services.AddAutoMapper(_ => { }, typeof(ClienteProfile).Assembly, typeof(OrdemServicoProfile).Assembly);
         services.AddScoped<IClienteUseCases, ClienteUseCases>();

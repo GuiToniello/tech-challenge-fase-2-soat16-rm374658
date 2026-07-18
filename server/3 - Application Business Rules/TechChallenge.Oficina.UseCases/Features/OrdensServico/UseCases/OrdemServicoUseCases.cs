@@ -4,6 +4,7 @@ using TechChallenge.Oficina.UseCases.Features.OrdensServico.Queries;
 using TechChallenge.Oficina.UseCases.Features.OrdensServico.ViewModels;
 using TechChallenge.Oficina.Entities.Exceptions;
 using TechChallenge.Oficina.Entities.Features.OrdensServico;
+using TechChallenge.Oficina.Entities.Features.OrdensServico.Enums;
 using TechChallenge.Oficina.Entities.Features.Servicos;
 using TechChallenge.Oficina.Entities.Features.Veiculos;
 using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
@@ -104,8 +105,13 @@ public sealed class OrdemServicoUseCases : IOrdemServicoUseCases
     public async Task<OrdemServicoViewModel> AlterarStatusParaEmDiagnosticoAsync(AlterarStatusOrdemServicoCommand command, CancellationToken cancellationToken = default)
     {
         var ordemServico = await ObterOrdemServicoExistenteAsync(command.Id, cancellationToken);
+        var statusAnterior = ordemServico.Status;
+
         ordemServico.AlterarParaEmDiagnostico();
         await _ordemServicoGateway.AtualizarAsync(ordemServico, cancellationToken);
+
+        await EnviarNotificacaoStatusAlteradoAsync(ordemServico, statusAnterior, cancellationToken);
+
         return _mapper.Map<OrdemServicoViewModel>(ordemServico);
     }
 
@@ -159,25 +165,40 @@ public sealed class OrdemServicoUseCases : IOrdemServicoUseCases
     public async Task<OrdemServicoViewModel> AlterarStatusParaEmExecucaoAsync(AlterarStatusOrdemServicoCommand command, CancellationToken cancellationToken = default)
     {
         var ordemServico = await ObterOrdemServicoExistenteAsync(command.Id, cancellationToken);
+        var statusAnterior = ordemServico.Status;
+
         ordemServico.AlterarParaEmExecucao();
         await _ordemServicoGateway.AtualizarAsync(ordemServico, cancellationToken);
+
+        await EnviarNotificacaoStatusAlteradoAsync(ordemServico, statusAnterior, cancellationToken);
+
         return _mapper.Map<OrdemServicoViewModel>(ordemServico);
     }
 
     public async Task<OrdemServicoViewModel> AlterarStatusParaFinalizadaAsync(AlterarStatusOrdemServicoCommand command, CancellationToken cancellationToken = default)
     {
         var ordemServico = await ObterOrdemServicoExistenteAsync(command.Id, cancellationToken);
+        var statusAnterior = ordemServico.Status;
+
         ordemServico.AlterarParaFinalizada();
         await _ordemServicoGateway.AtualizarAsync(ordemServico, cancellationToken);
+
+        await EnviarNotificacaoStatusAlteradoAsync(ordemServico, statusAnterior, cancellationToken);
+
         return _mapper.Map<OrdemServicoViewModel>(ordemServico);
     }
 
     public async Task<OrdemServicoViewModel> AlterarStatusParaEntregueAsync(AlterarStatusOrdemServicoCommand command, CancellationToken cancellationToken = default)
     {
         var ordemServico = await ObterOrdemServicoExistenteAsync(command.Id, cancellationToken);
+        var statusAnterior = ordemServico.Status;
+
         ordemServico.AlterarParaEntregue();
         await _ordemServicoGateway.AtualizarAsync(ordemServico, cancellationToken);
+
+        await EnviarNotificacaoStatusAlteradoAsync(ordemServico, statusAnterior, cancellationToken);
         await _ordemServicoServicesFacade.IndicadorService.AtualizarAsync(cancellationToken);
+
         return _mapper.Map<OrdemServicoViewModel>(ordemServico);
     }
 
@@ -191,6 +212,27 @@ public sealed class OrdemServicoUseCases : IOrdemServicoUseCases
         }
 
         return ordemServico;
+    }
+
+    private async Task EnviarNotificacaoStatusAlteradoAsync(OrdemServico ordemServico, StatusOrdemServico statusAnterior, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var cliente = await _clienteGateway.ObterPorIdAsync(ordemServico.ClienteId, cancellationToken);
+
+            if (cliente is not null && !string.IsNullOrWhiteSpace(cliente.Email))
+            {
+                await _ordemServicoServicesFacade.OrdemServicoStatusEmailSender.EnviarStatusAlteradoAsync(
+                    ordemServico,
+                    cliente.Email,
+                    ordemServico.Status,
+                    cancellationToken);
+            }
+        }
+        catch
+        {
+            // Modo degradado: falhas no envio de email não interrompem o fluxo de atualização de status
+        }
     }
 
     private async Task ValidarClienteExistenteAsync(Guid clienteId, CancellationToken cancellationToken)
