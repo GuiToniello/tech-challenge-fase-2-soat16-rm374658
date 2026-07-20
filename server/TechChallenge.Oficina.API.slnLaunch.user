@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "1 - Frameworks & Drivers\\TechChallenge.Oficina.API\\TechChallenge.Oficina.API.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "1 - Frameworks & Drivers\\TechChallenge.Oficina.StatusService.API\\TechChallenge.Oficina.StatusService.API.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

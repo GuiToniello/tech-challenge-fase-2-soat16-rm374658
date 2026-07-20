@@ -3,6 +3,7 @@
     <Project Path="1 - Frameworks &amp; Drivers/TechChallenge.Oficina.API/TechChallenge.Oficina.API.csproj" />
     <Project Path="1 - Frameworks &amp; Drivers/TechChallenge.Oficina.DB/TechChallenge.Oficina.DB.csproj" Id="71fe5663-eba3-4094-a2e6-eafa02c7eae3" />
     <Project Path="1 - Frameworks &amp; Drivers/TechChallenge.Oficina.Email/TechChallenge.Oficina.Email.csproj" />
+    <Project Path="1 - Frameworks &amp; Drivers/TechChallenge.Oficina.StatusService.API/TechChallenge.Oficina.StatusService.API.csproj" />
   </Folder>
   <Folder Name="/2 - Interface Adapters/">
     <Project Path="2 - Interface Adapters/TechChallenge.Oficina.Controllers/TechChallenge.Oficina.Controllers.csproj" Id="bb799465-98f2-48ae-9a0a-74f7a928946a" />
@@ -31,6 +32,7 @@
   <Folder Name="/Tests/">
     <File Path="../e2e/TechChallenge.Oficina.API.postman_collection.json" />
     <Project Path="Tests/TechChallenge.Oficina.API.Tests/TechChallenge.Oficina.API.Tests.csproj" />
+    <Project Path="Tests/TechChallenge.Oficina.StatusService.API.Tests/TechChallenge.Oficina.StatusService.API.Tests.csproj" />
     <Project Path="Tests/TechChallenge.Oficina.UseCases.Tests/TechChallenge.Oficina.UseCases.Tests.csproj" />
     <Project Path="Tests/TechChallenge.Oficina.Controllers.Tests/TechChallenge.Oficina.Controllers.Tests.csproj" Id="62f6c073-70c9-4926-a4b3-f670efda32d0" />
     <Project Path="Tests/TechChallenge.Oficina.Entities.Tests/TechChallenge.Oficina.Entities.Tests.csproj" />
