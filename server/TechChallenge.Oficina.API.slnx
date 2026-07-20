@@ -4,6 +4,7 @@
     <Project Path="1 - Frameworks &amp; Drivers/TechChallenge.Oficina.DB/TechChallenge.Oficina.DB.csproj" Id="71fe5663-eba3-4094-a2e6-eafa02c7eae3" />
     <Project Path="1 - Frameworks &amp; Drivers/TechChallenge.Oficina.Email/TechChallenge.Oficina.Email.csproj" />
     <Project Path="1 - Frameworks &amp; Drivers/TechChallenge.Oficina.StatusService.API/TechChallenge.Oficina.StatusService.API.csproj" />
+    <Project Path="1 - Frameworks &amp; Drivers/TechChallenge.Oficina.CreateOSService.API/TechChallenge.Oficina.CreateOSService.API.csproj" />
   </Folder>
   <Folder Name="/2 - Interface Adapters/">
     <Project Path="2 - Interface Adapters/TechChallenge.Oficina.Controllers/TechChallenge.Oficina.Controllers.csproj" Id="bb799465-98f2-48ae-9a0a-74f7a928946a" />
@@ -39,6 +40,7 @@
     <Project Path="Tests/TechChallenge.Oficina.DB.Tests/TechChallenge.Oficina.DB.Tests.csproj" />
     <Project Path="Tests/TechChallenge.Oficina.Email.Tests/TechChallenge.Oficina.Email.Tests.csproj" />
     <Project Path="Tests/TechChallenge.Oficina.Integration.Tests/TechChallenge.Oficina.Integration.Tests.csproj" />
+    <Project Path="Tests/TechChallenge.Oficina.CreateOSService.API.Tests/TechChallenge.Oficina.CreateOSService.API.Tests.csproj" />
   </Folder>
 </Solution>
 
