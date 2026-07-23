@@ -8,7 +8,7 @@
   "variable": [
     {
       "key": "statusServiceBaseUrl",
-      "value": "https://localhost:54006"
+      "value": "https://localhost:7198"
     },
     {
       "key": "oficinaApiBaseUrl",

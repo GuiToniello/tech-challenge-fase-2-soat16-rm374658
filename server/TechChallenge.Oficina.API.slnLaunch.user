@@ -17,6 +17,10 @@
       {
         "Path": "1 - Frameworks & Drivers\\TechChallenge.Oficina.Monolith.API\\TechChallenge.Oficina.Monolith.API.csproj",
         "Action": "Start"
+      },
+      {
+        "Path": "1 - Frameworks & Drivers\\TechChallenge.Oficina.ApprovalService.API\\TechChallenge.Oficina.ApprovalService.API.csproj",
+        "Action": "Start"
       }
     ]
   }

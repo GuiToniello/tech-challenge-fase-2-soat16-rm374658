@@ -8,7 +8,7 @@
   "variable": [
     {
       "key": "getOSServiceBaseUrl",
-      "value": "https://localhost:7195"
+      "value": "https://localhost:7197"
     },
     {
       "key": "oficinaApiBaseUrl",
