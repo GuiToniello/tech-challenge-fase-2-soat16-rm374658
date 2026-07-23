@@ -1,4 +1,4 @@
-# ADR-001: Clean Architecture com Folder-by-Feature
+﻿# ADR-001: Clean Architecture com Folder-by-Feature
 
 **Status**: Aceita (atualizada)
 
@@ -26,7 +26,7 @@ Adotar explicitamente **Clean Architecture** com os seguintes papéis:
 - **Infraestrutura Técnica** (`TechChallenge.Oficina.Infra.csproj`, `TechChallenge.Oficina.DB.csproj`, `TechChallenge.Oficina.Email.csproj`):
 	Implementações concretas de persistência, e-mail, configuração e integrações com bibliotecas/frameworks externos.
 
-- **API (Composition Root)** (`TechChallenge.Oficina.API.csproj`):
+- **API (Composition Root)** (`TechChallenge.Oficina.Monolith.API.csproj`):
 	Ponto de entrada da aplicação, responsável por configuração de middleware, DI, endpoints (Minimal APIs) e composição dos módulos.
 
 **Regra de Dependência**:

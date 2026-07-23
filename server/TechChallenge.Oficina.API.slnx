@@ -1,6 +1,6 @@
-<Solution>
+﻿<Solution>
   <Folder Name="/1 - Frameworks &amp; Drivers/">
-    <Project Path="1 - Frameworks &amp; Drivers/TechChallenge.Oficina.API/TechChallenge.Oficina.API.csproj" />
+    <Project Path="1 - Frameworks &amp; Drivers/TechChallenge.Oficina.Monolith.API/TechChallenge.Oficina.Monolith.API.csproj" />
     <Project Path="1 - Frameworks &amp; Drivers/TechChallenge.Oficina.DB/TechChallenge.Oficina.DB.csproj" Id="71fe5663-eba3-4094-a2e6-eafa02c7eae3" />
     <Project Path="1 - Frameworks &amp; Drivers/TechChallenge.Oficina.Email/TechChallenge.Oficina.Email.csproj" />
     <Project Path="1 - Frameworks &amp; Drivers/TechChallenge.Oficina.StatusService.API/TechChallenge.Oficina.StatusService.API.csproj" />
@@ -32,8 +32,8 @@
     <File Path="../docs/adr/INDICE.md" />
   </Folder>
   <Folder Name="/Tests/">
-    <File Path="../e2e/TechChallenge.Oficina.API.postman_collection.json" />
-    <Project Path="Tests/TechChallenge.Oficina.API.Tests/TechChallenge.Oficina.API.Tests.csproj" />
+    <File Path="../e2e/TechChallenge.Oficina.Monolith.API.postman_collection.json" />
+    <Project Path="Tests/TechChallenge.Oficina.Monolith.API.Tests/TechChallenge.Oficina.Monolith.API.Tests.csproj" />
     <Project Path="Tests/TechChallenge.Oficina.StatusService.API.Tests/TechChallenge.Oficina.StatusService.API.Tests.csproj" />
     <Project Path="Tests/TechChallenge.Oficina.UseCases.Tests/TechChallenge.Oficina.UseCases.Tests.csproj" />
     <Project Path="Tests/TechChallenge.Oficina.Controllers.Tests/TechChallenge.Oficina.Controllers.Tests.csproj" Id="62f6c073-70c9-4926-a4b3-f670efda32d0" />

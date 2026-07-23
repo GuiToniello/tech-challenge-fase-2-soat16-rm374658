@@ -1,4 +1,4 @@
-# Projeto Oficina
+﻿# Projeto Oficina
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GuiToniello_tech-challenge-fase-1-soat16-rm374658&metric=alert_status&token=ea0031cd24511d30496ed0d47a909e4881b37946)](https://sonarcloud.io/summary/new_code?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658) [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=GuiToniello_tech-challenge-fase-1-soat16-rm374658&token=ea0031cd24511d30496ed0d47a909e4881b37946)](https://sonarcloud.io/summary/new_code?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658) [![SonarQube Cloud](https://sonarcloud.io/images/project_badges/sonarcloud-light.svg)](https://sonarcloud.io/summary/new_code?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658)
 
@@ -103,7 +103,7 @@ Esse projeto foi construído usando os padrões descritos abaixo.
   - ADR: [ADR-006](./docs/adr/ADR-006-AutoMapper-nos-UseCases.md)
   - Codigo: [UseCases](./server/3%20-%20Application%20Business%20Rules/TechChallenge.Oficina.UseCases/)
 - Dependency Injection (Inversion of Control)
-  - Codigo: [Program.cs](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.API/Program.cs)
+  - Codigo: [Program.cs](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.Monolith.API/Program.cs)
 - Service Layer (aplicada na camada de UseCases)
   - Codigo: [UseCases](./server/3%20-%20Application%20Business%20Rules/TechChallenge.Oficina.UseCases/)
 
@@ -117,7 +117,7 @@ Esse projeto foi construído usando os padrões descritos abaixo.
   - ADR: [ADR-005](./docs/adr/ADR-005-Separacao-Commands-Queries-ViewModels.md)
 - Centralized Exception Handling (duas camadas: controller + middleware)
   - ADR: [ADR-013](./docs/adr/ADR-013-Estrategia-de-Tratamento-de-Erros-em-Duas-Camadas.md)
-  - Codigo: [Middleware](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.API/Middleware/) e [Controllers](./server/2%20-%20Interface%20Adapters/TechChallenge.Oficina.Controllers/)
+  - Codigo: [Middleware](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.Monolith.API/Middleware/) e [Controllers](./server/2%20-%20Interface%20Adapters/TechChallenge.Oficina.Controllers/)
 
 ### 3.4. Padrões Comportamentais
 
@@ -203,7 +203,7 @@ Passo 2 - Use `http://localhost:8080/index.html` para acessar o swagger.
 
 Passo 1 - rode o `postgres` - pode ser uma instância local ou via container `docker compose up -d postgres`.
 
-Passo 2 - aponte o console para a pasta `server/1 - Frameworks & Drivers/TechChallenge.Oficina.API/` e então execute `dotnet run`
+Passo 2 - aponte o console para a pasta `server/1 - Frameworks & Drivers/TechChallenge.Oficina.Monolith.API/` e então execute `dotnet run`
 
 Pronto!
 
@@ -230,7 +230,7 @@ Não temos scripts SQL ou endpoint, apenas use a collection que ela irá popular
 
 Se você estiver rodando em container, não é preciso configurar mais nada, apenas rodar, a connection string já está certa.
 
-Se você está rodando o Postgres localmente, com instância não containerizada, precisa configurar a connection string em `server/1 - Frameworks & Drivers/TechChallenge.Oficina.API/appsettings.json`, na chave `DatabaseSettings:ConnectionString`.
+Se você está rodando o Postgres localmente, com instância não containerizada, precisa configurar a connection string em `server/1 - Frameworks & Drivers/TechChallenge.Oficina.Monolith.API/appsettings.json`, na chave `DatabaseSettings:ConnectionString`.
 
 ### 4.6. Rodando os testes
 
@@ -238,7 +238,7 @@ Os testes automatizados estão organizados em `server/Tests/` por camada da arqu
 
 Para executar todos os testes da solução, use:
 
-`dotnet test ./server/TechChallenge.Oficina.API.slnx`
+`dotnet test ./server/TechChallenge.Oficina.Monolith.API.slnx`
 
 Se quiser executar apenas um projeto de teste específico, use o `.csproj` correspondente em `server/Tests/`.
 
@@ -257,8 +257,8 @@ Sem `RESEND_API_KEY` (container) ou `ApiKey` no `appsettings.json` (execução l
 
 | Requisito | Atende? | Observação de escopo | Evidências (server/) |
 |---|---|---|---|
-| Consulta de status da Ordem de Serviço (OS) | Sim | Consulta de status disponível no fluxo de OS. | [Endpoints OS](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.API/Features/OrdensServico/OrdensServicoEndpoints.cs) · [Controller OS](./server/2%20-%20Interface%20Adapters/TechChallenge.Oficina.Controllers/Features/OrdensServico/OrdensServicoController.cs) |
-| Aprovação/recusa de orçamento por endpoint externo | Sim | Aprovação e recusa implementadas no fluxo da OS. | [Endpoints OS](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.API/Features/OrdensServico/OrdensServicoEndpoints.cs) · [UseCases OS](./server/3%20-%20Application%20Business%20Rules/TechChallenge.Oficina.UseCases/Features/OrdensServico/UseCases/OrdemServicoUseCases.cs) |
+| Consulta de status da Ordem de Serviço (OS) | Sim | Consulta de status disponível no fluxo de OS. | [Endpoints OS](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.Monolith.API/Features/OrdensServico/OrdensServicoEndpoints.cs) · [Controller OS](./server/2%20-%20Interface%20Adapters/TechChallenge.Oficina.Controllers/Features/OrdensServico/OrdensServicoController.cs) |
+| Aprovação/recusa de orçamento por endpoint externo | Sim | Aprovação e recusa implementadas no fluxo da OS. | [Endpoints OS](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.Monolith.API/Features/OrdensServico/OrdensServicoEndpoints.cs) · [UseCases OS](./server/3%20-%20Application%20Business%20Rules/TechChallenge.Oficina.UseCases/Features/OrdensServico/UseCases/OrdemServicoUseCases.cs) |
 | Abertura de OS com cliente, veículo, serviços e peças, retornando ID único | Sim | Abertura completa com retorno da identificação da OS. | [Controller OS](./server/2%20-%20Interface%20Adapters/TechChallenge.Oficina.Controllers/Features/OrdensServico/OrdensServicoController.cs) · [ViewModel Abertura](./server/3%20-%20Application%20Business%20Rules/TechChallenge.Oficina.UseCases/Features/OrdensServico/ViewModels/AberturaOrdemServicoViewModel.cs) |
 | Listagem de OS por prioridade + antiguidade, excluindo finalizadas/entregues | Sim | Escopo acordado: endpoint ordenado /ordenadas. | [Gateway OS](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.DB/Features/OrdensServico/OrdemServicoGateway.cs) · [Query Ordenada](./server/3%20-%20Application%20Business%20Rules/TechChallenge.Oficina.UseCases/Features/OrdensServico/Queries/ListarOrdensServicoOrdenadasQuery.cs) |
 | Atualização de status da OS com notificação ao cliente | Sim | Escopo acordado: mudanças de status da OS; orçamento separado em /enviar-orçamento. | [UseCases OS](./server/3%20-%20Application%20Business%20Rules/TechChallenge.Oficina.UseCases/Features/OrdensServico/UseCases/OrdemServicoUseCases.cs) · [Sender Status](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.Email/Features/OrdensServico/OrdemServicoStatusEmailSender.cs) |

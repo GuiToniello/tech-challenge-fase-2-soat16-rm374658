@@ -1,4 +1,4 @@
-using TechChallenge.Oficina.CreateOSService.API.Extensions;
+﻿using TechChallenge.Oficina.CreateOSService.API.Extensions;
 using TechChallenge.Oficina.CreateOSService.API.Features.OrdensServico;
 using TechChallenge.Oficina.Controllers.Features.OrdensServico;
 using TechChallenge.Oficina.Controllers.Features.Clientes;
@@ -15,12 +15,12 @@ using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
 using TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
 using TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
 using TechChallenge.Oficina.DB.Data;
-using TechChallenge.Oficina.API.Settings;
-using TechChallenge.Oficina.API.Features.Clientes;
-using TechChallenge.Oficina.API.Features.Insumos;
-using TechChallenge.Oficina.API.Features.OrdensServico;
-using TechChallenge.Oficina.API.Features.Servicos;
-using TechChallenge.Oficina.API.Features.Veiculos;
+using TechChallenge.Oficina.Monolith.API.Settings;
+using TechChallenge.Oficina.Monolith.API.Features.Clientes;
+using TechChallenge.Oficina.Monolith.API.Features.Insumos;
+using TechChallenge.Oficina.Monolith.API.Features.OrdensServico;
+using TechChallenge.Oficina.Monolith.API.Features.Servicos;
+using TechChallenge.Oficina.Monolith.API.Features.Veiculos;
 using TechChallenge.Oficina.Email;
 using TechChallenge.Oficina.Email.Configuration;
 

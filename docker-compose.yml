@@ -1,4 +1,4 @@
-services:
+﻿services:
   postgres:
     image: postgres:17-alpine
     container_name: oficina-postgres
@@ -20,7 +20,7 @@ services:
   api:
     build:
       context: ./server
-      dockerfile: 1 - Frameworks & Drivers/TechChallenge.Oficina.API/Dockerfile
+      dockerfile: 1 - Frameworks & Drivers/TechChallenge.Oficina.Monolith.API/Dockerfile
     container_name: oficina-api
     depends_on:
       postgres:

@@ -1,4 +1,4 @@
-name: Build, Test, Security Scan and Analyze
+﻿name: Build, Test, Security Scan and Analyze
 on:
   push:
     branches:
@@ -31,15 +31,15 @@ jobs:
 
       # ========== RESTORE & BUILD ==========
       - name: Restore NuGet dependencies
-        run: dotnet restore server/TechChallenge.Oficina.API.slnx
+        run: dotnet restore server/TechChallenge.Oficina.Monolith.API.slnx
 
       - name: Build solution
-        run: dotnet build server/TechChallenge.Oficina.API.slnx --no-restore --configuration Release
+        run: dotnet build server/TechChallenge.Oficina.Monolith.API.slnx --no-restore --configuration Release
 
       # ========== TESTS & COVERAGE ==========
       - name: Run tests with code coverage
         run: |
-          dotnet test server/TechChallenge.Oficina.API.slnx `
+          dotnet test server/TechChallenge.Oficina.Monolith.API.slnx `
             --no-build `
             --configuration Release `
             --collect:"XPlat Code Coverage" `
@@ -93,10 +93,10 @@ jobs:
           dotnet-version: '10.x'
 
       - name: Restore NuGet dependencies for Trivy dependency analysis
-        run: dotnet restore server/TechChallenge.Oficina.API.slnx
+        run: dotnet restore server/TechChallenge.Oficina.Monolith.API.slnx
 
       - name: Build solution for Trivy dependency analysis
-        run: dotnet build server/TechChallenge.Oficina.API.slnx --no-restore --configuration Release
+        run: dotnet build server/TechChallenge.Oficina.Monolith.API.slnx --no-restore --configuration Release
 
       # ========== TRIVY SECURITY SCAN ==========
       - name: Set up Trivy
@@ -274,10 +274,10 @@ jobs:
           distribution: 'zulu'
 
       - name: Restore NuGet dependencies for Dependency-Check analysis
-        run: dotnet restore server/TechChallenge.Oficina.API.slnx
+        run: dotnet restore server/TechChallenge.Oficina.Monolith.API.slnx
 
       - name: Build solution for Dependency-Check analysis
-        run: dotnet build server/TechChallenge.Oficina.API.slnx --no-restore --configuration Release
+        run: dotnet build server/TechChallenge.Oficina.Monolith.API.slnx --no-restore --configuration Release
 
       # ========== DEPENDENCY-CHECK SETUP ==========
       - name: Cache Dependency-Check data
@@ -440,7 +440,7 @@ jobs:
           }
 
       - name: Restore NuGet dependencies for Sonar build
-        run: dotnet restore server/TechChallenge.Oficina.API.slnx
+        run: dotnet restore server/TechChallenge.Oficina.Monolith.API.slnx
 
       # ========== SONARQUBE ANALYSIS (AFTER TRIVY) ==========
       - name: Install SonarQube Cloud scanner
@@ -468,7 +468,7 @@ jobs:
             /d:sonar.sarifReportPaths="trivy-artifacts/trivy.sarif,dependency-check-artifacts/dependency-check-report.sarif" `
             /d:sonar.cs.roslyn.skipRegistry=true `
             /d:sonar.exclusions="**/*Tests/**,**/coveragereport/**,**/.github/workflows/**,**/TestResults/**,**/trivy-artifacts/**,**/dependency-check-artifacts/**,**/Migrations/**"
-          dotnet build server/TechChallenge.Oficina.API.slnx --no-restore --configuration Release
+          dotnet build server/TechChallenge.Oficina.Monolith.API.slnx --no-restore --configuration Release
           
           # End SonarQube analysis
           ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"

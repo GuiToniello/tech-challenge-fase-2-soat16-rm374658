@@ -1,4 +1,4 @@
-# ADR-008: Swagger para Documentação de API
+﻿# ADR-008: Swagger para Documentação de API
 
 **Status**: Aceita
 
@@ -14,7 +14,7 @@ Necessidade de documentar endpoints de API automaticamente, permitindo testes in
   app.UseSwagger();
   app.UseSwaggerUI(options =>
   {
-      options.SwaggerEndpoint("/swagger/v1/swagger.json", "TechChallenge.Oficina.API v1");
+      options.SwaggerEndpoint("/swagger/v1/swagger.json", "TechChallenge.Oficina.Monolith.API v1");
       options.RoutePrefix = string.Empty; // Raiz
   });
   ```
