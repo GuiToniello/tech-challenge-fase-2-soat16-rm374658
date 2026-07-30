@@ -57,5 +57,63 @@
       - "${API_APPROVAL_PORT:-7195}:8080"
     restart: unless-stopped
 
+  createos-api:
+    build:
+      context: ./server
+      dockerfile: 1 - Frameworks & Drivers/TechChallenge.Oficina.CreateOSService.API/Dockerfile
+    container_name: oficina-createos-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS:-http://+:8080}
+      AllowedHosts: ${ALLOWED_HOSTS:-*}
+      Logging__LogLevel__Default: ${LOG_LEVEL_DEFAULT:-Information}
+      Logging__LogLevel__Microsoft__AspNetCore: ${LOG_LEVEL_ASPNETCORE:-Warning}
+      DatabaseSettings__ConnectionString: ${DATABASE_CONNECTION_STRING:-Host=postgres;Port=5432;Database=oficina;Username=sa;Password=P@ssw0rd123}
+      ResendSettings__ApiKey: ${RESEND_API_KEY}
+    ports:
+      - "${API_CREATEOS_PORT:-7196}:8080"
+    restart: unless-stopped
+
+  getos-api:
+    build:
+      context: ./server
+      dockerfile: 1 - Frameworks & Drivers/TechChallenge.Oficina.GetOSService.API/Dockerfile
+    container_name: oficina-getos-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS:-http://+:8080}
+      AllowedHosts: ${ALLOWED_HOSTS:-*}
+      Logging__LogLevel__Default: ${LOG_LEVEL_DEFAULT:-Information}
+      Logging__LogLevel__Microsoft__AspNetCore: ${LOG_LEVEL_ASPNETCORE:-Warning}
+      DatabaseSettings__ConnectionString: ${DATABASE_CONNECTION_STRING:-Host=postgres;Port=5432;Database=oficina;Username=sa;Password=P@ssw0rd123}
+    ports:
+      - "${API_GETOS_PORT:-7197}:8080"
+    restart: unless-stopped
+
+  status-api:
+    build:
+      context: ./server
+      dockerfile: 1 - Frameworks & Drivers/TechChallenge.Oficina.StatusService.API/Dockerfile
+    container_name: oficina-status-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS:-http://+:8080}
+      AllowedHosts: ${ALLOWED_HOSTS:-*}
+      Logging__LogLevel__Default: ${LOG_LEVEL_DEFAULT:-Information}
+      Logging__LogLevel__Microsoft__AspNetCore: ${LOG_LEVEL_ASPNETCORE:-Warning}
+      DatabaseSettings__ConnectionString: ${DATABASE_CONNECTION_STRING:-Host=postgres;Port=5432;Database=oficina;Username=sa;Password=P@ssw0rd123}
+    ports:
+      - "${API_STATUS_PORT:-7198}:8080"
+    restart: unless-stopped
+
 volumes:
   postgres_data:
