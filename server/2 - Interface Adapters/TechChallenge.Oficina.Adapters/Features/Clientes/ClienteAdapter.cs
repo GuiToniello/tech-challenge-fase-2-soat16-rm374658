@@ -1,8 +1,9 @@
-﻿using TechChallenge.Oficina.UseCases.Features.Clientes.ViewModels;
+using Microsoft.AspNetCore.Http;
+using TechChallenge.Oficina.UseCases.Features.Clientes.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.Clientes;
 using TechChallenge.Oficina.Entities.Exceptions;
 
-namespace TechChallenge.Oficina.Monolith.API.Features.Clientes
+namespace TechChallenge.Oficina.Adapters.Features.Clientes
 {
     public class ClienteAdapter : IClienteAdapter
     {
@@ -42,10 +43,10 @@ namespace TechChallenge.Oficina.Monolith.API.Features.Clientes
         public object CriaErro(Exception ex)
         {
             if (ex is DomainException)
-                return TypedResults.BadRequest(new {  Message = ex.Message });
+                return TypedResults.BadRequest(new { Message = ex.Message });
 
             if (ex is KeyNotFoundException)
-                return TypedResults.NotFound(new {  Message = ex.Message });
+                return TypedResults.NotFound(new { Message = ex.Message });
 
             return TypedResults.Problem(ex?.Message);
         }

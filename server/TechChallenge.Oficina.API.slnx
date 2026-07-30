@@ -9,6 +9,7 @@
     <Project Path="1 - Frameworks &amp; Drivers/TechChallenge.Oficina.GetOSService.API/TechChallenge.Oficina.GetOSService.API.csproj" />
   </Folder>
   <Folder Name="/2 - Interface Adapters/">
+    <Project Path="2 - Interface Adapters/TechChallenge.Oficina.Adapters/TechChallenge.Oficina.Adapters.csproj" />
     <Project Path="2 - Interface Adapters/TechChallenge.Oficina.Controllers/TechChallenge.Oficina.Controllers.csproj" Id="bb799465-98f2-48ae-9a0a-74f7a928946a" />
   </Folder>
   <Folder Name="/3 - Application Business Rules/">
@@ -32,11 +33,18 @@
     <File Path="../docs/adr/ADR-013-Estrategia-de-Tratamento-de-Erros-em-Duas-Camadas.md" />
     <File Path="../docs/adr/INDICE.md" />
   </Folder>
-  <Folder Name="/Tests/">
+  <Folder Name="/E2E/">
+    <File Path="../e2e/TechChallenge.Oficina.ApprovalService.API.postman_collection.json" />
+    <File Path="../e2e/TechChallenge.Oficina.CreateOSService.API.postman_collection.json" />
+    <File Path="../e2e/TechChallenge.Oficina.GetOSService.API.postman_collection.json" />
     <File Path="../e2e/TechChallenge.Oficina.Monolith.API.postman_collection.json" />
+    <File Path="../e2e/TechChallenge.Oficina.StatusService.API.postman_collection.json" />
+  </Folder>
+  <Folder Name="/Tests/">
     <Project Path="Tests/TechChallenge.Oficina.Monolith.API.Tests/TechChallenge.Oficina.Monolith.API.Tests.csproj" />
     <Project Path="Tests/TechChallenge.Oficina.StatusService.API.Tests/TechChallenge.Oficina.StatusService.API.Tests.csproj" />
     <Project Path="Tests/TechChallenge.Oficina.UseCases.Tests/TechChallenge.Oficina.UseCases.Tests.csproj" />
+    <Project Path="Tests/TechChallenge.Oficina.Adapters.Tests/TechChallenge.Oficina.Adapters.Tests.csproj" />
     <Project Path="Tests/TechChallenge.Oficina.Controllers.Tests/TechChallenge.Oficina.Controllers.Tests.csproj" Id="62f6c073-70c9-4926-a4b3-f670efda32d0" />
     <Project Path="Tests/TechChallenge.Oficina.Entities.Tests/TechChallenge.Oficina.Entities.Tests.csproj" />
     <Project Path="Tests/TechChallenge.Oficina.DB.Tests/TechChallenge.Oficina.DB.Tests.csproj" />

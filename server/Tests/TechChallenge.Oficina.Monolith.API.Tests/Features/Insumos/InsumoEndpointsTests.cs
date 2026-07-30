@@ -1,5 +1,5 @@
 ﻿using Moq;
-using TechChallenge.Oficina.Monolith.API.Features.Insumos;
+using TechChallenge.Oficina.Adapters.Features.Insumos;
 using TechChallenge.Oficina.UseCases.Features.Insumos.Commands;
 using TechChallenge.Oficina.UseCases.Features.Insumos.Queries;
 using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;

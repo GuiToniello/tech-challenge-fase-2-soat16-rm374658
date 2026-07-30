@@ -23,6 +23,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\1 - Frameworks &amp; Drivers\TechChallenge.Oficina.Monolith.API\TechChallenge.Oficina.Monolith.API.csproj" />
+    <ProjectReference Include="..\..\2 - Interface Adapters\TechChallenge.Oficina.Adapters\TechChallenge.Oficina.Adapters.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\OrdensServico\" />
   </ItemGroup>
 
 </Project>

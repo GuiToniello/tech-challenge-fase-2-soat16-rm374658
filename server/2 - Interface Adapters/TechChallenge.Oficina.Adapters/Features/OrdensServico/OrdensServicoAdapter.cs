@@ -1,8 +1,9 @@
-﻿using TechChallenge.Oficina.UseCases.Features.OrdensServico.ViewModels;
+using Microsoft.AspNetCore.Http;
+using TechChallenge.Oficina.UseCases.Features.OrdensServico.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.OrdensServico;
 using TechChallenge.Oficina.Entities.Exceptions;
 
-namespace TechChallenge.Oficina.Monolith.API.Features.OrdensServico
+namespace TechChallenge.Oficina.Adapters.Features.OrdensServico
 {
     public class OrdensServicoAdapter : IOrdensServicoAdapter
     {

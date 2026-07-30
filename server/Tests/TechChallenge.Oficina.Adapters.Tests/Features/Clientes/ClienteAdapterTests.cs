@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
-using TechChallenge.Oficina.Monolith.API.Features.Clientes;
+using TechChallenge.Oficina.Adapters.Features.Clientes;
 using TechChallenge.Oficina.UseCases.Features.Clientes.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.Clientes;
 using TechChallenge.Oficina.Entities.Exceptions;
 using Xunit;
 
-namespace TechChallenge.Oficina.Monolith.API.Tests.Features.Clientes;
+namespace TechChallenge.Oficina.Adapters.Tests.Features.Clientes;
 
 public sealed class ClienteAdapterTests
 {
@@ -115,5 +115,3 @@ public sealed class ClienteAdapterTests
         Assert.NotNull(problem);
     }
 }
-
-

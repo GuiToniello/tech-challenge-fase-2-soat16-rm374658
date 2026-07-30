@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
-using TechChallenge.Oficina.Monolith.API.Features.OrdensServico;
+using TechChallenge.Oficina.Adapters.Features.OrdensServico;
 using TechChallenge.Oficina.UseCases.Features.OrdensServico.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.OrdensServico;
 using TechChallenge.Oficina.Entities.Exceptions;
 using Xunit;
 
-namespace TechChallenge.Oficina.Monolith.API.Tests.Features.OrdensServico;
+namespace TechChallenge.Oficina.Adapters.Tests.Features.OrdensServico;
 
 public sealed class OrdensServicoAdapterTests
 {

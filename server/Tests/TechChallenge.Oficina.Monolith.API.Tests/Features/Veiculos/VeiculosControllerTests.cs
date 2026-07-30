@@ -1,5 +1,5 @@
 ﻿using Moq;
-using TechChallenge.Oficina.Monolith.API.Features.Veiculos;
+using TechChallenge.Oficina.Adapters.Features.Veiculos;
 using TechChallenge.Oficina.UseCases.Features.Veiculos.Commands;
 using TechChallenge.Oficina.UseCases.Features.Veiculos.Queries;
 using TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;

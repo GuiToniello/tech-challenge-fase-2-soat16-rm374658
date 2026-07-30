@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\1 - Frameworks &amp; Drivers\TechChallenge.Oficina.CreateOSService.API\TechChallenge.Oficina.CreateOSService.API.csproj" />
+    <ProjectReference Include="..\..\2 - Interface Adapters\TechChallenge.Oficina.Adapters\TechChallenge.Oficina.Adapters.csproj" />
     <ProjectReference Include="..\..\2 - Interface Adapters\TechChallenge.Oficina.Controllers\TechChallenge.Oficina.Controllers.csproj" />
     <ProjectReference Include="..\..\3 - Application Business Rules\TechChallenge.Oficina.UseCases\TechChallenge.Oficina.UseCases.csproj" />
   </ItemGroup>

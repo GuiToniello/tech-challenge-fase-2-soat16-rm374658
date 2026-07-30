@@ -1,8 +1,9 @@
-﻿using TechChallenge.Oficina.UseCases.Features.Insumos.ViewModels;
+using Microsoft.AspNetCore.Http;
+using TechChallenge.Oficina.UseCases.Features.Insumos.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.Insumos;
 using TechChallenge.Oficina.Entities.Exceptions;
 
-namespace TechChallenge.Oficina.Monolith.API.Features.Insumos
+namespace TechChallenge.Oficina.Adapters.Features.Insumos
 {
     public class InsumoAdapter : IInsumoAdapter
     {

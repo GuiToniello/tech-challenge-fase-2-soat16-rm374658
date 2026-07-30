@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
-using TechChallenge.Oficina.Monolith.API.Features.Insumos;
+using TechChallenge.Oficina.Adapters.Features.Insumos;
 using TechChallenge.Oficina.UseCases.Features.Insumos.ViewModels;
 using TechChallenge.Oficina.Controllers.Features.Insumos;
 using TechChallenge.Oficina.Entities.Exceptions;
 using Xunit;
 
-namespace TechChallenge.Oficina.Monolith.API.Tests.Features.Insumos;
+namespace TechChallenge.Oficina.Adapters.Tests.Features.Insumos;
 
 public sealed class InsumoAdapterTests
 {

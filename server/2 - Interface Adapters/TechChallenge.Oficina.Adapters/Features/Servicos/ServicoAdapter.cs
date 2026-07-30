@@ -1,23 +1,24 @@
-﻿using TechChallenge.Oficina.UseCases.Features.Veiculos.ViewModels;
-using TechChallenge.Oficina.Controllers.Features.Veiculos;
+using Microsoft.AspNetCore.Http;
+using TechChallenge.Oficina.UseCases.Features.Servicos.ViewModels;
+using TechChallenge.Oficina.Controllers.Features.Servicos;
 using TechChallenge.Oficina.Entities.Exceptions;
 
-namespace TechChallenge.Oficina.Monolith.API.Features.Veiculos
+namespace TechChallenge.Oficina.Adapters.Features.Servicos
 {
-    public class VeiculoAdapter : IVeiculoAdapter
+    public class ServicoAdapter : IServicoAdapter
     {
-        public object Adapt(VeiculoResult<VeiculoViewModel, Exception> result, bool created = false)
+        public object Adapt(ServicoResult<ServicoViewModel, Exception> result, bool created = false)
         {
             if (result.Value != null)
                 if (created)
-                    return TypedResults.CreatedAtRoute(result.Value, "GetVeiculoById", new { id = result.Value.Id });
+                    return TypedResults.CreatedAtRoute(result.Value, "GetServicoById", new { id = result.Value.Id });
                 else
                     return TypedResults.Ok(result.Value);
 
             return CriaErro(result.Error!);
         }
 
-        public object Adapt(VeiculoResult<IReadOnlyCollection<VeiculoViewModel>, Exception> result)
+        public object Adapt(ServicoResult<IReadOnlyCollection<ServicoViewModel>, Exception> result)
         {
             if (result.Value != null)
                 return TypedResults.Ok(result.Value);
@@ -25,7 +26,7 @@ namespace TechChallenge.Oficina.Monolith.API.Features.Veiculos
             return CriaErro(result.Error!);
         }
 
-        public object Adapt(VeiculoResult<bool, Exception> result)
+        public object Adapt(ServicoResult<bool, Exception> result)
         {
             if (result.Value)
                 return TypedResults.Ok(result.Value);

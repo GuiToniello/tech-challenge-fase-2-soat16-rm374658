@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
 	<TargetFramework>net10.0</TargetFramework>
@@ -8,10 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.4" />
-	<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.*" />
+	<FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
 	<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-	<PackageReference Include="Moq" Version="4.20.70" />
 	<PackageReference Include="xunit" Version="2.9.2" />
 	<PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
 	  <PrivateAssets>all</PrivateAssets>
@@ -24,11 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
-	<ProjectReference Include="..\..\1 - Frameworks &amp; Drivers\TechChallenge.Oficina.Monolith.API\TechChallenge.Oficina.Monolith.API.csproj" />
 	<ProjectReference Include="..\..\2 - Interface Adapters\TechChallenge.Oficina.Adapters\TechChallenge.Oficina.Adapters.csproj" />
-	<ProjectReference Include="..\..\3 - Application Business Rules\TechChallenge.Oficina.UseCases\TechChallenge.Oficina.UseCases.csproj" />
+	<ProjectReference Include="..\..\2 - Interface Adapters\TechChallenge.Oficina.Controllers\TechChallenge.Oficina.Controllers.csproj" />
 	<ProjectReference Include="..\..\4 - Enterprise Business Rules\TechChallenge.Oficina.Entities\TechChallenge.Oficina.Entities.csproj" />
-	<ProjectReference Include="..\..\1 - Frameworks &amp; Drivers\TechChallenge.Oficina.DB\TechChallenge.Oficina.DB.csproj" />
   </ItemGroup>
 
 </Project>

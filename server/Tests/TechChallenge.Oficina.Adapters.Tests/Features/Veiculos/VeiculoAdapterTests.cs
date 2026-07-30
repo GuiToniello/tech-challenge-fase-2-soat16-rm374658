@@ -1,58 +1,59 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using TechChallenge.Oficina.Monolith.API.Features.Servicos;
-using TechChallenge.Oficina.UseCases.Features.Servicos.ViewModels;
-using TechChallenge.Oficina.Controllers.Features.Servicos;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using TechChallenge.Oficina.Adapters.Features.Veiculos;
+using TechChallenge.Oficina.UseCases.Features.Veiculos.ViewModels;
+using TechChallenge.Oficina.Controllers.Features.Veiculos;
 using TechChallenge.Oficina.Entities.Exceptions;
 using Xunit;
 
-namespace TechChallenge.Oficina.Monolith.API.Tests.Features.Servicos;
+namespace TechChallenge.Oficina.Adapters.Tests.Features.Veiculos;
 
-public sealed class ServicoAdapterTests
+public sealed class VeiculoAdapterTests
 {
-    private readonly ServicoAdapter _adapter = new();
+    private readonly VeiculoAdapter _adapter = new();
 
     [Fact]
-    public void Adapt_DeveRetornarCreatedAtRoute_QuandoServicoViewModelSucesso()
+    public void Adapt_DeveRetornarCreatedAtRoute_QuandoVeiculoViewModelSucesso()
     {
-        var servico = new ServicoViewModel { Id = Guid.NewGuid(), Nome = "Troca" };
-        var result = new ServicoResult<ServicoViewModel, Exception>(servico);
+        var veiculo = new VeiculoViewModel { Id = Guid.NewGuid(), Placa = "ABC1D23" };
+        var result = new VeiculoResult<VeiculoViewModel, Exception>(veiculo);
 
         var adaptado = _adapter.Adapt(result, true);
 
-        var createdAtRoute = Assert.IsType<CreatedAtRoute<ServicoViewModel>>(adaptado);
-        Assert.Equal(servico, createdAtRoute.Value);
-        Assert.Equal("GetServicoById", createdAtRoute.RouteName);
+        var createdAtRoute = Assert.IsType<CreatedAtRoute<VeiculoViewModel>>(adaptado);
+        Assert.Equal(veiculo, createdAtRoute.Value);
+        Assert.Equal("GetVeiculoById", createdAtRoute.RouteName);
     }
 
     [Fact]
     public void Adapt_DeveRetornarBadRequest_QuandoDomainException()
     {
-        var exception = new DomainException("Serviço inválido");
-        var result = new ServicoResult<ServicoViewModel, Exception>(exception);
+        var exception = new DomainException("Placa inválida");
+        var result = new VeiculoResult<VeiculoViewModel, Exception>(exception);
 
         var adaptado = _adapter.Adapt(result);
 
         var badRequest = Assert.IsType<BadRequest<Dictionary<string, string?>>>(adaptado);
-        Assert.Equal("Serviço inválido", badRequest.Value?["message"]);
+        Assert.Equal("Placa inválida", badRequest.Value?["message"]);
     }
 
     [Fact]
     public void Adapt_DeveRetornarNotFound_QuandoKeyNotFoundException()
     {
-        var exception = new KeyNotFoundException("Serviço não encontrado");
-        var result = new ServicoResult<ServicoViewModel, Exception>(exception);
+        var exception = new KeyNotFoundException("Veículo não encontrado");
+        var result = new VeiculoResult<VeiculoViewModel, Exception>(exception);
 
         var adaptado = _adapter.Adapt(result);
 
         var notFound = Assert.IsType<NotFound<Dictionary<string, string?>>>(adaptado);
-        Assert.Equal("Serviço não encontrado", notFound.Value?["message"]);
+        Assert.Equal("Veículo não encontrado", notFound.Value?["message"]);
     }
 
     [Fact]
     public void Adapt_DeveRetornarProblem_QuandoExceptionGenerica()
     {
         var exception = new InvalidOperationException("Erro inesperado");
-        var result = new ServicoResult<ServicoViewModel, Exception>(exception);
+        var result = new VeiculoResult<VeiculoViewModel, Exception>(exception);
 
         var adaptado = _adapter.Adapt(result);
 
@@ -63,7 +64,7 @@ public sealed class ServicoAdapterTests
     [Fact]
     public void Adapt_DeveRetornarOk_QuandoDeleteSucesso()
     {
-        var result = new ServicoResult<bool, Exception>(true);
+        var result = new VeiculoResult<bool, Exception>(true);
 
         var adaptado = _adapter.Adapt(result);
 
@@ -74,20 +75,20 @@ public sealed class ServicoAdapterTests
     [Fact]
     public void Adapt_DeveRetornarNotFound_QuandoDeleteComKeyNotFoundException()
     {
-        var exception = new KeyNotFoundException("Serviço não encontrado");
-        var result = new ServicoResult<bool, Exception>(exception);
+        var exception = new KeyNotFoundException("Veículo não encontrado");
+        var result = new VeiculoResult<bool, Exception>(exception);
 
         var adaptado = _adapter.Adapt(result);
 
         var notFound = Assert.IsType<NotFound<Dictionary<string, string?>>>(adaptado);
-        Assert.Equal("Serviço não encontrado", notFound.Value?["message"]);
+        Assert.Equal("Veículo não encontrado", notFound.Value?["message"]);
     }
 
     [Fact]
     public void Adapt_DeveRetornarBadRequest_QuandoDeleteComDomainException()
     {
         var exception = new DomainException("Erro de validação");
-        var result = new ServicoResult<bool, Exception>(exception);
+        var result = new VeiculoResult<bool, Exception>(exception);
 
         var adaptado = _adapter.Adapt(result);
 
@@ -99,7 +100,7 @@ public sealed class ServicoAdapterTests
     public void Adapt_DeveRetornarProblem_QuandoDeleteComExceptionGenerica()
     {
         var exception = new TimeoutException("Timeout na operação");
-        var result = new ServicoResult<bool, Exception>(exception);
+        var result = new VeiculoResult<bool, Exception>(exception);
 
         var adaptado = _adapter.Adapt(result);
 

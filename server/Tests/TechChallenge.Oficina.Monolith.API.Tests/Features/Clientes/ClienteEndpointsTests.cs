@@ -3,7 +3,7 @@ using TechChallenge.Oficina.UseCases.Features.Clientes.Commands;
 using TechChallenge.Oficina.UseCases.Features.Clientes.Queries;
 using TechChallenge.Oficina.UseCases.Features.Clientes.UseCases;
 using TechChallenge.Oficina.UseCases.Features.Clientes.ViewModels;
-using TechChallenge.Oficina.Monolith.API.Features.Clientes;
+using TechChallenge.Oficina.Adapters.Features.Clientes;
 using TechChallenge.Oficina.Entities.Exceptions;
 using Xunit;
 

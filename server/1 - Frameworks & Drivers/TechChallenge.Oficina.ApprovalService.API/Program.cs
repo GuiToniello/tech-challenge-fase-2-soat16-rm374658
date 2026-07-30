@@ -14,12 +14,12 @@ using TechChallenge.Oficina.UseCases.Features.Insumos.UseCases;
 using TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;
 using TechChallenge.Oficina.UseCases.Features.Veiculos.UseCases;
 using TechChallenge.Oficina.DB.Data;
-using TechChallenge.Oficina.Monolith.API.Settings;
-using TechChallenge.Oficina.Monolith.API.Features.Clientes;
-using TechChallenge.Oficina.Monolith.API.Features.Insumos;
-using TechChallenge.Oficina.Monolith.API.Features.OrdensServico;
-using TechChallenge.Oficina.Monolith.API.Features.Servicos;
-using TechChallenge.Oficina.Monolith.API.Features.Veiculos;
+using TechChallenge.Oficina.Adapters.Features.Clientes;
+using TechChallenge.Oficina.Adapters.Features.Insumos;
+using TechChallenge.Oficina.Adapters.Features.OrdensServico;
+using TechChallenge.Oficina.Adapters.Features.Servicos;
+using TechChallenge.Oficina.Adapters.Features.Veiculos;
+using TechChallenge.Oficina.ApprovalService.API.Settings;
 using TechChallenge.Oficina.Email;
 using TechChallenge.Oficina.Email.Configuration;
 

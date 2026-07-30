@@ -1,5 +1,5 @@
 ﻿using Moq;
-using TechChallenge.Oficina.Monolith.API.Features.Servicos;
+using TechChallenge.Oficina.Adapters.Features.Servicos;
 using TechChallenge.Oficina.UseCases.Features.Servicos.Commands;
 using TechChallenge.Oficina.UseCases.Features.Servicos.Queries;
 using TechChallenge.Oficina.UseCases.Features.Servicos.UseCases;

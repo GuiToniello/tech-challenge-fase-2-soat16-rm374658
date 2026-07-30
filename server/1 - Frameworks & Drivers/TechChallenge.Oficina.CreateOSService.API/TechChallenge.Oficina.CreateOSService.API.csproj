@@ -15,9 +15,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\3 - Application Business Rules\TechChallenge.Oficina.UseCases\TechChallenge.Oficina.UseCases.csproj" />
     <ProjectReference Include="..\..\2 - Interface Adapters\TechChallenge.Oficina.Controllers\TechChallenge.Oficina.Controllers.csproj" />
+    <ProjectReference Include="..\..\2 - Interface Adapters\TechChallenge.Oficina.Adapters\TechChallenge.Oficina.Adapters.csproj" />
     <ProjectReference Include="..\TechChallenge.Oficina.DB\TechChallenge.Oficina.DB.csproj" />
     <ProjectReference Include="..\TechChallenge.Oficina.Email\TechChallenge.Oficina.Email.csproj" />
-    <ProjectReference Include="..\TechChallenge.Oficina.Monolith.API\TechChallenge.Oficina.Monolith.API.csproj" />
   </ItemGroup>
 
 </Project>
