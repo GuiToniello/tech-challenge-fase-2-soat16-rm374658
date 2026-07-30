@@ -8,11 +8,11 @@
   "variable": [
     {
       "key": "statusServiceBaseUrl",
-      "value": "https://localhost:7198"
+      "value": "http://localhost:7198"
     },
     {
       "key": "oficinaApiBaseUrl",
-      "value": "https://localhost:7194"
+      "value": "http://localhost:7194"
     },
     {
       "key": "auth0_domain",
@@ -32,7 +32,7 @@
     },
     {
       "key": "auth0_audience",
-      "value": "https://localhost:7194"
+      "value": "http://localhost:7194"
     },
     {
       "key": "auth_access_token",

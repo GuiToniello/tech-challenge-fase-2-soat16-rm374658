@@ -1,6 +1,6 @@
 ﻿# Projeto Oficina
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GuiToniello_tech-challenge-fase-1-soat16-rm374658&metric=alert_status&token=ea0031cd24511d30496ed0d47a909e4881b37946)](https://sonarcloud.io/summary/new_code?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658) [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=GuiToniello_tech-challenge-fase-1-soat16-rm374658&token=ea0031cd24511d30496ed0d47a909e4881b37946)](https://sonarcloud.io/summary/new_code?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658) [![SonarQube Cloud](https://sonarcloud.io/images/project_badges/sonarcloud-light.svg)](https://sonarcloud.io/summary/new_code?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658)
+[![Quality Gate Status](http://sonarcloud.io/api/project_badges/measure?project=GuiToniello_tech-challenge-fase-1-soat16-rm374658&metric=alert_status&token=ea0031cd24511d30496ed0d47a909e4881b37946)](http://sonarcloud.io/summary/new_code?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658) [![Quality gate](http://sonarcloud.io/api/project_badges/quality_gate?project=GuiToniello_tech-challenge-fase-1-soat16-rm374658&token=ea0031cd24511d30496ed0d47a909e4881b37946)](http://sonarcloud.io/summary/new_code?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658) [![SonarQube Cloud](http://sonarcloud.io/images/project_badges/sonarcloud-light.svg)](http://sonarcloud.io/summary/new_code?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658)
 
 ## 1. Identificação
 
@@ -13,9 +13,9 @@ Grupo:
 
 ### 1.2 Links Úteis
 
-Acesse o blueprint no Miro: https://miro.com/app/board/uXjVHVfHuvI=/?share_link_id=633470424823
+Acesse o blueprint no Miro: http://miro.com/app/board/uXjVHVfHuvI=/?share_link_id=633470424823
 
-O link do SonarCloud: https://sonarcloud.io/summary/overall?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658
+O link do SonarCloud: http://sonarcloud.io/summary/overall?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658
 
 Você pode acessar o relatório completo [aqui](./docs/reports/relatorio-completo.pdf).
 
@@ -44,7 +44,7 @@ As decisões arquiteturais estão documentadas individualmente como ADRs (Archit
 
 ### 2.2. Autenticação
 
-O projeto usa autenticação via JWT emitido pelo `Auth0` (https://auth0.com/) como provedor de identidade.
+O projeto usa autenticação via JWT emitido pelo `Auth0` (http://auth0.com/) como provedor de identidade.
 
 **Como funciona na prática:**
 
@@ -53,7 +53,7 @@ A API valida cada requisição verificando o JWT no header `Authorization: Beare
 ```json
 "AuthSettings": {
   "Authority": "<seu-dominio>.us.auth0.com",
-  "Audience": "https://localhost:7194"
+  "Audience": "http://localhost:7194"
 }
 ```
 
@@ -146,9 +146,9 @@ MARTIN, Robert C. Agile Software Development, Principles, Patterns, and Practice
 
 #### 3.5.2. Material de Apoio
 
-FOWLER, Martin. CQRS. Martin Fowler, 14 jul. 2011. Disponível em: https://martinfowler.com/bliki/CQRS.html. Acesso em: 10 jun. 2026.
+FOWLER, Martin. CQRS. Martin Fowler, 14 jul. 2011. Disponível em: http://martinfowler.com/bliki/CQRS.html. Acesso em: 10 jun. 2026.
 
-FOWLER, Martin. Inversion of Control Containers and the Dependency Injection pattern. Martin Fowler, 23 jan. 2004. Disponível em: https://martinfowler.com/articles/injection.html. Acesso em: 02 jun. 2026.
+FOWLER, Martin. Inversion of Control Containers and the Dependency Injection pattern. Martin Fowler, 23 jan. 2004. Disponível em: http://martinfowler.com/articles/injection.html. Acesso em: 02 jun. 2026.
 
 ## 4. Executando o Projeto
 
@@ -161,11 +161,11 @@ Siga apenas 1 delas.
 Se você for rodar sem container, vai precisar:
 
 - dotnet 10.x
-https://dotnet.microsoft.com/pt-br/download/dotnet/thank-you/sdk-10.0.301-windows-x64-installer
+http://dotnet.microsoft.com/pt-br/download/dotnet/thank-you/sdk-10.0.301-windows-x64-installer
 
-- Postgres instalado e com instância ativa: https://www.postgresql.org/
+- Postgres instalado e com instância ativa: http://www.postgresql.org/
 
-Para containers, precisa do docker (https://www.docker.com/) ou Podman (https://podman.io/) instalado.
+Para containers, precisa do docker (http://www.docker.com/) ou Podman (http://podman.io/) instalado.
 
 Já temos docker-compose pronto com todas as configurações.
 
@@ -183,7 +183,7 @@ Passo 1 - gere o arquivo `.env` a partir do exemplo.
 Passo 2 - ajuste as variáveis conforme necessário, principalmente:
 
 - `POSTGRES_PORT`
-- `API_PORT`
+- `API_MONOLITH_PORT`
 - `DATABASE_CONNECTION_STRING`
 - `RESEND_API_KEY` (opcional)
 
@@ -197,7 +197,7 @@ E pronto!
 
 O banco de dados `postgres` e a `api` estarão disponíveis.
 
-Passo 2 - Use `http://localhost:8080/index.html` para acessar o swagger.
+Passo 2 - Use `http://localhost:7194/index.html` para acessar o swagger.
 
 ### 4.3. Alternativa B - Local com dotnet cli
 
@@ -207,9 +207,9 @@ Passo 2 - aponte o console para a pasta `server/1 - Frameworks & Drivers/TechCha
 
 Pronto!
 
-Vai subir a API usando https com um certificado autoassinado do dotnet.
+Vai subir a API usando http com um certificado autoassinado do dotnet.
 
-Passo 3 - Use `https://localhost:7194/index.html` para acessar o Swagger.
+Passo 3 - Use `http://localhost:7194/index.html` para acessar o Swagger.
 
 ### 4.4. Alternativa C - Local com Visual Studio 2026 ou VS Code
 
@@ -217,9 +217,9 @@ Passo 1 - rode o `postgres` - pode ser uma instância local ou via container `do
 
 Passo 2 - abra o arquivo `.slnx` em `/server`
 
-Passo 3 - no Visual Studio, rode usando o perfil `https`.
+Passo 3 - no Visual Studio, rode usando o perfil `http`.
 
-Passo 4 - Use `https://localhost:7194/index.html` para acessar o Swagger.
+Passo 4 - Use `http://localhost:7194/index.html` para acessar o Swagger.
 
 
 ### 4.5  Banco de dados
@@ -268,6 +268,6 @@ Sem `RESEND_API_KEY` (container) ou `ApiKey` no `appsettings.json` (execução l
 - Para fazer requisições, use a Collection do Postman na pasta `/e2e`
 - Para o envio de e-mails, é preciso configurar `ApiKey` no appsettings.json ou `ResendSettings__ApiKey` para container
 
-Você pode criar uma conta em https://resend.com/ e gerar a ApiKey.
+Você pode criar uma conta em http://resend.com/ e gerar a ApiKey.
 
 Sem a ApiKey, a API funciona normalmente, só não envia os e-mails.

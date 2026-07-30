@@ -8,7 +8,7 @@
     "variable": [
         {
             "key": "baseUrl",
-            "value": "https://localhost:7194"
+            "value": "http://localhost:7194"
         },
         {
             "key": "auth0_domain",
@@ -28,7 +28,7 @@
         },
         {
             "key": "auth0_audience",
-            "value": "https://localhost:7194"
+            "value": "http://localhost:7194"
         },
         {
             "key": "auth_access_token",

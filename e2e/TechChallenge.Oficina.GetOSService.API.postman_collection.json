@@ -8,11 +8,11 @@
   "variable": [
     {
       "key": "getOSServiceBaseUrl",
-      "value": "https://localhost:7197"
+      "value": "http://localhost:7197"
     },
     {
       "key": "oficinaApiBaseUrl",
-      "value": "https://localhost:7194"
+      "value": "http://localhost:7194"
     },
     {
       "key": "auth0_domain",
@@ -32,11 +32,11 @@
     },
     {
       "key": "auth0_audience_oficina",
-      "value": "https://localhost:7194"
+      "value": "http://localhost:7194"
     },
     {
       "key": "auth0_audience_getos",
-      "value": "https://localhost:7194"
+      "value": "http://localhost:7194"
     },
     {
       "key": "provisioning_auth_access_token",

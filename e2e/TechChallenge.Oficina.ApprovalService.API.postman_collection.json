@@ -8,11 +8,11 @@
   "variable": [
     {
       "key": "approvalServiceBaseUrl",
-      "value": "https://localhost:7195"
+      "value": "http://localhost:7195"
     },
     {
       "key": "oficinaApiBaseUrl",
-      "value": "https://localhost:7194"
+      "value": "http://localhost:7194"
     },
     {
       "key": "auth0_domain",
@@ -32,11 +32,11 @@
     },
     {
       "key": "auth0_audience_oficina",
-      "value": "https://localhost:7194"
+      "value": "http://localhost:7194"
     },
     {
       "key": "auth0_audience_approval",
-      "value": "https://localhost:7194"
+      "value": "http://localhost:7194"
     },
     {
       "key": "oficina_auth_access_token",
