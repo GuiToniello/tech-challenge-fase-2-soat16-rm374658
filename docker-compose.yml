@@ -37,5 +37,25 @@
       - "${API_MONOLITH_PORT:-7194}:8080"
     restart: unless-stopped
 
+  approval-api:
+    build:
+      context: ./server
+      dockerfile: 1 - Frameworks & Drivers/TechChallenge.Oficina.ApprovalService.API/Dockerfile
+    container_name: oficina-approval-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS:-http://+:8080}
+      AllowedHosts: ${ALLOWED_HOSTS:-*}
+      Logging__LogLevel__Default: ${LOG_LEVEL_DEFAULT:-Information}
+      Logging__LogLevel__Microsoft__AspNetCore: ${LOG_LEVEL_ASPNETCORE:-Warning}
+      DatabaseSettings__ConnectionString: ${DATABASE_CONNECTION_STRING:-Host=postgres;Port=5432;Database=oficina;Username=sa;Password=P@ssw0rd123}
+      ResendSettings__ApiKey: ${RESEND_API_KEY}
+    ports:
+      - "${API_APPROVAL_PORT:-7195}:8080"
+    restart: unless-stopped
+
 volumes:
   postgres_data:
