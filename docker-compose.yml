@@ -18,6 +18,7 @@
     restart: unless-stopped
 
   api:
+    image: ${REGISTRY_PREFIX:-}techchallenge-oficina-monolith:${IMAGE_TAG:-latest}
     build:
       context: ./server
       dockerfile: 1 - Frameworks & Drivers/TechChallenge.Oficina.Monolith.API/Dockerfile
@@ -38,6 +39,7 @@
     restart: unless-stopped
 
   approval-api:
+    image: ${REGISTRY_PREFIX:-}techchallenge-oficina-approval:${IMAGE_TAG:-latest}
     build:
       context: ./server
       dockerfile: 1 - Frameworks & Drivers/TechChallenge.Oficina.ApprovalService.API/Dockerfile
@@ -58,6 +60,7 @@
     restart: unless-stopped
 
   createos-api:
+    image: ${REGISTRY_PREFIX:-}techchallenge-oficina-createos:${IMAGE_TAG:-latest}
     build:
       context: ./server
       dockerfile: 1 - Frameworks & Drivers/TechChallenge.Oficina.CreateOSService.API/Dockerfile
@@ -78,6 +81,7 @@
     restart: unless-stopped
 
   getos-api:
+    image: ${REGISTRY_PREFIX:-}techchallenge-oficina-getos:${IMAGE_TAG:-latest}
     build:
       context: ./server
       dockerfile: 1 - Frameworks & Drivers/TechChallenge.Oficina.GetOSService.API/Dockerfile
@@ -97,6 +101,7 @@
     restart: unless-stopped
 
   status-api:
+    image: ${REGISTRY_PREFIX:-}techchallenge-oficina-status:${IMAGE_TAG:-latest}
     build:
       context: ./server
       dockerfile: 1 - Frameworks & Drivers/TechChallenge.Oficina.StatusService.API/Dockerfile
