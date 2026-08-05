@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: approval-api
+  namespace: oficina
+  labels:
+    app.kubernetes.io/name: approval-api
+    app.kubernetes.io/part-of: techchallenge-oficina
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: approval-api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: approval-api
+        app.kubernetes.io/part-of: techchallenge-oficina
+    spec:
+      containers:
+        - name: approval-api
+          image: 903936907231.dkr.ecr.us-east-1.amazonaws.com/techchallenge-oficina-approval:v1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: approval-api-config
+            - secretRef:
+                name: approval-api-secret
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
