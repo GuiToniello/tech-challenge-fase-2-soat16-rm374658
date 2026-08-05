@@ -15,6 +15,7 @@ Foi adotado o padrao folder-by-feature dentro de [k8s](k8s), com uma pasta por s
 Estrutura final:
 - [k8s/namespace.yml](k8s/namespace.yml)
 - [k8s/ingress.yml](k8s/ingress.yml)
+- [k8s/ecr-regcred.secret.yml](k8s/ecr-regcred.secret.yml)
 - [k8s/monolith-api](k8s/monolith-api)
 - [k8s/approval-api](k8s/approval-api)
 - [k8s/createos-api](k8s/createos-api)
@@ -45,6 +46,7 @@ Para cada API foram criados os seguintes recursos:
 3. Deployment com 1 replica inicial, probes e limites de recursos.
 4. Service do tipo ClusterIP.
 5. HPA (autoscaling/v2).
+6. Referencia de imagePullSecrets para autenticacao no ECR privado.
 
 ### 3.1 APIs contempladas
 - monolith-api
@@ -67,6 +69,46 @@ As imagens das APIs estao fixadas no ECR:
 - 903936907231.dkr.ecr.us-east-1.amazonaws.com/techchallenge-oficina-createos:v1.0.0
 - 903936907231.dkr.ecr.us-east-1.amazonaws.com/techchallenge-oficina-getos:v1.0.0
 - 903936907231.dkr.ecr.us-east-1.amazonaws.com/techchallenge-oficina-status:v1.0.0
+
+### 3.3 Autenticacao no ECR privado
+Como as imagens estao em registry privado (ECR), os Deployments das APIs foram configurados com:
+- imagePullSecrets:
+	- name: ecr-regcred
+
+Arquivos atualizados:
+- [k8s/monolith-api/deployment.yml](k8s/monolith-api/deployment.yml)
+- [k8s/approval-api/deployment.yml](k8s/approval-api/deployment.yml)
+- [k8s/createos-api/deployment.yml](k8s/createos-api/deployment.yml)
+- [k8s/getos-api/deployment.yml](k8s/getos-api/deployment.yml)
+- [k8s/status-api/deployment.yml](k8s/status-api/deployment.yml)
+
+Criacao inicial do secret no namespace oficina:
+- aws ecr get-login-password --region us-east-1 | kubectl create secret docker-registry ecr-regcred --docker-server=903936907231.dkr.ecr.us-east-1.amazonaws.com --docker-username=AWS --docker-password-stdin -n oficina
+
+Alternativa por manifesto YAML (arquivo versionado no root de k8s):
+- [k8s/ecr-regcred.secret.yml](k8s/ecr-regcred.secret.yml)
+
+Como preencher o arquivo [k8s/ecr-regcred.secret.yml](k8s/ecr-regcred.secret.yml):
+1. Campo password: usar o valor puro retornado por `aws ecr get-login-password --region us-east-1`.
+2. Campo auth: usar Base64 de `AWS:TOKEN`.
+
+Exemplo (PowerShell) para gerar os dois valores:
+- $token = aws ecr get-login-password --region us-east-1
+- $auth = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("AWS:$token"))
+
+Aplicacao via arquivo YAML:
+- kubectl apply -f k8s/ecr-regcred.secret.yml
+
+Validacao do secret:
+- kubectl get secret ecr-regcred -n oficina
+
+Renovacao do token (idempotente, recomendada periodicamente):
+- aws ecr get-login-password --region us-east-1 | kubectl create secret docker-registry ecr-regcred --docker-server=903936907231.dkr.ecr.us-east-1.amazonaws.com --docker-username=AWS --docker-password-stdin -n oficina --dry-run=client -o yaml | kubectl apply -f -
+
+Observacao importante:
+1. O token do ECR expira periodicamente (tipicamente em 12 horas).
+2. Em ambiente nao-EKS, e recomendado automatizar a renovacao.
+3. Nao commitar token real no repositorio (manter placeholders no YAML).
 
 ## 4. Recursos criados para Postgres
 Com base no docker-compose, o Postgres foi modelado com:
@@ -164,11 +206,12 @@ Resultado:
 
 ## 11. Ordem recomendada de aplicacao
 1. Aplicar namespace.
-2. Aplicar manifests do Postgres.
-3. Aplicar manifests das APIs.
-4. Aplicar manifesto de Ingress.
-5. Validar pods, services, hpas, pvc e ingress.
-6. Validar o estado do ingress controller.
+2. Criar/atualizar o secret ecr-regcred no namespace oficina.
+3. Aplicar manifests do Postgres.
+4. Aplicar manifests das APIs.
+5. Aplicar manifesto de Ingress.
+6. Validar pods, services, hpas, pvc e ingress.
+7. Validar o estado do ingress controller.
 
 Comando pratico para aplicar tudo de uma vez:
 - kubectl apply -R -f k8s
@@ -184,4 +227,5 @@ Antes de promover para ambientes compartilhados (qa/homolog/prod), recomenda-se:
 2. Ajustar valores de secrets para credenciais reais e chave de email (Resend) quando aplicavel.
 3. Revisar requests/limits de CPU e memoria conforme carga real.
 4. Garantir instalacao/configuracao do Ingress Controller no cluster (ex.: NGINX Ingress).
-5. Se for necessario expor portas distintas por API (ex.: localhost:7194), usar estrategia alternativa (NodePort/LoadBalancer ou configuracao TCP do controller), pois Ingress HTTP padrao expoe em 80/443.
+5. Automatizar a renovacao do secret de pull do ECR (ecr-regcred).
+6. Se for necessario expor portas distintas por API (ex.: localhost:7194), usar estrategia alternativa (NodePort/LoadBalancer ou configuracao TCP do controller), pois Ingress HTTP padrao expoe em 80/443.

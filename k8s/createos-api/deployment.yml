@@ -18,6 +18,8 @@ spec:
         app.kubernetes.io/name: createos-api
         app.kubernetes.io/part-of: techchallenge-oficina
     spec:
+      imagePullSecrets:
+        - name: ecr-regcred
       containers:
         - name: createos-api
           image: 903936907231.dkr.ecr.us-east-1.amazonaws.com/techchallenge-oficina-createos:v1.0.0
