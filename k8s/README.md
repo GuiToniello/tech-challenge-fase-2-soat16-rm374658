@@ -13,15 +13,15 @@ A implementacao foi baseada em:
 Foi adotado o padrao folder-by-feature dentro de [k8s](k8s), com uma pasta por servico.
 
 Estrutura final:
-- [k8s/namespace.yml](k8s/namespace.yml)
-- [k8s/ingress.yml](k8s/ingress.yml)
-- [k8s/ecr-regcred.secret.yml](k8s/ecr-regcred.secret.yml)
-- [k8s/monolith-api](k8s/monolith-api)
-- [k8s/approval-api](k8s/approval-api)
-- [k8s/createos-api](k8s/createos-api)
-- [k8s/getos-api](k8s/getos-api)
-- [k8s/status-api](k8s/status-api)
-- [k8s/postgres](k8s/postgres)
+- [k8s/base/namespace.yml](k8s/base/namespace.yml)
+- [k8s/infra/ecr-regcred.secret.yml](k8s/infra/ecr-regcred.secret.yml)
+- [k8s/infra/ingress.yml](k8s/infra/ingress.yml)
+- [k8s/features/monolith-api](k8s/features/monolith-api)
+- [k8s/features/approval-api](k8s/features/approval-api)
+- [k8s/features/createos-api](k8s/features/createos-api)
+- [k8s/features/getos-api](k8s/features/getos-api)
+- [k8s/features/status-api](k8s/features/status-api)
+- [k8s/features/postgres](k8s/features/postgres)
 
 Cada pasta de API contem:
 - configmap.yml
@@ -31,15 +31,35 @@ Cada pasta de API contem:
 - hpa.yml
 
 A pasta postgres contem:
-- [k8s/postgres/configmap.yml](k8s/postgres/configmap.yml)
-- [k8s/postgres/secret.yml](k8s/postgres/secret.yml)
-- [k8s/postgres/pvc.yml](k8s/postgres/pvc.yml)
-- [k8s/postgres/deployment.yml](k8s/postgres/deployment.yml)
-- [k8s/postgres/service.yml](k8s/postgres/service.yml)
+- [k8s/features/postgres/configmap.yml](k8s/features/postgres/configmap.yml)
+- [k8s/features/postgres/secret.yml](k8s/features/postgres/secret.yml)
+- [k8s/features/postgres/pvc.yml](k8s/features/postgres/pvc.yml)
+- [k8s/features/postgres/deployment.yml](k8s/features/postgres/deployment.yml)
+- [k8s/features/postgres/service.yml](k8s/features/postgres/service.yml)
 
 Observacao: Postgres nao possui HPA por decisao de arquitetura solicitada.
 
-## 3. Recursos criados por API
+## 3. Ordem recomendada de aplicacao
+1. Aplicar base (namespace): `kubectl apply -R -f k8s/base`
+2. Aplicar infra (ecr-regcred + ingress): `kubectl apply -R -f k8s/infra`
+3. Aplicar features (Postgres + APIs): `kubectl apply -R -f k8s/features`
+4. Validar pods, services, hpas, pvc e ingress.
+5. Validar o estado do ingress controller.
+
+Comandos para aplicar em ordem:
+- kubectl apply -R -f k8s/base
+- kubectl apply -R -f k8s/infra
+- kubectl apply -R -f k8s/features
+
+Comando pratico para verificacao:
+- kubectl get pods,svc,hpa,pvc,ingress -n oficina
+- kubectl get ingressclass
+- kubectl get pods,svc -n ingress-nginx
+
+Opcional (ambiente local): para acessar via localhost, encaminhar portas do ingress controller:
+- kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 80:80 443:443
+
+## 4. Recursos criados por API
 Para cada API foram criados os seguintes recursos:
 1. ConfigMap com configuracoes nao sensiveis.
 2. Secret com configuracoes sensiveis.
@@ -48,14 +68,14 @@ Para cada API foram criados os seguintes recursos:
 5. HPA (autoscaling/v2).
 6. Referencia de imagePullSecrets para autenticacao no ECR privado.
 
-### 3.1 APIs contempladas
+### 4.1 APIs contempladas
 - monolith-api
 - approval-api
 - createos-api
 - getos-api
 - status-api
 
-### 3.2 Imagens utilizadas
+### 4.2 Imagens utilizadas
 Com base no docker-compose, os Deployments usam os seguintes repositorios de imagem:
 - techchallenge-oficina-monolith
 - techchallenge-oficina-approval
@@ -70,25 +90,25 @@ As imagens das APIs estao fixadas no ECR:
 - 903936907231.dkr.ecr.us-east-1.amazonaws.com/techchallenge-oficina-getos:v1.0.0
 - 903936907231.dkr.ecr.us-east-1.amazonaws.com/techchallenge-oficina-status:v1.0.0
 
-### 3.3 Autenticacao no ECR privado
+### 4.3 Autenticacao no ECR privado
 Como as imagens estao em registry privado (ECR), os Deployments das APIs foram configurados com:
 - imagePullSecrets:
 	- name: ecr-regcred
 
 Arquivos atualizados:
-- [k8s/monolith-api/deployment.yml](k8s/monolith-api/deployment.yml)
-- [k8s/approval-api/deployment.yml](k8s/approval-api/deployment.yml)
-- [k8s/createos-api/deployment.yml](k8s/createos-api/deployment.yml)
-- [k8s/getos-api/deployment.yml](k8s/getos-api/deployment.yml)
-- [k8s/status-api/deployment.yml](k8s/status-api/deployment.yml)
+- [k8s/features/monolith-api/deployment.yml](k8s/features/monolith-api/deployment.yml)
+- [k8s/features/approval-api/deployment.yml](k8s/features/approval-api/deployment.yml)
+- [k8s/features/createos-api/deployment.yml](k8s/features/createos-api/deployment.yml)
+- [k8s/features/getos-api/deployment.yml](k8s/features/getos-api/deployment.yml)
+- [k8s/features/status-api/deployment.yml](k8s/features/status-api/deployment.yml)
 
 Criacao inicial do secret no namespace oficina:
 - aws ecr get-login-password --region us-east-1 | kubectl create secret docker-registry ecr-regcred --docker-server=903936907231.dkr.ecr.us-east-1.amazonaws.com --docker-username=AWS --docker-password-stdin -n oficina
 
-Alternativa por manifesto YAML (arquivo versionado no root de k8s):
-- [k8s/ecr-regcred.secret.yml](k8s/ecr-regcred.secret.yml)
+Alternativa por manifesto YAML (arquivo versionado em k8s/infra):
+- [k8s/infra/ecr-regcred.secret.yml](k8s/infra/ecr-regcred.secret.yml)
 
-Como preencher o arquivo [k8s/ecr-regcred.secret.yml](k8s/ecr-regcred.secret.yml):
+Como preencher o arquivo [k8s/infra/ecr-regcred.secret.yml](k8s/infra/ecr-regcred.secret.yml):
 1. Campo password: usar o valor puro retornado por `aws ecr get-login-password --region us-east-1`.
 2. Campo auth: usar Base64 de `AWS:TOKEN`.
 
@@ -97,7 +117,7 @@ Exemplo (PowerShell) para gerar os dois valores:
 - $auth = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("AWS:$token"))
 
 Aplicacao via arquivo YAML:
-- kubectl apply -f k8s/ecr-regcred.secret.yml
+- kubectl apply -f k8s/infra/ecr-regcred.secret.yml
 
 Validacao do secret:
 - kubectl get secret ecr-regcred -n oficina
@@ -110,7 +130,7 @@ Observacao importante:
 2. Em ambiente nao-EKS, e recomendado automatizar a renovacao.
 3. Nao commitar token real no repositorio (manter placeholders no YAML).
 
-## 4. Recursos criados para Postgres
+## 5. Recursos criados para Postgres
 Com base no docker-compose, o Postgres foi modelado com:
 1. Deployment usando imagem postgres:17-alpine.
 2. Service ClusterIP chamado postgres na porta 5432.
@@ -119,7 +139,7 @@ Com base no docker-compose, o Postgres foi modelado com:
 5. PVC para persistencia de dados em /var/lib/postgresql/data.
 6. Probes de readiness e liveness com pg_isready.
 
-## 5. Comunicacao interna entre APIs e banco
+## 6. Comunicacao interna entre APIs e banco
 A comunicacao entre APIs e Postgres foi configurada por DNS interno do cluster via Service ClusterIP.
 
 Host do banco nas connection strings:
@@ -129,13 +149,13 @@ Connection string aplicada nos Secrets das APIs:
 - Host=postgres;Port=5432;Database=oficina;Username=sa;Password=P@ssw0rd123
 
 Arquivos atualizados:
-- [k8s/monolith-api/secret.yml](k8s/monolith-api/secret.yml)
-- [k8s/approval-api/secret.yml](k8s/approval-api/secret.yml)
-- [k8s/createos-api/secret.yml](k8s/createos-api/secret.yml)
-- [k8s/getos-api/secret.yml](k8s/getos-api/secret.yml)
-- [k8s/status-api/secret.yml](k8s/status-api/secret.yml)
+- [k8s/features/monolith-api/secret.yml](k8s/features/monolith-api/secret.yml)
+- [k8s/features/approval-api/secret.yml](k8s/features/approval-api/secret.yml)
+- [k8s/features/createos-api/secret.yml](k8s/features/createos-api/secret.yml)
+- [k8s/features/getos-api/secret.yml](k8s/features/getos-api/secret.yml)
+- [k8s/features/status-api/secret.yml](k8s/features/status-api/secret.yml)
 
-## 6. Regras de HPA aplicadas
+## 7. Regras de HPA aplicadas
 Foi seguido o requisito informado:
 1. CPU alvo: 30% de utilizacao.
 2. Memoria alvo: 80% de utilizacao.
@@ -143,19 +163,19 @@ Foi seguido o requisito informado:
 4. Maximo: 10 replicas.
 
 Aplicado em:
-- [k8s/monolith-api/hpa.yml](k8s/monolith-api/hpa.yml)
-- [k8s/approval-api/hpa.yml](k8s/approval-api/hpa.yml)
-- [k8s/createos-api/hpa.yml](k8s/createos-api/hpa.yml)
-- [k8s/getos-api/hpa.yml](k8s/getos-api/hpa.yml)
-- [k8s/status-api/hpa.yml](k8s/status-api/hpa.yml)
+- [k8s/features/monolith-api/hpa.yml](k8s/features/monolith-api/hpa.yml)
+- [k8s/features/approval-api/hpa.yml](k8s/features/approval-api/hpa.yml)
+- [k8s/features/createos-api/hpa.yml](k8s/features/createos-api/hpa.yml)
+- [k8s/features/getos-api/hpa.yml](k8s/features/getos-api/hpa.yml)
+- [k8s/features/status-api/hpa.yml](k8s/features/status-api/hpa.yml)
 
-## 7. Namespace
+## 8. Namespace
 Todos os recursos foram definidos no namespace oficina:
-- [k8s/namespace.yml](k8s/namespace.yml)
+- [k8s/base/namespace.yml](k8s/base/namespace.yml)
 
-## 8. Ingress e acesso externo
+## 9. Ingress e acesso externo
 Foi criado um manifesto de Ingress para exposicao HTTP das APIs fora do cluster:
-- [k8s/ingress.yml](k8s/ingress.yml)
+- [k8s/infra/ingress.yml](k8s/infra/ingress.yml)
 
 Configuracao aplicada:
 1. Host: localhost.
@@ -172,7 +192,7 @@ Rotas disponiveis:
 5. http://localhost/status
 
 Observacao importante:
-1. O manifesto [k8s/ingress.yml](k8s/ingress.yml) ja cria a IngressClass `nginx` e vincula o Ingress com `ingressClassName: nginx`.
+1. O manifesto [k8s/infra/ingress.yml](k8s/infra/ingress.yml) ja cria a IngressClass `nginx` e vincula o Ingress com `ingressClassName: nginx`.
 2. A IngressClass so define o roteamento logico; ainda e necessario ter o Ingress Controller nginx instalado e ativo no cluster.
 
 Checklist de confirmacao do controller:
@@ -182,46 +202,16 @@ Checklist de confirmacao do controller:
 
 Se o controller ainda nao existir, instalar o ingress-nginx antes de usar as rotas externas.
 
-## 9. Instalacao do Ingress Controller (NGINX)
-Comandos para instalar o ingress-nginx no cluster:
-
-- kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
-
-Comandos para verificar se a instalacao ficou operacional:
-
-- kubectl get ingressclass
-- kubectl get pods -n ingress-nginx
-- kubectl get svc -n ingress-nginx
-
-Opcional (ambiente local): para acessar via localhost, encaminhar portas do service do controller:
-
-- kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 80:80 443:443
-
 ## 10. Validacao executada
 Foi executada validacao estrutural e sintatica dos manifests com dry-run de cliente:
-- kubectl apply --dry-run=client -R -f k8s
+- kubectl apply --dry-run=client -R -f k8s/base
+- kubectl apply --dry-run=client -R -f k8s/infra
+- kubectl apply --dry-run=client -R -f k8s/features
 
 Resultado:
 - Todos os recursos foram aceitos no dry-run sem erros.
 
-## 11. Ordem recomendada de aplicacao
-1. Aplicar namespace.
-2. Criar/atualizar o secret ecr-regcred no namespace oficina.
-3. Aplicar manifests do Postgres.
-4. Aplicar manifests das APIs.
-5. Aplicar manifesto de Ingress.
-6. Validar pods, services, hpas, pvc e ingress.
-7. Validar o estado do ingress controller.
-
-Comando pratico para aplicar tudo de uma vez:
-- kubectl apply -R -f k8s
-
-Comando pratico para verificacao:
-- kubectl get pods,svc,hpa,pvc,ingress -n oficina
-- kubectl get ingressclass
-- kubectl get pods,svc -n ingress-nginx
-
-## 12. Ajustes pendentes por ambiente
+## 11. Finalizacao
 Antes de promover para ambientes compartilhados (qa/homolog/prod), recomenda-se:
 1. Atualizar as tags das imagens no ECR conforme a versao liberada.
 2. Ajustar valores de secrets para credenciais reais e chave de email (Resend) quando aplicavel.
