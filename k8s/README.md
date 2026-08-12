@@ -21,7 +21,7 @@ Estrutura final:
 - [k8s/features/createos-api](k8s/features/createos-api)
 - [k8s/features/getos-api](k8s/features/getos-api)
 - [k8s/features/status-api](k8s/features/status-api)
-- [k8s/features/postgres](k8s/features/postgres)
+- [k8s/db-local](k8s/db-local)
 
 Cada pasta de API contem:
 - configmap.yml
@@ -30,25 +30,29 @@ Cada pasta de API contem:
 - service.yml
 - hpa.yml
 
-A pasta postgres contem:
-- [k8s/features/postgres/configmap.yml](k8s/features/postgres/configmap.yml)
-- [k8s/features/postgres/secret.yml](k8s/features/postgres/secret.yml)
-- [k8s/features/postgres/pvc.yml](k8s/features/postgres/pvc.yml)
-- [k8s/features/postgres/deployment.yml](k8s/features/postgres/deployment.yml)
-- [k8s/features/postgres/service.yml](k8s/features/postgres/service.yml)
+A pasta db-local contem os manifestos do Postgres para uso exclusivamente local:
+- [k8s/db-local/configmap.yml](k8s/db-local/configmap.yml)
+- [k8s/db-local/secret.yml](k8s/db-local/secret.yml)
+- [k8s/db-local/pvc.yml](k8s/db-local/pvc.yml)
+- [k8s/db-local/deployment.yml](k8s/db-local/deployment.yml)
+- [k8s/db-local/service.yml](k8s/db-local/service.yml)
+
+Na nuvem, os manifestos de [k8s/db-local](k8s/db-local) nao devem ser aplicados. O banco de dados deve ser provisionado pelo Amazon RDS.
 
 Observacao: Postgres nao possui HPA por decisao de arquitetura solicitada.
 
 ## 3. Ordem recomendada de aplicacao
 1. Aplicar base (namespace): `kubectl apply -R -f k8s/base`
 2. Aplicar infra (ecr-regcred + ingress): `kubectl apply -R -f k8s/infra`
-3. Aplicar features (Postgres + APIs): `kubectl apply -R -f k8s/features`
-4. Validar pods, services, hpas, pvc e ingress.
-5. Validar o estado do ingress controller.
+3. Em ambiente local, aplicar o Postgres: `kubectl apply -R -f k8s/db-local`
+4. Aplicar features (APIs): `kubectl apply -R -f k8s/features`
+5. Validar pods, services, hpas, pvc e ingress.
+6. Validar o estado do ingress controller.
 
 Comandos para aplicar em ordem:
 - kubectl apply -R -f k8s/base
 - kubectl apply -R -f k8s/infra
+- kubectl apply -R -f k8s/db-local (somente ambiente local)
 - kubectl apply -R -f k8s/features
 
 Comando pratico para verificacao:
@@ -130,8 +134,8 @@ Observacao importante:
 2. Em ambiente nao-EKS, e recomendado automatizar a renovacao.
 3. Nao commitar token real no repositorio (manter placeholders no YAML).
 
-## 5. Recursos criados para Postgres
-Com base no docker-compose, o Postgres foi modelado com:
+## 5. Recursos do Postgres local
+Para execucao local, o Postgres foi modelado com:
 1. Deployment usando imagem postgres:17-alpine.
 2. Service ClusterIP chamado postgres na porta 5432.
 3. ConfigMap com POSTGRES_DB e POSTGRES_USER.
@@ -139,10 +143,12 @@ Com base no docker-compose, o Postgres foi modelado com:
 5. PVC para persistencia de dados em /var/lib/postgresql/data.
 6. Probes de readiness e liveness com pg_isready.
 
-## 6. Comunicacao interna entre APIs e banco
-A comunicacao entre APIs e Postgres foi configurada por DNS interno do cluster via Service ClusterIP.
+Esses manifestos existem apenas para o Kubernetes local. Em ambientes de nuvem, o banco deve ser executado no Amazon RDS, sem aplicar os recursos de [k8s/db-local](k8s/db-local).
 
-Host do banco nas connection strings:
+## 6. Comunicacao entre APIs e banco
+No ambiente local, a comunicacao entre APIs e Postgres usa o DNS interno do cluster por meio do Service ClusterIP.
+
+Host do banco nas connection strings locais:
 - postgres
 
 Connection string aplicada nos Secrets das APIs:
@@ -154,6 +160,8 @@ Arquivos atualizados:
 - [k8s/features/createos-api/secret.yml](k8s/features/createos-api/secret.yml)
 - [k8s/features/getos-api/secret.yml](k8s/features/getos-api/secret.yml)
 - [k8s/features/status-api/secret.yml](k8s/features/status-api/secret.yml)
+
+Na nuvem, as APIs devem usar a connection string e as credenciais fornecidas pelo Amazon RDS. Os Secrets das APIs precisam ser ajustados para o endpoint do RDS, em vez do host `postgres`.
 
 ## 7. Regras de HPA aplicadas
 Foi seguido o requisito informado:
@@ -206,6 +214,7 @@ Se o controller ainda nao existir, instalar o ingress-nginx antes de usar as rot
 Foi executada validacao estrutural e sintatica dos manifests com dry-run de cliente:
 - kubectl apply --dry-run=client -R -f k8s/base
 - kubectl apply --dry-run=client -R -f k8s/infra
+- kubectl apply --dry-run=client -R -f k8s/db-local
 - kubectl apply --dry-run=client -R -f k8s/features
 
 Resultado:
@@ -218,4 +227,5 @@ Antes de promover para ambientes compartilhados (qa/homolog/prod), recomenda-se:
 3. Revisar requests/limits de CPU e memoria conforme carga real.
 4. Garantir instalacao/configuracao do Ingress Controller no cluster (ex.: NGINX Ingress).
 5. Automatizar a renovacao do secret de pull do ECR (ecr-regcred).
-6. Se for necessario expor portas distintas por API (ex.: localhost:7194), usar estrategia alternativa (NodePort/LoadBalancer ou configuracao TCP do controller), pois Ingress HTTP padrao expoe em 80/443.
+6. Configurar as APIs para acessar o Amazon RDS e nao aplicar os manifestos de [k8s/db-local](k8s/db-local) em ambientes de nuvem.
+7. Se for necessario expor portas distintas por API (ex.: localhost:7194), usar estrategia alternativa (NodePort/LoadBalancer ou configuracao TCP do controller), pois Ingress HTTP padrao expoe em 80/443.
