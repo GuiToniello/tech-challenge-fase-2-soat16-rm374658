@@ -14,7 +14,6 @@ Foi adotado o padrao folder-by-feature dentro de [k8s](k8s), com uma pasta por s
 
 Estrutura final:
 - [k8s/base/namespace.yml](k8s/base/namespace.yml)
-- [k8s/infra/ecr-regcred.secret.yml](k8s/infra/ecr-regcred.secret.yml)
 - [k8s/infra/ingress.yml](k8s/infra/ingress.yml)
 - [k8s/features/monolith-api](k8s/features/monolith-api)
 - [k8s/features/approval-api](k8s/features/approval-api)
@@ -43,17 +42,18 @@ Observacao: Postgres nao possui HPA por decisao de arquitetura solicitada.
 
 ## 3. Ordem recomendada de aplicacao
 1. Aplicar base (namespace): `kubectl apply -R -f k8s/base`
-2. Aplicar infra (ecr-regcred + ingress): `kubectl apply -R -f k8s/infra`
+2. Aplicar o Ingress das APIs; os recursos do controller são instalados pelo Terraform via Helm.
 3. Em ambiente local, aplicar o Postgres: `kubectl apply -R -f k8s/db-local`
 4. Aplicar features (APIs): `kubectl apply -R -f k8s/features`
 5. Validar pods, services, hpas, pvc e ingress.
 6. Validar o estado do ingress controller.
 
-Comandos para aplicar em ordem:
+Comandos para aplicar em ordem na AWS:
 - kubectl apply -R -f k8s/base
-- kubectl apply -R -f k8s/infra
-- kubectl apply -R -f k8s/db-local (somente ambiente local)
+- kubectl apply -f k8s/infra/ingress.yml
 - kubectl apply -R -f k8s/features
+
+O controller e o Metrics Server sao instalados pelo Terraform via Helm. Os manifestos de `k8s/db-local` nao devem ser aplicados na AWS.
 
 Comando pratico para verificacao:
 - kubectl get pods,svc,hpa,pvc,ingress -n oficina
@@ -70,7 +70,7 @@ Para cada API foram criados os seguintes recursos:
 3. Deployment com 1 replica inicial, probes e limites de recursos.
 4. Service do tipo ClusterIP.
 5. HPA (autoscaling/v2).
-6. Referencia de imagePullSecrets para autenticacao no ECR privado.
+6. Pull das imagens privadas no ECR usando a role IAM dos nodes do EKS.
 
 ### 4.1 APIs contempladas
 - monolith-api
@@ -95,44 +95,9 @@ As imagens das APIs estao fixadas no ECR:
 - 903936907231.dkr.ecr.us-east-1.amazonaws.com/techchallenge-oficina-status:v1.0.0
 
 ### 4.3 Autenticacao no ECR privado
-Como as imagens estao em registry privado (ECR), os Deployments das APIs foram configurados com:
-- imagePullSecrets:
-	- name: ecr-regcred
+No EKS, a role IAM dos nodes devera possuir a policy gerenciada `AmazonEC2ContainerRegistryReadOnly`, permitindo que o kubelet faca pull das imagens privadas do ECR sem Secret Kubernetes.
 
-Arquivos atualizados:
-- [k8s/features/monolith-api/deployment.yml](k8s/features/monolith-api/deployment.yml)
-- [k8s/features/approval-api/deployment.yml](k8s/features/approval-api/deployment.yml)
-- [k8s/features/createos-api/deployment.yml](k8s/features/createos-api/deployment.yml)
-- [k8s/features/getos-api/deployment.yml](k8s/features/getos-api/deployment.yml)
-- [k8s/features/status-api/deployment.yml](k8s/features/status-api/deployment.yml)
-
-Criacao inicial do secret no namespace oficina:
-- aws ecr get-login-password --region us-east-1 | kubectl create secret docker-registry ecr-regcred --docker-server=903936907231.dkr.ecr.us-east-1.amazonaws.com --docker-username=AWS --docker-password-stdin -n oficina
-
-Alternativa por manifesto YAML (arquivo versionado em k8s/infra):
-- [k8s/infra/ecr-regcred.secret.yml](k8s/infra/ecr-regcred.secret.yml)
-
-Como preencher o arquivo [k8s/infra/ecr-regcred.secret.yml](k8s/infra/ecr-regcred.secret.yml):
-1. Campo password: usar o valor puro retornado por `aws ecr get-login-password --region us-east-1`.
-2. Campo auth: usar Base64 de `AWS:TOKEN`.
-
-Exemplo (PowerShell) para gerar os dois valores:
-- $token = aws ecr get-login-password --region us-east-1
-- $auth = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("AWS:$token"))
-
-Aplicacao via arquivo YAML:
-- kubectl apply -f k8s/infra/ecr-regcred.secret.yml
-
-Validacao do secret:
-- kubectl get secret ecr-regcred -n oficina
-
-Renovacao do token (idempotente, recomendada periodicamente):
-- aws ecr get-login-password --region us-east-1 | kubectl create secret docker-registry ecr-regcred --docker-server=903936907231.dkr.ecr.us-east-1.amazonaws.com --docker-username=AWS --docker-password-stdin -n oficina --dry-run=client -o yaml | kubectl apply -f -
-
-Observacao importante:
-1. O token do ECR expira periodicamente (tipicamente em 12 horas).
-2. Em ambiente nao-EKS, e recomendado automatizar a renovacao.
-3. Nao commitar token real no repositorio (manter placeholders no YAML).
+A mesma regiao AWS facilita o acesso ao registry, mas nao substitui a permissao IAM nem a conectividade de rede dos nodes ao ECR.
 
 ## 5. Recursos do Postgres local
 Para execucao local, o Postgres foi modelado com:
@@ -186,29 +151,29 @@ Foi criado um manifesto de Ingress para exposicao HTTP das APIs fora do cluster:
 - [k8s/infra/ingress.yml](k8s/infra/ingress.yml)
 
 Configuracao aplicada:
-1. Host: localhost.
+1. Sem campo `host`, permitindo o hostname DNS publico gerado pela AWS.
 2. Roteamento por path para cada API.
 3. Reescrita de URL para remover o prefixo antes de encaminhar ao backend.
 4. Backends apontando para Services ClusterIP na porta 80.
-5. IngressClass `nginx` declarada no proprio [k8s/ingress.yml](k8s/ingress.yml).
+5. O `ingressClassName: nginx` referencia o controller instalado pelo Terraform via Helm.
 
 Rotas disponiveis:
-1. http://localhost/monolith
-2. http://localhost/approval
-3. http://localhost/createos
-4. http://localhost/getos
-5. http://localhost/status
+1. http://<hostname-do-load-balancer>/monolith
+2. http://<hostname-do-load-balancer>/approval
+3. http://<hostname-do-load-balancer>/createos
+4. http://<hostname-do-load-balancer>/getos
+5. http://<hostname-do-load-balancer>/status
 
 Observacao importante:
-1. O manifesto [k8s/infra/ingress.yml](k8s/infra/ingress.yml) ja cria a IngressClass `nginx` e vincula o Ingress com `ingressClassName: nginx`.
-2. A IngressClass so define o roteamento logico; ainda e necessario ter o Ingress Controller nginx instalado e ativo no cluster.
+1. O recurso Ingress das APIs usa `ingressClassName: nginx`.
+2. O Ingress Controller nginx e instalado e gerenciado pelo Terraform via Helm.
 
 Checklist de confirmacao do controller:
 1. Validar classe: `kubectl get ingressclass`.
 2. Validar pods do controller (namespace padrao do ingress-nginx): `kubectl get pods -n ingress-nginx`.
 3. Validar service de entrada: `kubectl get svc -n ingress-nginx`.
 
-Se o controller ainda nao existir, instalar o ingress-nginx antes de usar as rotas externas.
+O hostname do Load Balancer pode ser consultado com `kubectl get svc -n ingress-nginx`.
 
 ## 10. Validacao executada
 Foi executada validacao estrutural e sintatica dos manifests com dry-run de cliente:
@@ -226,6 +191,5 @@ Antes de promover para ambientes compartilhados (qa/homolog/prod), recomenda-se:
 2. Ajustar valores de secrets para credenciais reais e chave de email (Resend) quando aplicavel.
 3. Revisar requests/limits de CPU e memoria conforme carga real.
 4. Garantir instalacao/configuracao do Ingress Controller no cluster (ex.: NGINX Ingress).
-5. Automatizar a renovacao do secret de pull do ECR (ecr-regcred).
-6. Configurar as APIs para acessar o Amazon RDS e nao aplicar os manifestos de [k8s/db-local](k8s/db-local) em ambientes de nuvem.
-7. Se for necessario expor portas distintas por API (ex.: localhost:7194), usar estrategia alternativa (NodePort/LoadBalancer ou configuracao TCP do controller), pois Ingress HTTP padrao expoe em 80/443.
+5. Configurar as APIs para acessar o Amazon RDS e nao aplicar os manifestos de [k8s/db-local](k8s/db-local) em ambientes de nuvem.
+6. Se for necessario expor portas distintas por API (ex.: localhost:7194), usar estrategia alternativa (NodePort/LoadBalancer ou configuracao TCP do controller), pois Ingress HTTP padrao expoe em 80/443.

@@ -11,6 +11,7 @@ server/.github/
 server/coveragereport
 server/TestResults
 .vs/
+infra/example-only
 
 # Build results
 [Dd]ebug/
