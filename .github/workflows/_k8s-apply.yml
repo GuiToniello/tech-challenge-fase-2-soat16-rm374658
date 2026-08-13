@@ -1,0 +1,40 @@
+name: "[Reusable] K8s Apply"
+
+on:
+  workflow_call:
+    inputs:
+      restart-pods:
+        description: "Força o rollout restart das 5 APIs após o apply (usar quando houver imagem nova)"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  k8s-apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - uses: azure/setup-kubectl@v5
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name ${{ vars.EKS_CLUSTER_NAME }} --region ${{ vars.AWS_REGION }}
+
+      - name: Gerar k8s/.env (secretGenerator do Kustomize)
+        shell: pwsh
+        run: |
+          "DatabaseSettings__ConnectionString=Host=${{ vars.RDS_ENDPOINT }};Port=5432;Database=${{ vars.RDS_DATABASE }};Username=${{ vars.RDS_USERNAME }};Password=${{ secrets.RDS_PASSWORD }}" | Set-Content k8s/.env
+          "ResendSettings__ApiKey=${{ secrets.RESEND_API_KEY }}" | Add-Content k8s/.env
+
+      - name: Apply manifests
+        run: kubectl apply -k k8s
+
+      - name: Rollout restart
+        if: ${{ inputs.restart-pods }}
+        run: kubectl rollout restart deployment -n oficina -l app.kubernetes.io/part-of=techchallenge-oficina

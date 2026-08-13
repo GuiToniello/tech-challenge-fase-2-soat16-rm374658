@@ -1,0 +1,38 @@
+name: Bootstrap
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-test:
+    uses: ./.github/workflows/_build-test.yml
+
+  # build-push:
+  #   needs: build-test
+  #   uses: ./.github/workflows/_build-push.yml
+  #   with:
+  #     image-tag: ${{ vars.IMAGE_TAG }}
+  #   secrets: inherit
+
+  # terraform-foundation:
+  #   needs: build-push
+  #   uses: ./.github/workflows/_terraform.yml
+  #   with:
+  #     working-directory: infra/foundation
+  #     command: apply
+  #   secrets: inherit
+
+  # terraform-addons:
+  #   needs: terraform-foundation
+  #   uses: ./.github/workflows/_terraform.yml
+  #   with:
+  #     working-directory: infra/addons
+  #     command: apply
+  #   secrets: inherit
+
+  # k8s-apply:
+  #   needs: terraform-addons
+  #   uses: ./.github/workflows/_k8s-apply.yml
+  #   with:
+  #     restart-pods: true
+  #   secrets: inherit

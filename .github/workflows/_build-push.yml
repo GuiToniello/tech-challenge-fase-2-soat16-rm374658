@@ -1,0 +1,32 @@
+name: "[Reusable] Build & Push Images"
+
+on:
+  workflow_call:
+    inputs:
+      image-tag:
+        description: Tag aplicada às 5 imagens publicadas no ECR
+        required: true
+        type: string
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    env:
+      REGISTRY_PREFIX: ${{ vars.ECR_REGISTRY }}/
+      IMAGE_TAG: ${{ inputs.image-tag }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build images
+        run: docker compose build api approval-api createos-api getos-api status-api
+
+      - name: Push images
+        run: docker compose push api approval-api createos-api getos-api status-api

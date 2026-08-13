@@ -1,0 +1,21 @@
+name: Destroy
+# Destrutivo: recomenda-se proteger com uma Environment do GitHub exigindo aprovação manual.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  terraform-destroy-addons:
+    uses: ./.github/workflows/_terraform.yml
+    with:
+      working-directory: infra/addons
+      command: destroy
+    secrets: inherit
+
+  terraform-destroy-foundation:
+    needs: terraform-destroy-addons
+    uses: ./.github/workflows/_terraform.yml
+    with:
+      working-directory: infra/foundation
+      command: destroy
+    secrets: inherit

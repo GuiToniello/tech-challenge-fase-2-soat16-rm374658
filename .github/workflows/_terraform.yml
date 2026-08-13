@@ -1,0 +1,41 @@
+name: "[Reusable] Terraform"
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: "Pasta do Terraform (infra/foundation ou infra/addons)"
+        required: true
+        type: string
+      command:
+        description: "Comando do Terraform (apply ou destroy)"
+        required: true
+        type: string
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    env:
+      TF_VAR_rds_password: ${{ secrets.RDS_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - uses: hashicorp/setup-terraform@v4
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform ${{ inputs.command }}
+        run: terraform ${{ inputs.command }} -auto-approve
