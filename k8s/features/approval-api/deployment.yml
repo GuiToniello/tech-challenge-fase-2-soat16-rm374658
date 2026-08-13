@@ -21,7 +21,7 @@ spec:
       containers:
         - name: approval-api
           image: 903936907231.dkr.ecr.us-east-1.amazonaws.com/techchallenge-oficina-approval:v1.0.0
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 8080
