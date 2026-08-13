@@ -1,58 +1,117 @@
 # Terraform AWS
 
-Este diretório contém duas configurações Terraform independentes:
+Tutorial resumido para criar a infraestrutura do trabalho. Existem duas configurações Terraform independentes:
 
-- `foundation/`: VPC, subnets, IAM, EKS, node group, RDS e acesso do usuário que executa o Terraform.
-- `addons/`: instalação Helm do ingress-nginx e Metrics Server.
+- `foundation/`: VPC, subnets, IAM, EKS, node group e RDS.
+- `addons/`: `ingress-nginx` e Metrics Server via Helm.
 
-O bucket `terraform-state-soat16` é externo e usa duas chaves:
+O state usa o bucket S3 externo `terraform-state-soat16`, com estas chaves:
 
 - `techchallenge-oficina/foundation.tfstate`
 - `techchallenge-oficina/addons.tfstate`
 
-## Pré-requisitos manuais
+Detalhes da arquitetura estão em [ESTRUTURA.md](ESTRUTURA.md).
 
-Antes de executar o Terraform, crie/configure manualmente na AWS:
+## 1. Pré-requisitos
+
+Crie/configure manualmente na AWS:
 
 - Bucket S3 `terraform-state-soat16` em `us-east-1`, com versionamento, criptografia, bloqueio público e acesso de leitura/escrita.
-- Usuário IAM `terraform`, configurado no profile usado para executar o Terraform.
-- Usuário IAM `cluster_admin`, consultado pela foundation e mantido como acesso alternativo ao EKS.
+- Usuário IAM `terraform`, usado para executar Terraform, Helm e `kubectl`.
+- Usuário IAM `cluster_admin`, mantido como acesso alternativo ao EKS.
+- AWS CLI configurada com o profile que será usado pelo Terraform.
 
-O Terraform não cria esses usuários nem o bucket. Não versione access keys, secrets ou `terraform.tfvars`.
+O Terraform não cria esses usuários nem o bucket.
 
-Em `ESTRUTURA.md` você pode conferir mais detalhes da arquitetura planejada.
+## 2. Crie os arquivos de variáveis
 
-## Ordem de execução
+É necessário criar um `terraform.tfvars` em cada pasta Terraform. A partir da pasta `infra/`, execute:
 
-O `apply` não faz parte da automação deste agente. Execute manualmente:
+```powershell
+Copy-Item foundation/terraform.tfvars.example foundation/terraform.tfvars
+Copy-Item addons/terraform.tfvars.example addons/terraform.tfvars
+```
+
+Edite `foundation/terraform.tfvars` e informe a senha real do RDS em:
+
+```hcl
+rds_password = "SUA_SENHA"
+```
+
+Não versione esses arquivos. Eles já estão ignorados pelo `.gitignore`.
+
+## 3. Crie a foundation
+
+Execute os comandos dentro de `infra/foundation`:
 
 ```powershell
 Push-Location foundation
 terraform init
+terraform fmt -check -recursive
 terraform validate
 terraform plan -var-file="terraform.tfvars"
-# terraform apply
-Pop-Location
-
-Push-Location addons
-terraform init
-terraform validate
-terraform plan -var-file="terraform.tfvars"
-# terraform apply
+terraform apply -var-file="terraform.tfvars"
 Pop-Location
 ```
 
-O usuário/profile que executa o Terraform receberá também uma EKS Access Entry com `AmazonEKSClusterAdminPolicy`. Assim, o mesmo profile `terraform` poderá executar a foundation, instalar os addons e usar o `kubectl`, sem alternância de credenciais. O usuário `cluster_admin` permanece como acesso administrativo alternativo.
+O `apply` é manual. Revise o `plan` antes de confirmar.
 
-Depois que os addons estiverem prontos:
+## 4. Instale os addons
+
+Depois que o node do EKS estiver `Ready`, execute:
 
 ```powershell
-# conectar no cluster
-aws eks update-kubeconfig --region us-east-1 --name techchallenge-oficina-eks
+Push-Location addons
+terraform init
+terraform fmt -check -recursive
+terraform validate
+terraform plan -var-file="terraform.tfvars"
+terraform apply -var-file="terraform.tfvars"
+Pop-Location
+```
 
-# verificar nodes e ingress
+Isso instala o `ingress-nginx` e o Metrics Server. O mesmo usuário/profile `terraform` é usado nos dois estados.
+
+## 5. Configure o kubectl
+
+```powershell
+aws eks update-kubeconfig --region us-east-1 --name techchallenge-oficina-eks
 kubectl get nodes
+kubectl get pods -A
 kubectl get svc ingress-nginx-controller -n ingress-nginx
 ```
 
-Para destruir o ambiente, destrua primeiro `addons` e depois `foundation`, sempre executando os comandos manualmente.
+## 6. Aplique as APIs
+
+O arquivo `k8s/.env` contém a connection string do RDS e a chave do Resend. Ele é ignorado pelo Git. O arquivo `k8s/kustomization.yaml` usa esse `.env` para gerar o Secret `oficina-api-secrets`.
+
+A partir da raiz do projeto:
+
+```powershell
+kubectl apply -k k8s
+```
+
+Não aplique `k8s/db-local/` na AWS.
+
+Valide:
+
+```powershell
+kubectl get pods,svc,hpa,ingress -n oficina
+kubectl top pods -n oficina
+```
+
+## 7. Destrua o ambiente
+
+Para evitar custos, destrua primeiro os addons e depois a foundation:
+
+```powershell
+Push-Location addons
+terraform destroy -var-file="terraform.tfvars"
+Pop-Location
+
+Push-Location foundation
+terraform destroy -var-file="terraform.tfvars"
+Pop-Location
+```
+
+O bucket S3 do state e o ECR existente ficam fora do `destroy`.
