@@ -7,12 +7,12 @@ jobs:
   build-test:
     uses: ./.github/workflows/_build-test.yml
 
-  # build-push:
-  #   needs: build-test
-  #   uses: ./.github/workflows/_build-push.yml
-  #   with:
-  #     image-tag: ${{ vars.IMAGE_TAG }}
-  #   secrets: inherit
+  build-push:
+    needs: build-test
+    uses: ./.github/workflows/_build-push.yml
+    with:
+      image-tag: ${{ vars.IMAGE_TAG }}
+    secrets: inherit
 
   # terraform-foundation:
   #   needs: build-push
