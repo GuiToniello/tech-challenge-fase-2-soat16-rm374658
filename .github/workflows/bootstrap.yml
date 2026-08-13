@@ -4,23 +4,23 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-test:
-    uses: ./.github/workflows/_build-test.yml
+  # build-test:
+  #   uses: ./.github/workflows/_build-test.yml
 
-  build-push:
-    needs: build-test
-    uses: ./.github/workflows/_build-push.yml
-    with:
-      image-tag: ${{ vars.IMAGE_TAG }}
-    secrets: inherit
-
-  # terraform-foundation:
-  #   needs: build-push
-  #   uses: ./.github/workflows/_terraform.yml
+  # build-push:
+  #   needs: build-test
+  #   uses: ./.github/workflows/_build-push.yml
   #   with:
-  #     working-directory: infra/foundation
-  #     command: apply
+  #     image-tag: ${{ vars.IMAGE_TAG }}
   #   secrets: inherit
+
+  terraform-foundation:
+    needs: build-push
+    uses: ./.github/workflows/_terraform.yml
+    with:
+      working-directory: infra/foundation
+      command: apply
+    secrets: inherit
 
   # terraform-addons:
   #   needs: terraform-foundation
