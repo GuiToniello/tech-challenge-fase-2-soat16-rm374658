@@ -122,8 +122,9 @@ Resultado: as 5 imagens (`api`, `approval-api`, `createos-api`, `getos-api`, `st
   2. `aws-actions/configure-aws-credentials@v6`
   3. `azure/setup-kubectl@v5` (garante uma versão fixa do `kubectl`)
   4. `aws eks update-kubeconfig --name ${{ vars.EKS_CLUSTER_NAME }} --region ${{ vars.AWS_REGION }}` — comando nativo da AWS CLI (já vem instalada nos runners `ubuntu-latest`), não é script custom.
-  5. `kubectl apply -k k8s`
-  6. `kubectl rollout restart deployment -n oficina -l app.kubernetes.io/part-of=techchallenge-oficina` — este comando força a recriação dos pods das 5 APIs de uma vez (via label selector), puxando a imagem atual do ECR.
+  5. `aws rds describe-db-instances --db-instance-identifier ${{ vars.RDS_INSTANCE_IDENTIFIER }} --query 'DBInstances[0].Endpoint.Address' --output text` — descobre o endpoint do RDS dinamicamente, sem depender de uma variable atualizada manualmente. O identificador é fixo (`${project_name}-postgres`, nunca sobrescrito no `.tfvars`), então funciona em qualquer execução, mesmo sem o job de Terraform ter rodado no mesmo workflow.
+  6. `kubectl apply -k k8s`
+  7. `kubectl rollout restart deployment -n oficina -l app.kubernetes.io/part-of=techchallenge-oficina` — este comando força a recriação dos pods das 5 APIs de uma vez (via label selector), puxando a imagem atual do ECR.
 
 > Os 5 `k8s/features/*/deployment.yml` já apontam para a tag fixa `:latest` e usam `imagePullPolicy: Always`, para que o `rollout restart` sempre busque a imagem atual no ECR em vez de reaproveitar o cache local do node.
 
@@ -134,7 +135,7 @@ Resultado: as 5 imagens (`api`, `approval-api`, `createos-api`, `getos-api`, `st
  apenas `Set-Content` para um arquivo `.env` das duas variáveis de secret:
 
 ```powershell
-"DatabaseSettings__ConnectionString=Host=${{ vars.RDS_ENDPOINT }};Port=5432;Database=${{ vars.RDS_DATABASE }};Username=${{ vars.RDS_USERNAME }};Password=${{ secrets.RDS_PASSWORD }}" | Set-Content k8s/.env
+"DatabaseSettings__ConnectionString=Host=${{ steps.rds.outputs.endpoint }};Port=5432;Database=${{ vars.RDS_DATABASE }};Username=${{ vars.RDS_USERNAME }};Password=${{ secrets.RDS_PASSWORD }}" | Set-Content k8s/.env
 "ResendSettings__ApiKey=${{ secrets.RESEND_API_KEY }}" | Add-Content k8s/.env
 ```
 Assim, temos:
@@ -229,7 +230,7 @@ Configurar em **Settings → Secrets and variables → Actions** do repositório
 | `AWS_REGION`        | `us-east-1`                                                    |
 | `ECR_REGISTRY`      | `903936907231.dkr.ecr.us-east-1.amazonaws.com`                 |
 | `EKS_CLUSTER_NAME`  | `techchallenge-oficina-eks`                                    |
-| `RDS_ENDPOINT`      | endpoint do RDS (disponível como output do Terraform; pode ser atualizado manualmente após o primeiro apply) |
+| `RDS_INSTANCE_IDENTIFIER` | `techchallenge-oficina-postgres` — identificador fixo do RDS (`${project_name}-postgres`, nunca sobrescrito no `.tfvars`), usado para descobrir o endpoint via `aws rds describe-db-instances` em vez de configurar o endpoint manualmente |
 | `RDS_DATABASE`      | `oficina`                                                       |
 | `RDS_USERNAME`      | `sa` (não sensível, valor fixo do projeto)                      |
 | `IMAGE_TAG`         | `latest` — tag fixa, reaproveitada em toda build/push (o ECR é mutável: cada push sobrescreve a mesma tag; o deploy força um `rollout restart` para atualizar os pods) |

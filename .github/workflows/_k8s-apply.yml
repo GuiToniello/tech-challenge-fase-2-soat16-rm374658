@@ -26,10 +26,15 @@ jobs:
       - name: Update kubeconfig
         run: aws eks update-kubeconfig --name ${{ vars.EKS_CLUSTER_NAME }} --region ${{ vars.AWS_REGION }}
 
+      - name: Descobrir endpoint do RDS
+        id: rds
+        run: |
+          echo "endpoint=$(aws rds describe-db-instances --db-instance-identifier ${{ vars.RDS_INSTANCE_IDENTIFIER }} --query 'DBInstances[0].Endpoint.Address' --output text)" >> "$GITHUB_OUTPUT"
+
       - name: Gerar k8s/.env (secretGenerator do Kustomize)
         shell: pwsh
         run: |
-          "DatabaseSettings__ConnectionString=Host=${{ vars.RDS_ENDPOINT }};Port=5432;Database=${{ vars.RDS_DATABASE }};Username=${{ vars.RDS_USERNAME }};Password=${{ secrets.RDS_PASSWORD }}" | Set-Content k8s/.env
+          "DatabaseSettings__ConnectionString=Host=${{ steps.rds.outputs.endpoint }};Port=5432;Database=${{ vars.RDS_DATABASE }};Username=${{ vars.RDS_USERNAME }};Password=${{ secrets.RDS_PASSWORD }}" | Set-Content k8s/.env
           "ResendSettings__ApiKey=${{ secrets.RESEND_API_KEY }}" | Add-Content k8s/.env
 
       - name: Apply manifests
