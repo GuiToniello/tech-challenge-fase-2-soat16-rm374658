@@ -24,7 +24,6 @@ Estrutura final:
 
 Cada pasta de API contem:
 - configmap.yml
-- secret.yml
 - deployment.yml
 - service.yml
 - hpa.yml
@@ -41,17 +40,13 @@ Na nuvem, os manifestos de [k8s/db-local](k8s/db-local) nao devem ser aplicados.
 Observacao: Postgres nao possui HPA por decisao de arquitetura solicitada.
 
 ## 3. Ordem recomendada de aplicacao
-1. Aplicar base (namespace): `kubectl apply -R -f k8s/base`
-2. Aplicar o Ingress das APIs; os recursos do controller são instalados pelo Terraform via Helm.
-3. Em ambiente local, aplicar o Postgres: `kubectl apply -R -f k8s/db-local`
-4. Aplicar features (APIs): `kubectl apply -R -f k8s/features`
-5. Validar pods, services, hpas, pvc e ingress.
-6. Validar o estado do ingress controller.
+1. Aplicar todos os recursos das APIs e gerar o Secret a partir do `.env`: `kubectl apply -k k8s`
+2. Em ambiente local, aplicar o Postgres: `kubectl apply -R -f k8s/db-local`
+3. Validar pods, services, hpas, pvc e ingress.
+4. Validar o estado do ingress controller.
 
-Comandos para aplicar em ordem na AWS:
-- kubectl apply -R -f k8s/base
-- kubectl apply -f k8s/infra/ingress.yml
-- kubectl apply -R -f k8s/features
+Comando para aplicar na AWS:
+- kubectl apply -k k8s
 
 O controller e o Metrics Server sao instalados pelo Terraform via Helm. Os manifestos de `k8s/db-local` nao devem ser aplicados na AWS.
 
@@ -66,7 +61,7 @@ Opcional (ambiente local): para acessar via localhost, encaminhar portas do ingr
 ## 4. Recursos criados por API
 Para cada API foram criados os seguintes recursos:
 1. ConfigMap com configuracoes nao sensiveis.
-2. Secret com configuracoes sensiveis.
+2. Secret comum `oficina-api-secrets`, gerado pelo Kustomize a partir do `.env` local.
 3. Deployment com 1 replica inicial, probes e limites de recursos.
 4. Service do tipo ClusterIP.
 5. HPA (autoscaling/v2).
@@ -119,14 +114,7 @@ Host do banco nas connection strings locais:
 Connection string aplicada nos Secrets das APIs:
 - Host=postgres;Port=5432;Database=oficina;Username=sa;Password=P@ssw0rd123
 
-Arquivos atualizados:
-- [k8s/features/monolith-api/secret.yml](k8s/features/monolith-api/secret.yml)
-- [k8s/features/approval-api/secret.yml](k8s/features/approval-api/secret.yml)
-- [k8s/features/createos-api/secret.yml](k8s/features/createos-api/secret.yml)
-- [k8s/features/getos-api/secret.yml](k8s/features/getos-api/secret.yml)
-- [k8s/features/status-api/secret.yml](k8s/features/status-api/secret.yml)
-
-Na nuvem, as APIs devem usar a connection string e as credenciais fornecidas pelo Amazon RDS. Os Secrets das APIs precisam ser ajustados para o endpoint do RDS, em vez do host `postgres`.
+Na nuvem, as APIs devem usar a connection string e as credenciais fornecidas pelo Amazon RDS. O arquivo `k8s/kustomization.yaml` gera o Secret comum `oficina-api-secrets` a partir de `k8s/.env`. O arquivo `k8s/.env` é ignorado pelo Git; apenas `k8s/.env.example` deve ser versionado.
 
 ## 7. Regras de HPA aplicadas
 Foi seguido o requisito informado:
@@ -175,15 +163,23 @@ Checklist de confirmacao do controller:
 
 O hostname do Load Balancer pode ser consultado com `kubectl get svc -n ingress-nginx`.
 
-## 10. Validacao executada
-Foi executada validacao estrutural e sintatica dos manifests com dry-run de cliente:
-- kubectl apply --dry-run=client -R -f k8s/base
-- kubectl apply --dry-run=client -R -f k8s/infra
-- kubectl apply --dry-run=client -R -f k8s/db-local
-- kubectl apply --dry-run=client -R -f k8s/features
+## 10. Validacao
+Para validar a configuracao AWS sem criar recursos no cluster:
 
-Resultado:
-- Todos os recursos foram aceitos no dry-run sem erros.
+```powershell
+kubectl kustomize k8s
+kubectl apply --dry-run=client --validate=false -k k8s
+```
+
+O build deve gerar:
+
+- Namespace `oficina`.
+- ConfigMaps das APIs.
+- Secret `oficina-api-secrets`, gerado a partir do arquivo local `k8s/.env`.
+- Deployments, Services e HPAs das cinco APIs.
+- Ingress das APIs.
+
+O arquivo `k8s/.env` nao deve ser versionado. Para validar o template sem credenciais reais, copie `k8s/.env.example` para `k8s/.env` e preencha os valores localmente.
 
 ## 11. Finalizacao
 Antes de promover para ambientes compartilhados (qa/homolog/prod), recomenda-se:

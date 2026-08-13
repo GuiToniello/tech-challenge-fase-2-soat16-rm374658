@@ -16,6 +16,7 @@ infra/**/terraform.tfvars
 infra/**/.terraform
 infra/**/.terraform.lock.hcl
 infra/**/errored.tfstate
+k8s/.env
 infra/**/errored.tfstate
 
 # Build results

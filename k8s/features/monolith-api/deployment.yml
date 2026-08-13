@@ -30,7 +30,7 @@ spec:
             - configMapRef:
                 name: monolith-api-config
             - secretRef:
-                name: monolith-api-secret
+                name: oficina-api-secrets
           resources:
             requests:
               cpu: 100m
