@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: getos-api
-          image: 903936907231.dkr.ecr.us-east-1.amazonaws.com/techchallenge-oficina-getos:v1.0.0
+          image: 903936907231.dkr.ecr.us-east-1.amazonaws.com/techchallenge-oficina-getos:latest
           imagePullPolicy: Always
           ports:
             - name: http
