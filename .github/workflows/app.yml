@@ -1,70 +1,70 @@
-# name: App
+name: App
 
-# on:
-#   push:
-#     branches: [main]
+on:
+  push:
+    branches: [main]
 
-# jobs:
-#   changes:
-#     runs-on: ubuntu-latest
-#     outputs:
-#       infra: ${{ steps.filter.outputs.infra }}
-#       server: ${{ steps.filter.outputs.server }}
-#       k8s: ${{ steps.filter.outputs.k8s }}
-#     steps:
-#       - uses: actions/checkout@v7
-#       - uses: dorny/paths-filter@v4
-#         id: filter
-#         with:
-#           filters: |
-#             infra:
-#               - 'infra/**'
-#             server:
-#               - 'server/**'
-#             k8s:
-#               - 'k8s/**'
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      infra: ${{ steps.filter.outputs.infra }}
+      server: ${{ steps.filter.outputs.server }}
+      k8s: ${{ steps.filter.outputs.k8s }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            infra:
+              - 'infra/**'
+            server:
+              - 'server/**'
+            k8s:
+              - 'k8s/**'
 
-#   infra:
-#     needs: changes
-#     if: needs.changes.outputs.infra == 'true'
-#     uses: ./.github/workflows/_terraform.yml
-#     with:
-#       working-directory: infra/foundation
-#       command: apply
-#     secrets: inherit
+  infra:
+    needs: changes
+    if: needs.changes.outputs.infra == 'true'
+    uses: ./.github/workflows/_terraform.yml
+    with:
+      working-directory: infra/foundation
+      command: apply
+    secrets: inherit
 
-#   infra-addons:
-#     needs: [changes, infra]
-#     if: needs.changes.outputs.infra == 'true'
-#     uses: ./.github/workflows/_terraform.yml
-#     with:
-#       working-directory: infra/addons
-#       command: apply
-#     secrets: inherit
+  infra-addons:
+    needs: [changes, infra]
+    if: needs.changes.outputs.infra == 'true'
+    uses: ./.github/workflows/_terraform.yml
+    with:
+      working-directory: infra/addons
+      command: apply
+    secrets: inherit
 
-#   server-build-test:
-#     needs: changes
-#     if: needs.changes.outputs.server == 'true'
-#     uses: ./.github/workflows/_build-test.yml
+  server-build-test:
+    needs: changes
+    if: needs.changes.outputs.server == 'true'
+    uses: ./.github/workflows/_build-test.yml
 
-#   server-build-push:
-#     needs: [changes, server-build-test]
-#     if: needs.changes.outputs.server == 'true'
-#     uses: ./.github/workflows/_build-push.yml
-#     with:
-#       image-tag: ${{ vars.IMAGE_TAG }}
-#     secrets: inherit
+  server-build-push:
+    needs: [changes, server-build-test]
+    if: needs.changes.outputs.server == 'true'
+    uses: ./.github/workflows/_build-push.yml
+    with:
+      image-tag: ${{ vars.IMAGE_TAG }}
+    secrets: inherit
 
-#   server-k8s-apply:
-#     needs: [changes, server-build-push]
-#     if: needs.changes.outputs.server == 'true'
-#     uses: ./.github/workflows/_k8s-apply.yml
-#     with:
-#       restart-pods: true
-#     secrets: inherit
+  server-k8s-apply:
+    needs: [changes, server-build-push]
+    if: needs.changes.outputs.server == 'true'
+    uses: ./.github/workflows/_k8s-apply.yml
+    with:
+      restart-pods: true
+    secrets: inherit
 
-#   cluster:
-#     needs: changes
-#     if: needs.changes.outputs.k8s == 'true'
-#     uses: ./.github/workflows/_k8s-apply.yml
-#     secrets: inherit
+  cluster:
+    needs: changes
+    if: needs.changes.outputs.k8s == 'true'
+    uses: ./.github/workflows/_k8s-apply.yml
+    secrets: inherit
