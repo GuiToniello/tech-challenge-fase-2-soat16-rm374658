@@ -1,7 +1,5 @@
 ﻿# Projeto Oficina
 
-[![Quality Gate Status](http://sonarcloud.io/api/project_badges/measure?project=GuiToniello_tech-challenge-fase-1-soat16-rm374658&metric=alert_status&token=ea0031cd24511d30496ed0d47a909e4881b37946)](http://sonarcloud.io/summary/new_code?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658) [![Quality gate](http://sonarcloud.io/api/project_badges/quality_gate?project=GuiToniello_tech-challenge-fase-1-soat16-rm374658&token=ea0031cd24511d30496ed0d47a909e4881b37946)](http://sonarcloud.io/summary/new_code?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658) [![SonarQube Cloud](http://sonarcloud.io/images/project_badges/sonarcloud-light.svg)](http://sonarcloud.io/summary/new_code?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658)
-
 ## 1. Identificação
 
 Software de gestão para uma oficina mecânica.
@@ -15,17 +13,20 @@ Grupo:
 
 Acesse o blueprint no Miro: http://miro.com/app/board/uXjVHVfHuvI=/?share_link_id=633470424823
 
-O link do SonarCloud: http://sonarcloud.io/summary/overall?id=GuiToniello_tech-challenge-fase-1-soat16-rm374658
-
-Você pode acessar o relatório completo [aqui](./docs/reports/relatorio-completo.pdf).
+Você pode acessar o relatório completo [aqui](./docs/relatorio-completo.pdf).
 
 ## 2. Arquitetura
 
 Nessa seção, será descrita a arquitetura em alto nível e organização da solução.
 
+
+![Arquitetura](./docs/diagram/arquitetura.png)
+
 ### 2.1. Visão Geral
 
-As decisões arquiteturais estão documentadas individualmente como ADRs (Architecture Decision Records) em `docs/adr/`:
+As decisões arquiteturais estão documentadas individualmente como ADRs (Architecture Decision Records) em `docs/adr/`.
+
+Abaixo, você encontra um resumo.
 
 | ADR | Resumo | Link |
 |-----|--------|------|
