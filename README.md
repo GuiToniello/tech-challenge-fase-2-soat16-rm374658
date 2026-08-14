@@ -153,7 +153,7 @@ FOWLER, Martin. Inversion of Control Containers and the Dependency Injection pat
 
 ## 4. Executando o Projeto
 
-Para executar o projeto, temos 3 alternativas descritas nas subseções `4.2`, `4.3` e `4.4`.
+Para executar o projeto localmente, na sua maquina dev, temos 3 alternativas descritas nas subseções `4.2`, `4.3` e `4.4`.
 
 Siga apenas 1 delas.
 
@@ -227,7 +227,7 @@ Passo 4 - Use `http://localhost:7194/index.html` para acessar o Swagger.
 
 Para popular o banco de dados, use a Collection do Postman na pasta `/e2e`.
 
-Não temos scripts SQL ou endpoint, apenas use a collection que ela irá popular o banco e executar demais operações de demonstração.
+Não temos scripts SQL ou endpoint específico, apenas use a collection que ela irá popular o banco e executar demais operações de demonstração.
 
 Se você estiver rodando em container, não é preciso configurar mais nada, apenas rodar, a connection string já está certa.
 
@@ -256,6 +256,8 @@ Sem `RESEND_API_KEY` (container) ou `ApiKey` no `appsettings.json` (execução l
 
 ## 5. Requisitos Implementados
 
+Abaixo, você encontra uma tabela com o resumo dos requisitos de negócio da Fase 2 que foram implementados.
+
 | Requisito | Atende? | Observação de escopo | API | Evidências (server/) |
 |---|---|---|---|---|
 | Consulta de status da Ordem de Serviço (OS) | Sim | Consulta de status disponível no fluxo de OS. | `TechChallenge.Oficina.StatusService.API` (API dedicada para consulta de status): [StatusOrdemServicoEndpoints](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.StatusService.API/Features/OrdensServico/StatusOrdemServicoEndpoints.cs) | [Endpoints OS](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.Monolith.API/Features/OrdensServico/OrdensServicoEndpoints.cs) · [Controller OS](./server/2%20-%20Interface%20Adapters/TechChallenge.Oficina.Controllers/Features/OrdensServico/OrdensServicoController.cs) |
@@ -264,9 +266,140 @@ Sem `RESEND_API_KEY` (container) ou `ApiKey` no `appsettings.json` (execução l
 | Listagem de OS por prioridade + antiguidade, excluindo finalizadas/entregues | Sim | Escopo acordado: endpoint ordenado /ordenadas. | `TechChallenge.Oficina.GetOSService.API` (API dedicada para consultas e listagem de OS): [GetOrdensServicoEndpoints](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.GetOSService.API/Features/OrdensServico/GetOrdensServicoEndpoints.cs) | [Gateway OS](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.DB/Features/OrdensServico/OrdemServicoGateway.cs) · [Query Ordenada](./server/3%20-%20Application%20Business%20Rules/TechChallenge.Oficina.UseCases/Features/OrdensServico/Queries/ListarOrdensServicoOrdenadasQuery.cs) |
 | Atualização de status da OS com notificação ao cliente | Sim | A cada mudança de status da OS, o cliente é notificado por e-mail no fluxo de controller/use case, independentemente da API que executa a alteração. | Atualmente, os endpoints de alteração de status estão em `TechChallenge.Oficina.Monolith.API`: [OrdensServicoEndpoints](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.Monolith.API/Features/OrdensServico/OrdensServicoEndpoints.cs). A regra de notificação é centralizada no controller/use case e pode ser reutilizada por APIs dedicadas. | [UseCases OS](./server/3%20-%20Application%20Business%20Rules/TechChallenge.Oficina.UseCases/Features/OrdensServico/UseCases/OrdemServicoUseCases.cs) · [Sender Status](./server/1%20-%20Frameworks%20%26%20Drivers/TechChallenge.Oficina.Email/Features/OrdensServico/OrdemServicoStatusEmailSender.cs) |
 
-## 6. Finalização
 
-- Para fazer requisições, use a Collection do Postman na pasta `/e2e`
+## 6. Infraestrutura Provisionada
+
+A infraestrutura é provisionada na AWS, na região `us-east-1`, por duas configurações Terraform: a foundation cria os recursos principais e os addons instalam os componentes necessários no cluster.
+
+- Uma VPC é criada em duas zonas de disponibilidade, com sub-redes públicas para o EKS e sub-redes privadas para o banco de dados.
+- O Amazon EKS executa a aplicação em nodes gerenciados. A role dos nodes permite baixar imagens do Amazon ECR existente.
+- O PostgreSQL é executado no Amazon RDS, sem acesso público. Apenas os nodes do EKS podem acessá-lo pela porta `5432`.
+- O acesso HTTP externo passa por um Load Balancer público. Ele é criado para o `ingress-nginx`, instalado pelo Terraform via Helm.
+
+```mermaid
+flowchart TD
+  Internet[Internet] -->|HTTP| LoadBalancer[Load Balancer publico]
+
+  subgraph AWS[AWS - us-east-1]
+    ECR[Amazon ECR\nImagens das aplicacoes]
+
+    subgraph VPC[VPC]
+      subgraph PublicSubnets[Sub-redes publicas\nDuas zonas de disponibilidade]
+        EKS[Amazon EKS\nCluster com nodes gerenciados]
+      end
+
+      subgraph PrivateSubnets[Sub-redes privadas\nDuas zonas de disponibilidade]
+        RDS[Amazon RDS PostgreSQL\nSem acesso publico]
+      end
+    end
+  end
+
+  LoadBalancer --> EKS
+  EKS -->|Le imagens| ECR
+  EKS -->|PostgreSQL 5432| RDS
+```
+
+O estado do Terraform fica em um bucket S3 externo, separado em `foundation` e `addons`.
+
+Você pode conferir mais detalhes sobre a infraestrutura em `./infra/ESTRUTURA.md`.
+
+Além disso, para instruções de como rodar, consulte `./infra/README.md`.
+
+ A organização e os componentes internos do cluster serão detalhados na próxima seção.
+
+## 7. Arquitetura k8s
+
+Os manifests do Kubernetes organizam as cinco APIs por feature dentro do namespace `oficina`. Eles sao aplicados com o Kustomize por meio do comando `kubectl apply -k k8s`.
+
+- Cada API possui um Deployment, que inicia com uma replica e mantem os Pods em execucao, com verificacoes de saude em `/health`.
+- Cada Deployment e acessado internamente por um Service do tipo `ClusterIP`. Esses Services nao ficam expostos diretamente na Internet.
+- O Ingress recebe as requisicoes HTTP e direciona cada caminho para o Service da API correspondente.
+- ConfigMaps guardam configuracoes nao sensiveis de cada API. Um Secret compartilhado fornece os dados sensiveis, como a conexao com o banco.
+- Um HPA acompanha CPU e memoria e pode ajustar cada Deployment entre 1 e 10 replicas. O Metrics Server fornece as metricas usadas por esse controle.
+
+```mermaid
+flowchart TD
+  Request[Requisicoes HTTP] --> Controller[NGINX Ingress Controller]
+
+  subgraph EKS[Cluster Amazon EKS]
+    Controller --> Ingress[Ingress oficina-apis]
+
+    subgraph Oficina[Namespace oficina]
+      Ingress --> Services[Services ClusterIP\nUma entrada por API]
+      Services --> Pods[Pods das APIs\nmonolith, approval, createos, getos e status]
+      Deployments[Deployments\nUm por API] --> Pods
+
+      ConfigMaps[ConfigMaps\nConfiguracoes nao sensiveis] --> Deployments
+      Secret[Secret compartilhado\nConfiguracoes sensiveis] --> Deployments
+      HPA[HPA\nDe 1 a 10 replicas] --> Deployments
+    end
+
+    Metrics[Metrics Server] --> HPA
+  end
+```
+
+Em ambiente AWS, as APIs usam o Amazon RDS apresentado na secao anterior. O Postgres definido em `k8s/db-local` e uma alternativa exclusiva para execucao local.
+
+Para mais detalhes sobre os manifests, sobre a estrutura e como executar, consulte [k8s/README.md](./k8s/README.md).
+
+## 9. Fluxo de Deploy (CI/CD)
+
+O CI/CD e executado por GitHub Actions. Tres workflows principais definem quando o pipeline roda, enquanto quatro workflows reutilizaveis executam as tarefas tecnicas: `_build-test.yml`, `_build-push.yml`, `_terraform.yml` e `_k8s-apply.yml`.
+
+- `Bootstrap` e manual e prepara um ambiente completo, da validacao da aplicacao ao deploy no EKS.
+- `App` roda em cada push na branch `main` e escolhe a trilha de acordo com as alteracoes em `server/`, `infra/` ou `k8s/`.
+- `Destroy` e manual e remove os recursos AWS na ordem correta: addons antes da foundation.
+
+```mermaid
+flowchart TD
+  subgraph Bootstrap[Bootstrap - manual]
+    direction LR
+    BTest[_build-test.yml\nRestore, build e testes] --> BPush[_build-push.yml\nBuild e push no ECR]
+    BPush --> BFoundation[_terraform.yml\nApply foundation]
+    BFoundation --> BAddons[_terraform.yml\nApply addons]
+    BAddons --> BK8s[_k8s-apply.yml\nDeploy no EKS]
+  end
+
+  subgraph App[App - push na branch main]
+    direction TB
+    Filter{Filtro de alteracoes}
+
+    Filter -->|server/| ATest[_build-test.yml]
+    ATest --> APush[_build-push.yml]
+    APush --> AK8sServer[_k8s-apply.yml\nReinicia os Pods]
+
+    Filter -->|infra/| AFoundation[_terraform.yml\nApply foundation]
+    AFoundation --> AAddons[_terraform.yml\nApply addons]
+
+    Filter -->|k8s/| AK8s[_k8s-apply.yml\nReaplica manifests]
+  end
+
+  subgraph Destroy[Destroy - manual]
+    direction LR
+    DAddons[_terraform.yml\nDestroy addons] --> DFoundation[_terraform.yml\nDestroy foundation]
+  end
+
+  Bootstrap ~~~ App
+  App ~~~ Destroy
+```
+
+O workflow manual `Destroy` remove primeiro os addons e depois a foundation, evitando custos com os recursos AWS.
+
+As credenciais e configuracoes sensiveis usadas pelo pipeline ficam em Secrets e Variables do GitHub.
+
+Durante o deploy no Kubernetes, o pipeline consulta o endpoint do RDS e gera o Secret usado pelas APIs antes de executar `kubectl apply -k k8s`.
+
+Para detalhes dos workflows, consulte [.github/workflows/README.md](./.github/workflows/README.md).
+
+## 9. Finalização
+
+Nessa seção, você encontra observações gerais.
+
+- Para fazer requisições, use as Collections do Postman na pasta `/e2e`
+  - importe as collections no Postman
+  - cada API tem um collection
+  - Em `variables`, altere para apontar a URL para onde está rodando o projeto.
+
 - Para o envio de e-mails, é preciso configurar `ApiKey` no appsettings.json ou `ResendSettings__ApiKey` para container
 
 Você pode criar uma conta em http://resend.com/ e gerar a ApiKey.
