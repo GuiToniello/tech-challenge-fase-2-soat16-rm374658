@@ -13,7 +13,7 @@ Grupo:
 
 Acesse o blueprint no Miro: http://miro.com/app/board/uXjVHVfHuvI=/?share_link_id=633470424823
 
-Você pode acessar o relatório completo [aqui](./docs/relatorio-completo.pdf).
+Você pode acessar o relatório completo [aqui](./docs/relatório-completo.pdf).
 
 ## 2. Arquitetura
 
