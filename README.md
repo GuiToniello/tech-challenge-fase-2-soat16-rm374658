@@ -15,6 +15,8 @@ Acesse o blueprint no Miro: http://miro.com/app/board/uXjVHVfHuvI=/?share_link_i
 
 Você pode acessar o relatório completo [aqui](./docs/relatório-completo.pdf).
 
+Video completo [aqui](https://youtu.be/BRWWTNrfGdY)
+
 ## 2. Arquitetura
 
 Nessa seção, será descrita a arquitetura em alto nível e organização da solução.
